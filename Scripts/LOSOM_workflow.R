@@ -27,7 +27,7 @@ snki_sp_string <- "SnailKite"
 # Folder containing species output
 PARENT_PATH <- "./Data/LOSOM_Round1_2021_05/Model Output/Alligator/JEM_Alligator_Production_Probability_Model_Data/JEM_Alligator_Production_Probability_Model_Data/"
 
-# Is Spcies output already cropped to AOI (TRUE/FALSE)
+# Is Species output already cropped to AOI? (TRUE/FALSE)
 cropped <- FALSE
 
 # Folder to output CSV and figures - include "/" after path to get file names correct when saving 
@@ -70,8 +70,8 @@ BASE_NAMES_join
 all_scenario_names <- paste0(BASE_NAMES_join, ALT_NAMES, collapse = "|")
 all_scenario_names
 
-# Loop through spcies, process output, output acreage csv and map
-# Loop thorugh target species
+# Loop through species, process output, output acreage csv and map
+# Loop through target species
 process_list_all <- list() # list to store all output
 #n <- 1
 for(n in 1:length(sp_string)){ # This part is to accomodate multiple species output in the everwaders path
