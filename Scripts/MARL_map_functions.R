@@ -29,7 +29,7 @@ MARL_MAP <- function(DF_IND,                       # Dataframe of individual sco
                      SCENARIO_COL,                 # column name of scenarios to be plotted
                      MPR_PATH,                     # File path to shapefile of Main Park Road
                      WCAS_PATH,                    # File path to shapefile of water conservation areas boundaries
-                     SPOP_PATH,
+                     SPOP_PATH,                    # File path to shapefile of subpopulation boundaries
                      MAP_EXTENT,                   # Extent of map, format: c(xmin, xmax, ymin, ymax)
                      MAP_TITLE,                    # Title to be printed at top of map, (ex. "Alligator HSI")
                      OUTPUT_FILE_NAME){            # Name of Output File

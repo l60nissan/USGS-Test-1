@@ -56,11 +56,11 @@ ALL_FILES <- list.files(PARENT_PATH, pattern = "\\MP_Scores.csv", full.names = T
 ALL_FILES
 
 # Alt Files
-ALT_LIST <- grep(ALT_NAMES, value = T, ALL_FILES)
+ALT_LIST <- grep(ALT_NAMES, value = TRUE, ALL_FILES)
 ALT_LIST
 
 # Base Files
-BASE_LIST <- grep(BASE_NAMES, value = T, ALL_FILES)
+BASE_LIST <- grep(BASE_NAMES, value = TRUE, ALL_FILES)
 BASE_LIST
 
 

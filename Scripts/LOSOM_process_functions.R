@@ -15,17 +15,17 @@
 SP_SCENARIO_FILES <- function(alt_names, base_names, folder_path, species_string){
   
   # All Files
-  ALL_FILES <- list.files(folder_path, full.names = TRUE, recursive = T)
+  ALL_FILES <- list.files(folder_path, full.names = TRUE, recursive = TRUE)
   ALL_FILES
   
   # Alt Files
   alt_names <- paste0(alt_names, collapse = "|")
-  ALT_LIST <- intersect(grep(alt_names, value = T, ALL_FILES), grep(species_string, value = T, ALL_FILES))
+  ALT_LIST <- intersect(grep(alt_names, value = TRUE, ALL_FILES), grep(species_string, value = TRUE, ALL_FILES))
   ALT_LIST
   
   # Base Files
   base_names <- paste0(base_names, collapse = "|")
-  BASE_LIST <- intersect(grep(base_names, value = T, ALL_FILES), grep(species_string, value = T, ALL_FILES))
+  BASE_LIST <- intersect(grep(base_names, value = TRUE, ALL_FILES), grep(species_string, value = TRUE, ALL_FILES))
   BASE_LIST
   
   # Alt and Base Names
@@ -39,7 +39,7 @@ SP_SCENARIO_FILES <- function(alt_names, base_names, folder_path, species_string
 
 # Make rasters dataframe for plotting
 raster_to_df <- function(raster_name, scenario_name){
-  ras_df  <- as.data.frame(rasterToPoints(raster_name, xy = T))
+  ras_df  <- as.data.frame(rasterToPoints(raster_name, xy = TRUE))
   long_df <- pivot_longer(ras_df, cols = c(3:ncol(ras_df)))
   long_df$Scenario <- scenario_name
   return(long_df)
@@ -75,7 +75,7 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
   
   gator_diff_cuts <- c(-1, -.775, -.55, -.325, -.10, .10, .325, .55, .775, 1)
   gator_diff_labels <- c("-0.776 to -1", "-0.551 to -0.775", "-0.326 to -0.550", "-0.101 to -0.325",
-                         "0.099 to -0.10", "0.100 to 0.324", "0.325 to 0.549", "0.550 to 0.774", "0.775 to 1") 
+                         "0.099 to -0.100", "0.100 to 0.324", "0.325 to 0.549", "0.550 to 0.774", "0.775 to 1") 
   gator_title <- "Alligator Habitat Suitability Index"
   
   
@@ -91,7 +91,7 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
   
   snki_diff_cuts <- c(-1, -.775, -.55, -.325, -.10, .10, .325, .55, .775, 1)
   snki_diff_labels <- c("-0.776 to -1", "-0.551 to -0.775", "-0.326 to -0.550", "-0.101 to -0.325",
-                         "0.099 to -0.10", "0.100 to 0.324", "0.325 to 0.549", "0.550 to 0.774", "0.775 to 1") 
+                         "0.099 to -0.100", "0.100 to 0.324", "0.325 to 0.549", "0.550 to 0.774", "0.775 to 1") 
   snki_title <- "Snail Kite"
   
   
@@ -102,7 +102,7 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
   apsn_year_labels <- c("Wet Year (April 20, 1995)", "Dry Year (April 20, 2004)")
   
   apsn_ind_cuts <- c(-Inf, 1, 15001, 30001, 45001, 60001, 75001, 90001, 105001, 120001, 140000)
-  apsn_ind_labels <- c("0", "1 - 15,000", "15,001 - 30,000", "30,001 - 45,000", "45,001 - 60,000", "60,0001 - 75,000",
+  apsn_ind_labels <- c("0", "1 - 15,000", "15,001 - 30,000", "30,001 - 45,000", "45,001 - 60,000", "60,001 - 75,000",
                        "75,001 - 90,000", "90,001 - 105,000", "105,001 - 120,000", "120,001 - 140,000")
   
   apsn_diff_cuts <- c(-140000, -107500, -75000, -42500, -10000, 10001, 42501, 75001, 107501, 140000)
@@ -124,8 +124,8 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
                          "0.51 - 0.60", "0.61 - 0.70", "0.71 - 0.80", "0.81 - 0.90", "0.91 - 1.00")
   
   waders_diff_cuts <- c(-1, -.775, -.55, -.325, -.10, .10, .325, .55, .775, 1)
-  waders_diff_labels <- c("-0.776 to -1", "-0.551 to -0.775", "-0.326 to -0.55", "-0.101 To -0.325",
-                          "-0.10 to .099", "0.1 to 0.324", "0.325 to 0.549", ".55 to .774", "0.775 to 1") 
+  waders_diff_labels <- c("-0.776 to -1", "-0.551 to -0.775", "-0.326 to -0.550", "-0.101 To -0.325",
+                          "-0.100 to .099", "0.100 to 0.324", "0.325 to 0.549", ".550 to .774", "0.775 to 1") 
   
   waders_sp_abr <- c("GBHE", "GLIB", "GREG", "LBHE", "ROSP", "WHIB", "WOST")
   waders_sp_name <- c("Great Blue Heron", "Glossy Ibis", "Great Egret", "Little Blue Heron", "Roseate Spoonbill", "White Ibis", "Wood Stork")
@@ -152,7 +152,7 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
     DAILY_OUTPUT <- FALSE
   }
   
-  # If Species is Alligator
+  # If Species is snail kite
   if(grepl(snki_string, BASE_FILE)){
     
     ind_cuts <- snki_ind_cuts
@@ -219,7 +219,7 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
   start_date <- as.Date(time_split[[1]][1])
   start_year <- as.numeric(format(start_date, format = "%Y"))
   
-  if(DAILY_OUTPUT == TRUE){
+  if(DAILY_OUTPUT){
     end_year <- start_date + (time_length - 1)
     
     BAND_YEARS <- seq(start_date, end_year, 1)
@@ -344,7 +344,7 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
       base_all <- base_stack
     }
     
-    #Get indicies for years
+    #Get indices for years
     base.indices <- format(as.Date(names(base_all), format="X%Y.%m.%d"), format="%Y")
     alt.indices <- format(as.Date(names(alt_all), format="X%Y.%m.%d"), format="%Y")
     #Mean across year
