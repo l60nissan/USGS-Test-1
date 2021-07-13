@@ -79,7 +79,7 @@ cum_fish_by_date <- pivot_longer(cum_fish_by_date, cols = c(2:ncol(cum_fish_by_d
 head(cum_fish_by_date)
 
 # Set variable orders
-cum_fish_by_date$Scenario <- factor(cum_fish_by_date$Scenario, levels = c("AA", "BB", "CC", "DD", "EE1", "EE2", "ECBr", "NA25"))
+cum_fish_by_date$Scenario <- factor(cum_fish_by_date$Scenario, levels = c(alt_names, base_names))
 cum_fish_by_date$DATE <- as.Date(cum_fish_by_date$DATE)
 
 # Add breaks so x-axis has date not just year
@@ -104,10 +104,10 @@ cum_fish_plot <- ggplot(cum_fish_by_date) +
 cum_fish_plot
 
 #save plot
-ggsave(paste0(OUTPUT_PATH, "fish_cumulative.pdf"), width=11, height=8.5, units="in", dpi=300)
+ggsave(paste0(OUTPUT_PATH, "/fish_cumulative.pdf"), width=11, height=8.5, units="in", dpi=300)
 
 # Save data
-write.table(cum_fish_by_date, file=paste0(OUTPUT_PATH, "fish_cumulative.txt"), sep=",")
+write.table(cum_fish_by_date, file=paste0(OUTPUT_PATH, "/fish_cumulative.txt"), sep=",")
 
 ##########################################
 # 3. Daily percent difference
@@ -149,7 +149,7 @@ daily_diff_bar <- per_diff_daily%>%
   group_by(YEAR, Scenario)%>%
   summarise(mean_perdiff = mean(percent_diff))
 # write percent differnce table to text
-write.table(daily_diff_bar, file=paste0(OUTPUT_PATH, "fish_annual_mean_pchange.txt"), sep=",")
+write.table(daily_diff_bar, file=paste0(OUTPUT_PATH, "/fish_annual_mean_pchange.txt"), sep=",")
 
 ####
 # Summarise to YEAR & PSU - MAPS
@@ -232,7 +232,7 @@ for(a in 1:length(alt_names)){
     MIN_LIMIT = min_limit,
     MAX_LIMIT = max_limit
   )
-  diff_plot_filename <- paste0(OUTPUT_PATH, "PercentDiff_BarPlot_", gsub(" ", "_", title),"_", alt_names[a], ".pdf")
+  diff_plot_filename <- paste0(OUTPUT_PATH, "/PercentDiff_BarPlot_", gsub(" ", "_", title),"_", alt_names[a], ".pdf")
   ggsave(diff_plot_filename, TEST, width=11, height=8.5, units="in", dpi=300)
 }
 
@@ -252,7 +252,7 @@ for(b in 1:length(base_names)){
     MIN_LIMIT = min_limit,
     MAX_LIMIT = max_limit
   )
-  diff_plot_filename <- paste0(OUTPUT_PATH, "PercentDiff_BarPlot_", gsub(" ", "_", title),"_", base_names[b], ".png")
+  diff_plot_filename <- paste0(OUTPUT_PATH, "/PercentDiff_BarPlot_", gsub(" ", "_", title),"_", base_names[b], ".png")
   ggsave(diff_plot_filename, TEST, width=15, height=8.5, units="in", dpi=300, scale = 1)
 }
 
@@ -354,7 +354,7 @@ for(b in 1:length(base_names)){
              MAP_TITLE = "Mean Total Fish Density",
              DF_IND = ind_plot,
              DF_DIF = diff_plot,
-             OUTPUT_FILE_NAME = paste0(OUTPUT_PATH, "fish_map_", alt_scenario, "_", base_scenario, ".pdf"))
+             OUTPUT_FILE_NAME = paste0(OUTPUT_PATH, "/fish_map_", alt_scenario, "_", base_scenario, ".pdf"))
     
     #Save data used to plot map to list to reproduce if needed
     plot_list <- list("alt_scenario" = alt_scenario, "base_scenario" = base_scenario, "diff_scenario" = diff_scenario, "ind_plot" = ind_plot, "diff_plot" = diff_plot)
@@ -364,4 +364,4 @@ for(b in 1:length(base_names)){
   }
 }
 
-save(map_data_list, file = paste0(OUTPUT_PATH, "fish_processed_data.RData"))
+save(map_data_list, file = paste0(OUTPUT_PATH, "/fish_processed_data.RData"))
