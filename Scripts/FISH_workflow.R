@@ -2,9 +2,10 @@
 #This script uses the output from the JEM Small Fish Density model (SA) and performs the following:
 # 1.) removes PSUs not within the AOI mask
 # 2.) Calculates cumulative fish density, and generates line plot
-# 3.) Calculates percent difference of annual mean total fish across all PSUs - between baselines and scenarios
-#       - and generates barplots (2 formats): 1. one plot for each alt showing alt vs each baselin, 2. one plot for each baseline showing all alts
-# 4.) Calculates mean daily percent change for each year and PSU, and generates difference maps
+# 3.) calculate daily percent differnce for every PSU
+# 4.) Summarize dily percent differnce to A) YEAR - for Bar plot and B)YEAR & PSU for map
+# 5.) Generate percent differnce bar plot (using means of daily percent differnce)
+# 6.) Generate maps (using means of daily percent difference - for difference map, and mean TOTFISH for individual score maps)
 #
 # Caitlin Hackett chackett@usgs.gov
 #############################################################################################################
@@ -18,7 +19,7 @@ source("../restoration_runs/Scripts/FISH_map_functions.R")
 
 # SET FILE PATHS
 FISH_PATH <- "../LOSOM/Data/LOSOM_Round1_2021_05/Model Output/Fish/JEM_Small_Fish_Density_Model_Data_SA/JEM_Small_Fish_Density_Model_Data_SA/FISH_TIMESERIES_PSU.csv"
-OUTPUT_PATH <- "./Output/"
+OUTPUT_PATH <- "../Figure Development/Output/"
 #AOI_PATH <- "../../GIS_Library/COP_AOI_mask/COP_AOI_mask.shp"
 
 # Set alternate and base names
@@ -29,7 +30,7 @@ base_names
 
 
 #############################
-# 1. SUBSET FISH PSU TO AOI
+# 1. SUBSET FISH PSU TO AOI 
 #############################
 fish_all <- read.csv(FISH_PATH, header = TRUE) # Read in CSV with all fish data
 AOI <- st_read(dsn = AOI_PATH) # read in AOI shapefile
@@ -46,6 +47,11 @@ PSU_coords_AOI <- PSU_coords_all[AOI,]
 # filter fish to only psus within the AOI
 PSU_AOI_names <- PSU_coords_AOI$PSU # names of PSUS within AOI
 fish <- fish_all[fish_all$PSU %in% PSU_AOI_names,] 
+head(fish)
+
+# Add column for year so annual mean can be calcualted for each PSU
+fish$DATE <- as.Date(fish$DATE)
+fish$YEAR <- format(fish$DATE, format="%Y")
 head(fish)
 
 ############################
@@ -103,71 +109,62 @@ ggsave(paste0(OUTPUT_PATH, "fish_cumulative.pdf"), width=11, height=8.5, units="
 # Save data
 write.table(cum_fish_by_date, file=paste0(OUTPUT_PATH, "fish_cumulative.txt"), sep=",")
 
-#########################################
-# 3. PERCENT CHANGE of ANNUAL MEAN
-#########################################
-# Calculate percent difference of the annual mean of total fish density across all PSUs between the baselines to alternates
+##########################################
+# 3. Daily percent difference
+##########################################
 
-#alt_names <- c("AA", "BB", "CC", "DD", "EE1", "EE2")
-#base_names <- c("ECBr", "NA25")
-#alt_names
-#base_names
+# Subset to "TOTFISH" columns to calculate daily percent differnces
+fish_daily <- dplyr::select(fish ,c(DATE, YEAR, PSU, grep("TOTFISH$", names(fish))))
 
-# Add column for year so annual mean can be calcualted for each PSU
-fish$DATE <- as.Date(fish$DATE)
-fish$YEAR <- format(fish$DATE, format="%Y")
-head(fish)
-
-# Calculates mean TOTFISH by year for each PSU
-fish_by_date <- fish%>%
-  group_by(YEAR, PSU)%>%
-  summarise(AA = mean(depth_AA_TOTFISH),
-            BB = mean(depth_BB_TOTFISH),
-            CC = mean(depth_CC_TOTFISH),
-            DD = mean(depth_DD_TOTFISH),
-            EE1 = mean(depth_EE1_TOTFISH),
-            EE2 = mean(depth_EE2_TOTFISH),
-            ECBr = mean(depth_ECBr_TOTFISH),
-            NA25 = mean(depth_NA25_TOTFISH))
-head(fish_by_date)
-
-# Extract base and Alt, calculate annual percent differencce for each PSU
-#b <- 1
-#a <- 2
-#percent_diff <- list()
-per_diff_combined <- data.frame()
+# Calculate daily percent difference for each PSU (all years) _ kind of slow might be a better way with lapply?
+per_diff_daily <- data.frame()
 for(b in 1:length(base_names)){
-  base_col <- base_names[b]
+  base_col <- grep(base_names[b], names(fish_daily), value = TRUE)
   for(a in 1:length(alt_names)){
-    alt_col <- alt_names[a]
-    diff_name <- paste0(alt_col, "-", base_col)
-    alt_base <- fish_by_date[,c(alt_col, base_col)]
+    alt_col <- grep(alt_names[a], names(fish_daily), value = TRUE)
+    
+    b_name <- str_extract_all(base_col, base_names[b])[[1]]
+    a_name <- str_extract_all(alt_col, alt_names[a])[[1]]
+    diff_name <- paste0(a_name, "-", b_name)
+    
+    print(paste0("Processing Daily Percent Difference :: ", diff_name))
+    
+    alt_base <- fish_daily[,c(alt_col, base_col)]
     per_diff <- ((alt_base[alt_col]-alt_base[base_col])/alt_base[base_col])* 100
     names(per_diff) <- "percent_diff"
-    per_diff <- cbind(fish_by_date[,c("YEAR", "PSU")], per_diff)
+    per_diff <- cbind(fish_daily[,c("DATE", "YEAR", "PSU")], per_diff)
     per_diff$Scenario <- diff_name
-    per_diff_combined <- rbind(per_diff_combined, per_diff)
-  }
-}
+    per_diff_daily <- rbind(per_diff_daily, per_diff)
+    }}
 
-# Calculate mean of the percent difference for each year - combined PSU
-per_diff_combined$Scenario <- as.factor(per_diff_combined$Scenario)
-diff_names <- levels(per_diff_combined$Scenario)
-diff_names
+###########################################
+# 4. Summarize daily percent difference 
+###########################################
 
-diff_mean_df <- data.frame()
-for(d in 1:length(diff_names)){
-  name <- diff_names[d]
-  diff_df <- per_diff_combined[per_diff_combined$Scenario == name,]
-  diff_mean <- diff_df %>% group_by(YEAR)%>% summarise(mean_perdiff = mean(percent_diff))
-  diff_mean$Scenario <- name
-  diff_mean_df <- rbind(diff_mean_df, diff_mean)
-}
-head(diff_mean_df)
-
+####
+# Summarize to YEAR - BAR PLOT
+###
+# calculate average daily percent difference for all days and PSUs (Barplot) for each sceanrio
+daily_diff_bar <- per_diff_daily%>%
+  group_by(YEAR, Scenario)%>%
+  summarise(mean_perdiff = mean(percent_diff))
 # write percent differnce table to text
-write.table(diff_mean_df, file=paste0(OUTPUT_PATH, "fish_annual_mean_pchange.txt"), sep=",")
+write.table(daily_diff_bar, file=paste0(OUTPUT_PATH, "fish_annual_mean_pchange.txt"), sep=",")
 
+####
+# Summarise to YEAR & PSU - MAPS
+####
+# calculate average daily percent difference for each PSU for each year
+# Caclulate mean of daily percent change - to year, PSU, Scenario
+daily_diff_map <- per_diff_daily%>%
+  group_by(YEAR, PSU, Scenario)%>%
+  summarise(mean_daily_diff = mean(percent_diff))
+
+###########################################
+# 5. Make Bar plots
+###########################################
+
+## FUNCTION FOR BAR PLOTS
 # Make percent diff Bar plot - 1 alt and baselines
 PER_DIFF_PLOT <- function(DF, X_VAR, Y_VAR, FILL_VAR, TITLE, Y_LAB, X_LAB, MIN_LIMIT, MAX_LIMIT){
   DIFF_PLOT <- ggplot(data = DF, aes_string(x=X_VAR, y=Y_VAR, fill = FILL_VAR))+ 
@@ -207,7 +204,7 @@ PER_DIFF_PLOT_ALTS <- function(DF, X_VAR, Y_VAR, FILL_VAR, TITLE, Y_LAB, X_LAB, 
   
   return(DIFF_PLOT)
 }
-
+#######
 
 # Make Percent diffrence bar plot
 x_var <- "YEAR"
@@ -216,14 +213,14 @@ fill_var <- "Scenario"
 title <- "Total Fish Density"
 #y_lab <- paste0("Percent Change in ", title, "\nfrom baseline to ", map_dfs$alt_name)
 x_lab <- "Year"
-min_limit <-plyr::round_any(min(diff_mean_df[y_var]), 5, f = floor)
-max_limit <- plyr::round_any(max(diff_mean_df[y_var]), 5, f = ceiling)
+min_limit <-plyr::round_any(min(daily_diff_bar[y_var]), 5, f = floor)
+max_limit <- plyr::round_any(max(daily_diff_bar[y_var]), 5, f = ceiling)
 
 # Make bar plot for alt vs both baselines
 #a <- 1
 for(a in 1:length(alt_names)){
   print(paste0("Making Differnce Bar Plot :: ", alt_names[a]))
-  per_diff_alt <- diff_mean_df[grep(alt_names[a], diff_mean_df$Scenario),]
+  per_diff_alt <- daily_diff_bar[grep(alt_names[a], daily_diff_bar$Scenario),]
   TEST <- PER_DIFF_PLOT(
     DF = per_diff_alt,
     X_VAR = x_var,
@@ -243,7 +240,7 @@ for(a in 1:length(alt_names)){
 #a <- 1
 for(b in 1:length(base_names)){
   print(paste0("Making Differnce Bar Plot :: ", base_names[b]))
-  per_diff_alt <- diff_mean_df[grep(base_names[b], diff_mean_df$Scenario),]
+  per_diff_alt <- daily_diff_bar[grep(base_names[b], daily_diff_bar$Scenario),]
   TEST <- PER_DIFF_PLOT_ALTS(
     DF = per_diff_alt,
     X_VAR = x_var,
@@ -259,55 +256,36 @@ for(b in 1:length(base_names)){
   ggsave(diff_plot_filename, TEST, width=15, height=8.5, units="in", dpi=300, scale = 1)
 }
 
-#####################################
-# 4. DAILY_MEAN PERCENT CHANGE   
-#####################################
-# Calculates mean daily percent change for each year and PSU, subsets to wet, dry and average year, and generates maps
-
+#########################################
+# 6. Make Maps
+#########################################
 TARGET_YEARS <- c(1978, 1989, 1995)
 TARGET_YEAR_LABELS <- c("1978 - Average Year", "1989 - Dry Year", "1995 - Wet Year")
 
+# Calculates mean TOTFISH by year for each PSU - for individual score plotting on map
+fish_psu_year <- fish%>%
+  group_by(YEAR, PSU)%>%
+  summarise(AA = mean(depth_AA_TOTFISH),
+            BB = mean(depth_BB_TOTFISH),
+            CC = mean(depth_CC_TOTFISH),
+            DD = mean(depth_DD_TOTFISH),
+            EE1 = mean(depth_EE1_TOTFISH),
+            EE2 = mean(depth_EE2_TOTFISH),
+            ECBr = mean(depth_ECBr_TOTFISH),
+            NA25 = mean(depth_NA25_TOTFISH))
+head(fish_psu_year)
 
-# Subset to "TOTFISH" and years of interest for maps (1978, 1989, 1995)
-fish_daily <- dplyr::select(fish ,c(DATE, YEAR, PSU, grep("TOTFISH$", names(fish))))
-fish_daily <- fish_daily[fish_daily$YEAR %in% TARGET_YEARS,]
-
-# Calculate daily percent difference for each PSU
-per_diff_daily <- data.frame()
-for(b in 1:length(base_names)){
-  base_col <- grep(base_names[b], names(fish_daily), value = TRUE)
-  for(a in 1:length(alt_names)){
-    alt_col <- grep(alt_names[a], names(fish_daily), value = TRUE)
-
-    b_name <- str_extract_all(base_col, base_names[b])[[1]]
-    a_name <- str_extract_all(alt_col, alt_names[a])[[1]]
-    diff_name <- paste0(a_name, "-", b_name)
-    
-    alt_base <- fish_daily[,c(alt_col, base_col)]
-    per_diff <- ((alt_base[alt_col]-alt_base[base_col])/alt_base[base_col])* 100
-    names(per_diff) <- "percent_diff"
-    per_diff <- cbind(fish_daily[,c("DATE", "YEAR", "PSU")], per_diff)
-    per_diff$Scenario <- diff_name
-    per_diff_daily <- rbind(per_diff_daily, per_diff)
-  }}
-
-# Caclulate mean of daily percent change - to year, PSU, Scenario
-mean_diff_daily <- per_diff_daily%>%
-  group_by(YEAR, PSU, Scenario)%>%
-  summarise(mean_daily_diff = mean(percent_diff))
-  
-# fish_by_date holds mean for scenarios by year and PSU which is the data for indivudual plots in differnce maps
 # needs to pivot long for plotting
- ind_fish_plot <- pivot_longer(fish_by_date, cols = c(3:ncol(fish_by_date)), values_to = "annual_mean", names_to = "Scenario")
+ind_fish_plot <- pivot_longer(fish_psu_year, cols = c(3:ncol(fish_psu_year)), values_to = "annual_mean", names_to = "Scenario")
 
 # add PSU coordinates to individual and diff data
 PSU_coords <- unique(dplyr::select(fish, c("PSU", "EASTING", "NORTHING")))
 ind_fish_plot <- left_join(ind_fish_plot, PSU_coords, by = "PSU")      
-diff_fish_plot <- left_join(mean_diff_daily, PSU_coords, by = "PSU")
+diff_fish_plot <- left_join(daily_diff_map, PSU_coords, by = "PSU")
 
 # Subset to correct plotting years (1978, 1989, 1995) - diff is already subset to correct years so only needs to be applied to individual plot data
 ind_fish_plot <- filter(ind_fish_plot, YEAR == 1978 | YEAR == 1989 | YEAR == 1995)
-#diff_fish_plot <- filter(diff_fish_plot, YEAR == 1978 | YEAR == 1989 | YEAR == 1995)
+diff_fish_plot <- filter(diff_fish_plot, YEAR == 1978 | YEAR == 1989 | YEAR == 1995)
 
 # Round value prior to bin - bins were dropping values if not rounded first
 ind_fish_plot$annual_mean_round <- round(ind_fish_plot$annual_mean, 2)
@@ -325,7 +303,7 @@ fish_diff_labels <- c("-77.6 to -100+", "-55.2 to -77.5", "-32.7 to -55.1", "-10
 ind_fish_plot$breaks <- cut(ind_fish_plot$annual_mean_round, fish_ind_cuts, right = TRUE, include.lowest = TRUE)
 ind_fish_plot$labs   <- cut(ind_fish_plot$annual_mean_round, fish_ind_cuts, fish_ind_labels, right = TRUE, include.lowest = TRUE)
 ind_fish_plot$labs <- factor(ind_fish_plot$labs, levels = fish_ind_labels, ordered = TRUE) # order the bins so bin can correspond to point size on map
-  
+
 diff_fish_plot$breaks <- cut(diff_fish_plot$mean_daily_diff_round, fish_diff_cuts, right = FALSE, include.lowest = TRUE)
 diff_fish_plot$labs <- cut(diff_fish_plot$mean_daily_diff_round, fish_diff_cuts, fish_diff_labels, right = FALSE, include.lowest = TRUE)
 
@@ -344,47 +322,46 @@ name.labs
 # Make maps
 map_data_list <- list()
 index <- 0
- for(b in 1:length(base_names)){
-   base_scenario <- base_names[b] # get base name
-   for(a in 1:length(alt_names)){
-     alt_scenario <- alt_names[a] # get alt name
-     
-      diff_scenario <- paste0(alt_scenario, "-", base_scenario) # make diff name
-
-      print(paste0("Pulling Data to Map :: ", diff_scenario))
-      
-      # Subset for plotting
-      ind_plot <- filter(ind_fish_plot, (Scenario == alt_scenario | Scenario == base_scenario)) 
-      diff_plot <- filter(diff_fish_plot, (Scenario == diff_scenario))
+for(b in 1:length(base_names)){
+  base_scenario <- base_names[b] # get base name
+  for(a in 1:length(alt_names)){
+    alt_scenario <- alt_names[a] # get alt name
     
-      # Set levels
-      ind_plot$Scenario <- factor(ind_plot$Scenario, levels = c(base_scenario, alt_scenario, diff_scenario))
-      diff_plot$Scenario <- factor(diff_plot$Scenario, levels = c(base_scenario, alt_scenario, diff_scenario))
-      
-      # Make map
-      print(paste0("Making Map :: ", diff_scenario))
-      
-      FISH_MAP(IND_FILL = "labs",
-               DIF_FILL = "labs",
-               SCENARIO_COL = "Scenario",
-               YEAR_COL = "YEAR",
-               AOI_PATH = AOI_PATH,
-               MPR_PATH = MPR_PATH,
-               WCAS_PATH = WCAS_PATH,
-               FL_PATH = FL_PATH,
-               MAP_EXTENT = MAP_EXTENT,
-               MAP_TITLE = "Mean Total Fish Density",
-               DF_IND = ind_plot,
-               DF_DIF = diff_plot,
-               OUTPUT_FILE_NAME = paste0(OUTPUT_PATH, "fish_map_", alt_scenario, "_", base_scenario, ".pdf"))
-      
-      #Save data used to plot map to list to reproduce if needed
-      plot_list <- list("alt_scenario" = alt_scenario, "base_scenario" = base_scenario, "diff_scenario" = diff_scenario, "ind_plot" = ind_plot, "diff_plot" = diff_plot)
-      index <- index +1
-      map_data_list[[index]] <- plot_list
-      names(map_data_list)[[index]] <- diff_scenario
-    }
- }
+    diff_scenario <- paste0(alt_scenario, "-", base_scenario) # make diff name
+    
+    print(paste0("Pulling Data to Map :: ", diff_scenario))
+    
+    # Subset for plotting
+    ind_plot <- filter(ind_fish_plot, (Scenario == alt_scenario | Scenario == base_scenario)) 
+    diff_plot <- filter(diff_fish_plot, (Scenario == diff_scenario))
+    
+    # Set levels
+    ind_plot$Scenario <- factor(ind_plot$Scenario, levels = c(base_scenario, alt_scenario, diff_scenario))
+    diff_plot$Scenario <- factor(diff_plot$Scenario, levels = c(base_scenario, alt_scenario, diff_scenario))
+    
+    # Make map
+    print(paste0("Making Map :: ", diff_scenario))
+    
+    FISH_MAP(IND_FILL = "labs",
+             DIF_FILL = "labs",
+             SCENARIO_COL = "Scenario",
+             YEAR_COL = "YEAR",
+             AOI_PATH = AOI_PATH,
+             MPR_PATH = MPR_PATH,
+             WCAS_PATH = WCAS_PATH,
+             FL_PATH = FL_PATH,
+             MAP_EXTENT = MAP_EXTENT,
+             MAP_TITLE = "Mean Total Fish Density",
+             DF_IND = ind_plot,
+             DF_DIF = diff_plot,
+             OUTPUT_FILE_NAME = paste0(OUTPUT_PATH, "fish_map_", alt_scenario, "_", base_scenario, ".pdf"))
+    
+    #Save data used to plot map to list to reproduce if needed
+    plot_list <- list("alt_scenario" = alt_scenario, "base_scenario" = base_scenario, "diff_scenario" = diff_scenario, "ind_plot" = ind_plot, "diff_plot" = diff_plot)
+    index <- index +1
+    map_data_list[[index]] <- plot_list
+    names(map_data_list)[[index]] <- diff_scenario
+  }
+}
 
 save(map_data_list, file = paste0(OUTPUT_PATH, "fish_processed_data.RData"))
-
