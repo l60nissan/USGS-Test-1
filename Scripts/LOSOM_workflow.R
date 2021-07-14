@@ -12,33 +12,34 @@ library(raster)
 library(sf)
 library(cowplot)
 
-source("../Figure Development/Scripts/Final/Second Test/LOSOM_process_functions.R")
-source("../Figure Development/Scripts/Final/Second Test/LOSOM_map_functions.R")
+source("./Scripts/LOSOM_process_functions.R")
+source("./Scripts/LOSOM_map_functions.R")
 
 # Species string options
 gator_sp_string <- "Alligator"
 waders_sp_string <- c("GBHE", "GLIB", "GREG", "LBHE", "ROSP", "WHIB", "WOST")
 apsn_sp_string <- "Apple_Snail"
 snki_sp_string <- "SnailKite"
+dsd_sp_string <- "dsd"
 
 ########################################################
 ### USER SET FACTORS ###
 
 # Folder containing species output
-PARENT_PATH <- "./Data/LOSOM_Round1_2021_05/Model Output/Alligator/JEM_Alligator_Production_Probability_Model_Data/JEM_Alligator_Production_Probability_Model_Data/"
+PARENT_PATH <- "../LOSOM/Data/LOSOM_Round1_2021_05/Model Output/DaysSinceDry/DaysSinceDrydown_COP_AOI/"
 
 # Is Species output already cropped to AOI? (TRUE/FALSE)
-cropped <- FALSE
+cropped <- TRUE
 
 # Folder to output CSV and figures - include "/" after path to get file names correct when saving 
-OUTPUT_PATH <- "./Output/LOSOM_Round1_2021_05/Alligator/TEST/"
+OUTPUT_PATH <- "../LOSOM/Output/LOSOM_Round1_2021_05/DaysSinceDry/"
 
 # Path to AOI
 AOI_PATH <- "../../GIS_Library/COP_AOI_mask/COP_AOI_mask.shp"
 #AOI_PATH <- "../../GIS_Library/WERPzones_EDEN_mask.shp/WERPzones_EDEN_mask.shp"
 
 # set target species from species string options at top of script
-sp_string <- gator_sp_string
+sp_string <- dsd_sp_string
 
 # Set Alternate scenario names
 #alt_names <- c("Sim_0001")
@@ -144,9 +145,12 @@ for(n in 1:length(sp_string)){ # This part is to accomodate multiple species out
       # add data t o percent diff dataframe - if percent diff was calculated during data processing, bind rows to one dataframe
       #if(grepl(gator_sp_string, FILES$ALL_FILES[1])){
       print(paste0("Adding Percent Difference :: ALT_", a_name, " minus BASE_", b_name))
-      if("Percent_diff_mean" %in% names(map_dfs)){
-      percent_diff <- bind_rows(percent_diff, map_dfs$Percent_diff_mean)
-      } else {
+      #if("Percent_diff_mean" %in% names(map_dfs)){
+      if(!is.null(map_dfs$Percent_diff_mean)){
+        percent_diff <- bind_rows(percent_diff, map_dfs$Percent_diff_mean)
+      } 
+      
+      if(is.null(map_dfs$Percent_diff_mean)){
       percent_diff <- NULL
           }
        }
@@ -157,6 +161,10 @@ for(n in 1:length(sp_string)){ # This part is to accomodate multiple species out
   
   # Export acreage Data
   print(paste0("Export Acreage Data CSV"))
+  
+  # Tidy scenario_year column to individual columns
+  acreage_diff_df <- separate(acreage_diff_df, Scenario_year, into = c("Scenario", "Year"), sep = "_X")
+  
   output_filename <- paste0(out_path, "Acreage_", gsub(" ", "_", map_title), ".csv")
   write.csv(acreage_diff_df, output_filename, row.names = FALSE)
   

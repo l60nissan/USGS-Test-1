@@ -50,6 +50,7 @@ raster_to_df <- function(raster_name, scenario_name){
 #ALT_FILE <- ALT_LIST[1]
 #AOI_FILE <- AOI_PATH
 #BASE_ALT_NAMES <- all_scenario_names
+#CROPPED = cropped
 
 PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
                            ALT_FILE,      # Alternate netcdf to process
@@ -93,6 +94,23 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
   snki_diff_labels <- c("-0.776 to -1", "-0.551 to -0.775", "-0.326 to -0.550", "-0.101 to -0.325",
                          "0.099 to -0.100", "0.100 to 0.324", "0.325 to 0.549", "0.550 to 0.774", "0.775 to 1") 
   snki_title <- "Snail Kite"
+  
+  
+  # Days Since Dry
+  dsd_string <- "dsd"
+  dsd_varname <- "dsd"
+  dsd_years <- paste0("X", c("1995.06.01", "1989.06.01", "1978.06.01"))
+  dsd_year_labels <- c("Wet Year (Jun 1, 1995)", "Dry Year (June 1, 1989)", "Average Year (Jun 1, 1978)")
+  
+  dsd_ind_cuts <- c(0.0, 110,  219,  329,  438,  548,  657,  767,  876,  986, Inf)
+  dsd_ind_labels <- c("0.0 - 109", "110 - 218", "219 - 328", "329 - 437", "438 - 547", "548 - 656", "657 - 766",
+                      "767 - 875", "876 - 985", "986 - 1,095+")
+  
+  dsd_diff_cuts <- seq(from = -1095, to = 1095, length.out = 10)
+  dsd_diff_cuts <- c(-Inf, -852, -608, -365, -122, 122, 365, 608, 852, Inf)
+  dsd_diff_labels <- c("-853 to -1,095+", "-609 to -852", "-366 - -608", "-123 to -365", "121 to -122", "122 to 364", "365 to 607",
+                       "608 to 851", "852 to 1,095+") 
+  dsd_title <- "Days Since Drydown"
   
   
   # Apple Snail
@@ -166,6 +184,23 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
     TARGET_YEARS_LABELS <- snki_year_labels
     
     output_title <- snki_title
+    DAILY_OUTPUT <- TRUE
+  }
+  
+  # If Species is DaysSinceDryDown
+  if(grepl(dsd_string, BASE_FILE)){
+    
+    ind_cuts <- dsd_ind_cuts
+    ind_labs <- dsd_ind_labels
+    
+    diff_cuts <- dsd_diff_cuts
+    diff_labs <- dsd_diff_labels
+    
+    TARGET_VAR <- dsd_varname
+    TARGET_YEARS <- dsd_years
+    TARGET_YEARS_LABELS <- dsd_year_labels
+    
+    output_title <- dsd_title
     DAILY_OUTPUT <- TRUE
   }
   
@@ -278,7 +313,7 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
   for(n in 1:nlayers(alt_base)){
     diff_hist <- hist(alt_base[[n]], breaks = diff_cuts, right = FALSE, plot = FALSE)
     
-    if(grepl(paste0(gator_string, "|", apsn_string, "|", waders_string, "|", snki_string), BASE_FILE)){
+    if(grepl(paste0(gator_string, "|", apsn_string, "|", waders_string, "|", snki_string, "|", dsd_string), BASE_FILE)){
       # Convert number of cells to number of acres
       # Each cell is 400m x 400 m; 4046.86 sq meters = 1 acres
       diff_acres <- diff_hist$counts * 400 * 400 / 4046.86
@@ -365,6 +400,11 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
     per_diff_mean$Scenarios <- diff_name
   } 
   
+  # Set dataframe as NULL for dsd. If not, will get error that object does not exist when writing out to list at end of function
+  if(grepl(dsd_string, BASE_FILE)){
+    per_diff_mean <- NULL
+    }
+    
   # ----
   # Make data frames for plotting individual score and difference maps
   # ----

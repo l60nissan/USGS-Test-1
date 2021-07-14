@@ -64,7 +64,11 @@ RESTORATION_RUN_MAP <- function(DF_IND,                       # Dataframe of ind
   diff_pal
   
   # LEGEND TITLES
-  SCORE_LENGEND_NAME <- "Score"
+  if(grepl("Days Since Drydown", MAP_TITLE)){
+    SCORE_LENGEND_NAME <- "Days"
+    } else {
+    SCORE_LENGEND_NAME <- "Score"
+    }
   DIFF_LEGEND_NAME <- levels(DF_DIF$Scenario)[3]
   DIFF_LEGEND_NAME <- paste0("Difference","\n", DIFF_LEGEND_NAME)
   
@@ -231,6 +235,12 @@ RESTORATION_RUN_MAP <- function(DF_IND,                       # Dataframe of ind
     combined_plot<- ggdraw(PLOT)+
       draw_plot(FULL_legend, x = 0.28, y = 0.0, vjust = 0.02)+
       draw_label(MAP_TITLE, x = 0.33, y = .98, vjust = 0, fontfamily = "serif", size = 30)
+  }
+  if(grepl("Days Since Drydown", MAP_TITLE)){
+    combined_plot<- ggdraw(PLOT)+
+      draw_plot(FULL_legend, x = 0.405, y = 0.0, vjust = 0.02)+
+      draw_label(MAP_TITLE, x = 0.16, y = .93, vjust = 0, fontfamily = "serif", size = 30)+
+      draw_plot(arrow, scale = 0.025, x = 0.064, y = -0.399)
   }else{
   combined_plot<- ggdraw(PLOT)+
     draw_plot(FULL_legend, x = 0.405, y = 0.0, vjust = 0.02)+
