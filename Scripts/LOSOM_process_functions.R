@@ -68,7 +68,7 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
   gator_varname <- "Habitat_Suitability"
   #gator_varname <- "Breeding_Potential"
   gator_years <- paste0("X", c("1978", "1989", "1995"))
-  gator_year_labels <- c("1978 - Average Year", "1989 - Dry Year", "1995 - Wet Year")
+  gator_year_labels <- c("Average Year (1978)", "Dry Year (1989)", "Wet Year (1995)")
   
   gator_ind_cuts <- seq(from = 0.0, to = 1, by = 0.10)
   gator_ind_labels <- c("0.00 - 0.10", "0.11 - 0.20", "0.21 - 0.30", "0.31 - 0.40", "0.41 - 0.50",
@@ -83,8 +83,8 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
   # Snail Kite
   snki_string <- "snki"
   snki_varname <- "SNKI HSI"
-  snki_years <- paste0("X", c("1978", "1989", "1995"))
-  snki_year_labels <- c("1978 - Average Year", "1989 - Dry Year", "1995 - Wet Year")
+  snki_years <- paste0("X", c("1995.04.20", "2004.04.20"))
+  snki_year_labels <- c("Wet Year (April 20, 1995)", "Dry Year (April 20, 2004)")
   
   snki_ind_cuts <- seq(from = 0.0, to = 1, by = 0.10)
   snki_ind_labels <- c("0.00 - 0.10", "0.11 - 0.20", "0.21 - 0.30", "0.31 - 0.40", "0.41 - 0.50",
@@ -93,22 +93,22 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
   snki_diff_cuts <- c(-1, -.775, -.55, -.325, -.10, .10, .325, .55, .775, 1)
   snki_diff_labels <- c("-0.776 to -1", "-0.551 to -0.775", "-0.326 to -0.550", "-0.101 to -0.325",
                          "0.099 to -0.100", "0.100 to 0.324", "0.325 to 0.549", "0.550 to 0.774", "0.775 to 1") 
-  snki_title <- "Snail Kite"
+  snki_title <- "Snail Kite Habitat Suitability Index"
   
   
   # Days Since Dry
   dsd_string <- "dsd"
   dsd_varname <- "dsd"
-  dsd_years <- paste0("X", c("1995.06.01", "1989.06.01", "1978.06.01"))
-  dsd_year_labels <- c("Wet Year (Jun 1, 1995)", "Dry Year (June 1, 1989)", "Average Year (Jun 1, 1978)")
+  dsd_years <- paste0("X", c("1978.06.01", "1989.06.01", "1995.06.01"))
+  dsd_year_labels <- c("Average Year (Jun 1, 1978)", "Dry Year (June 1, 1989)", "Wet Year (Jun 1, 1995)")
   
   dsd_ind_cuts <- c(0.0, 110,  219,  329,  438,  548,  657,  767,  876,  986, Inf)
-  dsd_ind_labels <- c("0.0 - 109", "110 - 218", "219 - 328", "329 - 437", "438 - 547", "548 - 656", "657 - 766",
+  dsd_ind_labels <- c("0 - 109", "110 - 218", "219 - 328", "329 - 437", "438 - 547", "548 - 656", "657 - 766",
                       "767 - 875", "876 - 985", "986 - 1,095+")
   
   dsd_diff_cuts <- seq(from = -1095, to = 1095, length.out = 10)
   dsd_diff_cuts <- c(-Inf, -852, -608, -365, -122, 122, 365, 608, 852, Inf)
-  dsd_diff_labels <- c("-853 to -1,095+", "-609 to -852", "-366 - -608", "-123 to -365", "121 to -122", "122 to 364", "365 to 607",
+  dsd_diff_labels <- c("-853 to -1,095+", "-609 to -852", "-366 to -608", "-123 to -365", "121 to -122", "122 to 364", "365 to 607",
                        "608 to 851", "852 to 1,095+") 
   dsd_title <- "Days Since Drydown"
   
@@ -119,9 +119,9 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
   apsn_years <- paste0("X", c("1995.04.20", "2004.04.20"))
   apsn_year_labels <- c("Wet Year (April 20, 1995)", "Dry Year (April 20, 2004)")
   
-  apsn_ind_cuts <- c(-Inf, 1, 15001, 30001, 45001, 60001, 75001, 90001, 105001, 120001, 140000)
+  apsn_ind_cuts <- c(-Inf, 1, 15001, 30001, 45001, 60001, 75001, 90001, 105001, 120001, Inf)
   apsn_ind_labels <- c("0", "1 - 15,000", "15,001 - 30,000", "30,001 - 45,000", "45,001 - 60,000", "60,001 - 75,000",
-                       "75,001 - 90,000", "90,001 - 105,000", "105,001 - 120,000", "120,001 - 140,000")
+                       "75,001 - 90,000", "90,001 - 105,000", "105,001 - 120,000", "120,001 - 140,000+")
   
   apsn_diff_cuts <- c(-140000, -107500, -75000, -42500, -10000, 10001, 42501, 75001, 107501, 140000)
   apsn_diff_labels <- c("-107,501 to -140,000", "-75,001 to -107,500", "-42,501 to 75,000", "-10,001 to -42,500", "10,000 to -10,000",
@@ -133,7 +133,7 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
   waders_string <- "EverWaders"
   waders_varname <- "_Occupancy"
   waders_years <- paste0("X", c("1978", "1989", "1995"))
-  waders_year_labels <- c("1978 - Average Year", "1989 - Dry Year", "1995 - Wet Year")
+  waders_year_labels <- c("Average Year (1978)", "Dry Year (1989)", "Wet Year (1995)")
   #waders_years <- paste0("X", c("2021")) - used when testing with everforecast output
   #waders_year_labels <- c("TESTING")
   
@@ -451,7 +451,27 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
 PER_DIFF_PLOT <- function(DF, X_VAR, Y_VAR, FILL_VAR, TITLE, Y_LAB, X_LAB, MIN_LIMIT, MAX_LIMIT){
   DIFF_PLOT <- ggplot(data = DF, aes_string(x=X_VAR, y=Y_VAR, fill = FILL_VAR))+ 
     geom_bar(stat="identity", position="dodge", width=0.7, colour="black") + 
-    labs(y = Y_LAB, x = X_LAB, title = TITLE, fill = "percent change \nfrom baseline:")+
+    labs(y = Y_LAB, x = X_LAB, title = TITLE, fill = "Percent Change \nfrom Baseline:")+
+    scale_y_continuous(limits=c(MIN_LIMIT,MAX_LIMIT)) +
+    theme(axis.title.x=element_text(size=15),
+          axis.title.y=element_text(size=15),
+          plot.title=element_text(size=20),
+          axis.text.x=element_text(size=12, angle=70, hjust=1), 
+          axis.text.y=element_text(size=12), 
+          legend.text=element_text(size=12),
+          legend.title=element_text(size=15), 
+          legend.title.align = 0.5,
+          plot.margin = margin(1,.5,1,.5, unit = "in")) # Set margins for plot - wider on right side to make space fore legend
+  
+  return(DIFF_PLOT)
+}
+
+PER_DIFF_PLOT_ALTS <- function(DF, X_VAR, Y_VAR, FILL_VAR, TITLE, Y_LAB, X_LAB, MIN_LIMIT, MAX_LIMIT){
+  bar_pal <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00")
+  DIFF_PLOT <- ggplot(data = DF, aes_string(x=X_VAR, y=Y_VAR, fill = FILL_VAR))+ 
+    geom_bar(stat="identity", position = "dodge", width=0.7, colour="black") + 
+    scale_fill_manual(values = bar_pal )+
+    labs(y = Y_LAB, x = X_LAB, title = TITLE, fill = "Percent Change \nfrom Baseline:")+
     scale_y_continuous(limits=c(MIN_LIMIT,MAX_LIMIT)) +
     theme(axis.title.x=element_text(size=15),
           axis.title.y=element_text(size=15),
