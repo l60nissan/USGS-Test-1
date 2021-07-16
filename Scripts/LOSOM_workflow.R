@@ -12,12 +12,13 @@ library(raster)
 library(sf)
 library(cowplot)
 
-source("./Scripts/LOSOM_process_functions.R")
-source("./Scripts/LOSOM_map_functions.R")
+source("./Scripts/LOSOM_process_functions_run.R")
+source("./Scripts/LOSOM_map_functions_run.R")
 
 # Species string options
 gator_sp_string <- "Alligator"
-waders_sp_string <- c("GBHE", "GLIB", "GREG", "LBHE", "ROSP", "WHIB", "WOST")
+#waders_sp_string <- c("GBHE", "GLIB", "GREG", "LBHE", "ROSP", "WHIB", "WOST")
+waders_sp_string <- c("GREG", "ROSP", "WHIB", "WOST")
 apsn_sp_string <- "Apple_Snail"
 snki_sp_string <- "SnailKite"
 dsd_sp_string <- "dsd"
@@ -26,20 +27,20 @@ dsd_sp_string <- "dsd"
 ### USER SET FACTORS ###
 
 # Folder containing species output
-PARENT_PATH <- "../LOSOM/Data/LOSOM_Round1_2021_05/Model Output/DaysSinceDry/DaysSinceDrydown_COP_AOI/"
+PARENT_PATH <- "../LOSOM/Data/LOSOM_Round1_2021_05/Model Output/EverWaders/JEM_EverWaders_Data/JEM_EverWaders_Data/"
 
 # Is Species output already cropped to AOI? (TRUE/FALSE)
 cropped <- TRUE
 
 # Folder to output CSV and figures - include "/" after path to get file names correct when saving 
-OUTPUT_PATH <- "../LOSOM/Output/LOSOM_Round1_2021_05/DaysSinceDry/"
+OUTPUT_PATH <- "../LOSOM/Output/LOSOM_Round1_2021_05/EverWaders/"
 
 # Path to AOI
 AOI_PATH <- "../../GIS_Library/COP_AOI_mask/COP_AOI_mask.shp"
 #AOI_PATH <- "../../GIS_Library/WERPzones_EDEN_mask.shp/WERPzones_EDEN_mask.shp"
 
 # set target species from species string options at top of script
-sp_string <- dsd_sp_string
+sp_string <- waders_sp_string
 
 # Set Alternate scenario names
 #alt_names <- c("Sim_0001")
@@ -83,7 +84,7 @@ for(n in 1:length(sp_string)){ # This part is to accomodate multiple species out
   ALT_LIST
   BASE_LIST <- FILES$BASE_LIST
   BASE_LIST
-
+  
   ## Loop to process data and make maps, acreage table and barplot 
   # Process each baselinee and alt combination
     process_list <- list() # list to hold processed data
@@ -203,9 +204,29 @@ for(n in 1:length(sp_string)){ # This part is to accomodate multiple species out
     )
     diff_plot_filename <- paste0(out_path, "PercentDiff_BarPlot_", gsub(" ", "_", map_title),"_", alt_names[a], ".pdf")
     ggsave(diff_plot_filename, TEST, width=11, height=8.5, units="in", dpi=300)
-  }}
+  }
   
-}
+  for(l in 1:length(base_names)){
+    print(paste0("Making Differnce Bar Plot :: ", base_names[l]))
+    
+    per_diff_base <- percent_diff[grep(base_names[l], percent_diff$Scenarios),]
+    TEST <- PER_DIFF_PLOT_ALTS(
+      DF = per_diff_base,
+      X_VAR = x_var,
+      Y_VAR = y_var,
+      FILL_VAR = fill_var,
+      TITLE = title,
+      Y_LAB = paste0("Percent Change in ", title, "\nfrom Baseline ", base_names[l]),
+      X_LAB = x_lab,
+      MIN_LIMIT = min_limit,
+      MAX_LIMIT = max_limit
+    )
+    
+  diff_plot_filename <- paste0(OUTPUT_PATH, "/PercentDiff_BarPlot_", gsub(" ", "_", title),"_", base_names[b], ".png")
+  ggsave(diff_plot_filename, TEST, width=15, height=8.5, units="in", dpi=300, scale = 1)
+  }
+  }
+  }
 
 # Save R object that has processed data stored
   if(grepl("EverWaders", FILES$ALL_FILES[1])){
