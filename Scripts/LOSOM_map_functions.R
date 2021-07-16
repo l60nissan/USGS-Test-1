@@ -196,7 +196,7 @@ RESTORATION_RUN_MAP <- function(DF_IND,                       # Dataframe of ind
     # Plot shapefiles for Main Park Road, WCAS, and area of interest
     geom_sf(data = mpr.crop, colour = "black", lwd = scale_factor*0.4, show.legend = F, lty = "dashed")+
     geom_sf(data = wca.crop, colour = "black", alpha = 0, lwd = scale_factor*0.3, show.legend = FALSE)+
-    geom_sf(data = aoi.crop, colour = "Brown", alpha = 0, lwd = scale_factor*1, show.legend = FALSE)+
+    geom_sf(data = aoi.crop, colour = "SADDLEBROWN", alpha = 0, lwd = scale_factor*1, show.legend = FALSE)+
     
     # Add scalebar
     ggsn::scalebar(data = df_scale, transform = F, dist = 20, dist_unit = "km", st.dist= 0.015, st.size=scale_factor*2.3, st.bottom = TRUE,
@@ -221,8 +221,8 @@ RESTORATION_RUN_MAP <- function(DF_IND,                       # Dataframe of ind
       
       strip.background = element_rect(colour = "Black"),
       strip.text = element_text(size = legend_scale_factor*18), #set size of text in strip headings on the facets
-      axis.title = element_blank(), # Remove axis titles
-      plot.margin = margin(0,7.9,0,1, unit = "cm")) # Set margins for plot - wider on right side to make space fore legend
+      axis.title = element_blank())#, # Remove axis titles
+      #plot.margin = margin(0,7.9,0,1, unit = "cm")) # Set margins for plot - wider on right side to make space fore legend
   
   # GET NORTH ARROW FOR MAP
   arrow <- north2_get_arrow(symbol = 12)
@@ -231,21 +231,52 @@ RESTORATION_RUN_MAP <- function(DF_IND,                       # Dataframe of ind
   ## FORMAT FINAL PLOT##
   # combines main plot with legends and adds title
   # saves file
-  if(grepl("Apple Snail", MAP_TITLE)){
+  if(grepl("Snail Kite", MAP_TITLE)){
+    # add margin to PLOT
+    PLOT <- PLOT+
+      theme(plot.margin = margin(4, 7.9, 2, 2, unit = "cm"))
+    
     combined_plot<- ggdraw(PLOT)+
-      draw_plot(FULL_legend, x = 0.28, y = 0.0, vjust = 0.02)+
-      draw_label(MAP_TITLE, x = 0.33, y = .98, vjust = 0, fontfamily = "serif", size = 30)
+      draw_plot(FULL_legend, x = 0.31, y = 0.0, vjust = 0.02)+
+      draw_label(MAP_TITLE, x = 0.35, y = .94, vjust = 0, fontfamily = "serif", size = 30)+
+      draw_plot(arrow, scale = 0.025, x = -0.05, y = -0.44)
+  }
+  if(grepl("Apple Snail", MAP_TITLE)){
+    # add margin to PLOT
+    PLOT <- PLOT+
+      theme(plot.margin = margin(4, 7.9, 2, 2, unit = "cm"))
+    
+    combined_plot<- ggdraw(PLOT)+
+      draw_plot(FULL_legend, x = 0.33, y = 0.0, vjust = 0.02)+
+      draw_label(MAP_TITLE, x = 0.32, y = .94, vjust = 0, fontfamily = "serif", size = 30)+
+      draw_plot(arrow, scale = 0.025, x = -0.05, y = -0.44)
   }
   if(grepl("Days Since Drydown", MAP_TITLE)){
+    PLOT <- PLOT+
+      theme(plot.margin = margin(0,7.9,0,1, unit = "cm"))
+    
     combined_plot<- ggdraw(PLOT)+
       draw_plot(FULL_legend, x = 0.405, y = 0.0, vjust = 0.02)+
       draw_label(MAP_TITLE, x = 0.16, y = .93, vjust = 0, fontfamily = "serif", size = 30)+
       draw_plot(arrow, scale = 0.025, x = 0.064, y = -0.399)
-  }else{
-  combined_plot<- ggdraw(PLOT)+
+  }
+  if(grepl("Alligator", MAP_TITLE)){
+    PLOT <- PLOT+
+      theme(plot.margin = margin(0,7.9,0,1, unit = "cm"))
+    
+    combined_plot<- ggdraw(PLOT)+
     draw_plot(FULL_legend, x = 0.405, y = 0.0, vjust = 0.02)+
     draw_label(MAP_TITLE, x = 0.21, y = .93, vjust = 0, fontfamily = "serif", size = 30)+
     draw_plot(arrow, scale = 0.025, x = 0.064, y = -0.399)
+  }
+  if(grepl("Occupancy", MAP_TITLE)){
+    PLOT <- PLOT+
+      theme(plot.margin = margin(0,7.9,0,1, unit = "cm"))
+    
+    combined_plot<- ggdraw(PLOT)+
+      draw_plot(FULL_legend, x = 0.405, y = 0.0, vjust = 0.02)+
+      draw_label(MAP_TITLE, x = 0.17, y = .93, vjust = 0, fontfamily = "serif", size = 30)+
+      draw_plot(arrow, scale = 0.025, x = 0.064, y = -0.399)
   }
   
 ## SAVE FINAL PLOT ##  
