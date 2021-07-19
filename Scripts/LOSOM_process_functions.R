@@ -55,8 +55,8 @@ raster_to_df <- function(raster_name, scenario_name){
 PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
                            ALT_FILE,      # Alternate netcdf to process
                            AOI_FILE,      # Area of interest - Shapefile
-                           BASE_ALT_NAMES,# All base and alternate names. format with "|" between names, example ("BASE1|BASE2|ALT1|ALT2")
-                           CROPPED        # TRUE/FALSE, Are BASE_FILE and ALT_FILE already cropped to AOI
+                           BASE_ALT_NAMES#,# All base and alternate names. format with "|" between names, example ("BASE1|BASE2|ALT1|ALT2")
+                           #CROPPED        # TRUE/FALSE, Are BASE_FILE and ALT_FILE already cropped to AOI
                            ){
   
   # ----
@@ -335,77 +335,6 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
   acreage_df <- bind_rows(acreage_list, .id = "Scenario_year")
   
   # ----
-  # Calculate percent diff for barplot
-  # ----
-  
-    if(grepl(paste0(gator_string, "|", waders_string), BASE_FILE)){
-      
-      if(CROPPED == FALSE){
-      # Crop to AOI if not already masked  
-      alt_all <- mask(alt_stack, AOI)
-      base_all <- mask(base_stack, AOI)
-      }
-      
-      if(CROPPED == TRUE){
-      alt_all <- alt_stack
-      base_all <- base_stack
-      }
-      
-    # Mean of Every time step since yearly output  
-    alt_mean <- cellStats(alt_all, stat = mean, na.rm = TRUE)
-    base_mean <- cellStats(base_all, stat = mean, na.rm = TRUE)
-    
-    #Calculate percent diffrence of the means
-    per_diff_mean <- ((alt_mean - base_mean)/base_mean)*100
-    
-    #Make data frame for bar chart
-    per_diff_mean <- data.frame(per_diff_mean)
-    rownames(per_diff_mean) <- sub("X", "", rownames(per_diff_mean))
-    colnames(per_diff_mean) <- "Percent_Difference"
-    per_diff_mean$Scenarios <- diff_name
-    per_diff_mean$Year <- row.names(per_diff_mean)
-  } 
-  
-  if(grepl(paste0(apsn_string, "|", snki_string), BASE_FILE)){
-    
-    if(CROPPED == FALSE){
-      #Mask the full raster stack - this will take ~ 15 minutes for each file
-      alt_all <- mask(alt_stack, AOI)
-      base_all <- mask(base_stack, AOI)
-    }
-    
-    if(CROPPED == TRUE){
-      alt_all <- alt_stack
-      base_all <- base_stack
-    }
-    
-    #Get indices for years
-    base.indices <- format(as.Date(names(base_all), format="X%Y.%m.%d"), format="%Y")
-    alt.indices <- format(as.Date(names(alt_all), format="X%Y.%m.%d"), format="%Y")
-    #Mean across year
-    base_popyr <- stackApply(base_all, base.indices, fun=mean)
-    alt_popyr <- stackApply(alt_all, alt.indices, fun=mean)
-    #Mean across landscape
-    base_mean <- cellStats(base_popyr, mean)
-    alt_mean <- cellStats(alt_popyr, mean)
-    # Calculate percent diff of means
-    per_diff_mean <- ((alt_mean - base_mean)/base_mean)*100
-    
-    #Make data frame for bar chart
-    per_diff_mean <- data.frame(per_diff_mean)
-    colnames(per_diff_mean) <- "Percent_Difference"
-    years <- as.data.frame(unique(base.indices))
-    names(years) <- "Year"
-    per_diff_mean <- cbind(years, per_diff_mean)
-    per_diff_mean$Scenarios <- diff_name
-  } 
-  
-  # Set dataframe as NULL for dsd. If not, will get error that object does not exist when writing out to list at end of function
-  if(grepl(dsd_string, BASE_FILE)){
-    per_diff_mean <- NULL
-    }
-    
-  # ----
   # Make data frames for plotting individual score and difference maps
   # ----
   
@@ -443,7 +372,7 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
   names(name.labs) <- TARGET_YEARS
   
   df_list <- list("ind_df" = ind_df, "diff_df" = diff_df, "alt_name" = alt_name, "base_name" = base_name, 
-                  "name.labs" = name.labs, "map_title" = output_title, "acreage_df" = acreage_df, "Percent_diff_mean" = per_diff_mean)
+                  "name.labs" = name.labs, "map_title" = output_title, "acreage_df" = acreage_df)
   return(df_list)
 }
 
@@ -485,3 +414,291 @@ PER_DIFF_PLOT_ALTS <- function(DF, X_VAR, Y_VAR, FILL_VAR, TITLE, Y_LAB, X_LAB, 
   
   return(DIFF_PLOT)
 }
+
+##############################
+# Calculate Percent change
+# cell stats alredy calculated to landscape means
+##############################
+DIFF_CHANGE_CALC <- function(species_string, #species string -- match sp_string set at beginign of workflow script
+                             NC_STACK,       # One nc stack to extract layer names
+                             ALT_VALS,       # landscape means for alternate scenario
+                             ALT_SCEN,       # name of alternate scenario
+                             BASE_VALS,      # landscape means for baseline scenario
+                             BASE_SCEN){     # name of baseline scenario
+  
+  #Get diff name
+  diff_name <- paste0(ALT_SCEN, "-", BASE_SCEN)
+  
+  # Get species string
+  species_string <- species_string
+  
+  if(grepl(paste0("Alligator", "|", "EverWaders"), species_string)){
+    
+    #Calculate percent diffrence of the landscape mean
+    per_diff <- as.data.frame(((ALT_VALS - BASE_VALS)/BASE_VALS)*100)
+      
+    #Make data frame for bar chart
+    rownames(per_diff) <- sub("X", "", rownames(per_diff))
+    colnames(per_diff) <- "Percent_Difference"
+    per_diff$Scenarios <- diff_name
+    per_diff$Year <- row.names(per_diff)
+    per_diff_mean <- per_diff
+  } 
+  
+  if(grepl(paste0("Apple_Snail", "|", "SnailKite"), species_string)){
+    
+    # Calculate daily percent change across the landscape between alt and baseline
+    
+    #percent difference of the daily landscape meand
+    per_diff <- as.data.frame(((ALT_VALS - BASE_VALS)/BASE_VALS)*100)
+
+    # calculate average of daily percent change for each year
+    #Get indices for years
+    indicies <- format(as.Date(names(NC_STACK), format="X%Y.%m.%d"), format="%Y")
+    indicies <- indicies
+    names(per_diff) <- "Percent_Difference"
+    per_diff$Year <- indicies
+    
+    #Mean across year
+    per_diff_mean <- per_diff%>%
+      group_by(Year)%>%
+      summarise("Percent_Difference" = mean(Percent_Difference))
+    
+    per_diff_mean$Scenarios <- diff_name
+  } 
+  
+  # Set dataframe as NULL for dsd. If not, will get error that object does not exist when writing out to list at end of function
+  if(grepl("dsd", species_string)){
+    per_diff_mean <- NULL
+  }
+  
+  return(per_diff_mean)
+}
+
+
+##############################
+# FUNCTION TO MASK NETCDF
+##############################
+
+MASK_NC_OUTPUT <- function(NC_FILE, AOI, ALL_SCENARIO_NAMES){
+  
+  #Extract NAME FROM FILE
+  scenario_name <- str_extract_all(NC_FILE, ALL_SCENARIO_NAMES)[[1]]
+  
+  # Load shapefile
+  AOI_mask <- shapefile(AOI)
+  
+  # ----
+  # Define Strings for each species for Function
+  # ----
+
+  # Alligator
+  gator_string <- "Alligator"
+  gator_varname <- "Habitat_Suitability"
+
+  # Snail Kite
+  snki_string <- "snki"
+  snki_varname <- "SNKI HSI"
+
+  # Days Since Dry
+  dsd_string <- "dsd"
+  dsd_varname <- "dsd"
+
+  # Apple Snail
+  apsn_string <- "Apple_Snail"
+  apsn_varname <- "snailPopulationAdults"
+
+  # EverWaders
+  waders_string <- "EverWaders"
+  waders_varname <- "_Occupancy"
+  
+  ###
+  # Set read in varname
+  ###
+  
+  if(grepl(gator_string, NC_FILE)){
+    nc_varname <- gator_varname
+    DAILY_OUTPUT <- FALSE
+  }
+  
+  if(grepl(snki_string, NC_FILE)){
+    nc_varname <- snki_varname
+    DAILY_OUTPUT <- TRUE
+  }
+  
+  if(grepl(dsd_string, NC_FILE)){
+    nc_varname <- dsd_varname
+    DAILY_OUTPUT <- TRUE
+  }
+  
+  if(grepl(apsn_string, NC_FILE)){
+    nc_varname <- apsn_varname
+    DAILY_OUTPUT <- TRUE
+  }
+  
+  if(grepl(waders_string, NC_FILE)){
+    nc_varname <- waders_varname
+    species <- gsub(".*EverWaders_|\\.nc.*", "", NC_FILE)
+    nc_varname <- paste0(species, waders_varname)
+    DAILY_OUTPUT <- FALSE
+  }
+  
+    # ----
+  # Get layer/Band names from Netcdf
+  # ----
+  nc <- nc_open(NC_FILE)
+  
+  # Get dates for bands
+  time_att <- nc$dim$t$units
+  time_length <- as.numeric(nc$dim$t$len)
+  time_split <- strsplit(time_att, split = " ")
+  time_split <- strsplit(time_split[[1]][3], split = "T")
+  start_date <- as.Date(time_split[[1]][1])
+  start_year <- as.numeric(format(start_date, format = "%Y"))
+  
+  if(DAILY_OUTPUT){
+    end_year <- start_date + (time_length - 1)
+    
+    BAND_YEARS <- seq(start_date, end_year, 1)
+    BAND_YEARS <- paste0("X", BAND_YEARS)
+    #BAND_YEARS
+  } else {
+    end_year <- start_year + (time_length - 1) # subtract 1 to account for starting year in length
+    
+    # Sequence years for band names
+    BAND_YEARS <- seq(start_year, end_year, 1)
+    BAND_YEARS <- paste0("X", BAND_YEARS)
+    #BAND_YEARS
+  }
+  
+  nc_close(nc) # Clsoe netcdf
+  
+  # ----
+  # Process for raw difference 
+  # ----
+  
+  # Load files
+  nc_stack <- stack(NC_FILE, varname = nc_varname)
+
+  # Add names to bands
+  names(nc_stack) <- BAND_YEARS
+  
+  #nc_stack <- nc_stack[[1:2]] # subset used when testing function to increase speed
+  
+  # Apply Mask
+  nc_masked <- mask(nc_stack, AOI_mask)
+  
+  nc_masked_list <- list("nc_masked" = nc_masked, "Scenario" = scenario_name, "Variable" = nc_varname)
+  return(nc_masked_list)
+}
+
+##############################
+# Function to stack nc output if
+# already masked
+##############################
+
+STACK_NC_OUTPUT <- function(NC_FILE, AOI, ALL_SCENARIO_NAMES){
+  
+  #Extract NAME FROM FILE
+  scenario_name <- str_extract_all(NC_FILE, ALL_SCENARIO_NAMES)[[1]]
+  
+  # ----
+  # Define Strings for each species for Function
+  # ----
+  
+  # Alligator
+  gator_string <- "Alligator"
+  gator_varname <- "Habitat_Suitability"
+  
+  # Snail Kite
+  snki_string <- "snki"
+  snki_varname <- "SNKI HSI"
+  
+  # Days Since Dry
+  dsd_string <- "dsd"
+  dsd_varname <- "dsd"
+  
+  # Apple Snail
+  apsn_string <- "Apple_Snail"
+  apsn_varname <- "snailPopulationAdults"
+  
+  # EverWaders
+  waders_string <- "EverWaders"
+  waders_varname <- "_Occupancy"
+  
+  ###
+  # Set read in varname
+  ###
+  
+  if(grepl(gator_string, NC_FILE)){
+    nc_varname <- gator_varname
+    DAILY_OUTPUT <- FALSE
+  }
+  
+  if(grepl(snki_string, NC_FILE)){
+    nc_varname <- snki_varname
+    DAILY_OUTPUT <- TRUE
+  }
+  
+  if(grepl(dsd_string, NC_FILE)){
+    nc_varname <- dsd_varname
+    DAILY_OUTPUT <- TRUE
+  }
+  
+  if(grepl(apsn_string, NC_FILE)){
+    nc_varname <- apsn_varname
+    DAILY_OUTPUT <- TRUE
+  }
+  
+  if(grepl(waders_string, NC_FILE)){
+    nc_varname <- waders_varname
+    species <- gsub(".*EverWaders_|\\.nc.*", "", NC_FILE)
+    nc_varname <- paste0(species, waders_varname)
+    DAILY_OUTPUT <- FALSE
+  }
+  
+  # ----
+  # Get layer/Band names from Netcdf
+  # ----
+  nc <- nc_open(NC_FILE)
+  
+  # Get dates for bands
+  time_att <- nc$dim$t$units
+  time_length <- as.numeric(nc$dim$t$len)
+  time_split <- strsplit(time_att, split = " ")
+  time_split <- strsplit(time_split[[1]][3], split = "T")
+  start_date <- as.Date(time_split[[1]][1])
+  start_year <- as.numeric(format(start_date, format = "%Y"))
+  
+  if(DAILY_OUTPUT){
+    end_year <- start_date + (time_length - 1)
+    
+    BAND_YEARS <- seq(start_date, end_year, 1)
+    BAND_YEARS <- paste0("X", BAND_YEARS)
+    #BAND_YEARS
+  } else {
+    end_year <- start_year + (time_length - 1) # subtract 1 to account for starting year in length
+    
+    # Sequence years for band names
+    BAND_YEARS <- seq(start_year, end_year, 1)
+    BAND_YEARS <- paste0("X", BAND_YEARS)
+    #BAND_YEARS
+  }
+  
+  nc_close(nc) # Clsoe netcdf
+  
+  # ----
+  # Process for raw difference 
+  # ----
+  
+  # Load files
+  nc_stack <- stack(NC_FILE, varname = nc_varname)
+  
+  # Add names to bands
+  names(nc_stack) <- BAND_YEARS
+  
+  nc_masked_list <- list("nc_masked" = nc_stack, "Scenario" = scenario_name, "Variable" = nc_varname)
+  return(nc_masked_list)
+}
+
+
