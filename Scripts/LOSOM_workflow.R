@@ -64,6 +64,8 @@ alt_names
 base_names <- c("ECBr", "NA25")
 #base_names <- c("ALTHR")
 base_names
+
+##  END USER SET FACTORS ###########
 #########################################################
 
 # Scenario Name strings
