@@ -13,9 +13,9 @@ library(ggsn)
 
 # SHAPEFILES FOR MAP BACKGROUND - CAN BE CHANGED
 #AOI_PATH <- "../../GIS_Library/COP_AOI_mask/COP_AOI_mask.shp" #Area of Interest
-MPR_PATH <- "../../GIS_Library/ENP_main_road/ENP_main_road.shp" # Main Park Road
-WCAS_PATH <- "../../GIS_Library/EVERareas_UTM/EVERareas_UTM/EVERareas_UTM.shp" # WCA Boundaries
-FL_PATH <- "../../GIS_Library/FL_outline_ESRI_2010/FL_outline_ESRI_2010/FL_outline_ESRI_2010.shp" # ESRI Fl boundary
+#MPR_PATH <- "../../GIS_Library/ENP_main_road/ENP_main_road.shp" # Main Park Road
+#WCAS_PATH <- "../../GIS_Library/EVERareas_UTM/EVERareas_UTM/EVERareas_UTM.shp" # WCA Boundaries
+#FL_PATH <- "../../GIS_Library/FL_outline_ESRI_2010/FL_outline_ESRI_2010/FL_outline_ESRI_2010.shp" # ESRI Fl boundary
 
 # MAP EXTENT - Will be used to crop shapefiles to desired map extent - can be changed manually to fit different extenxt 
 MAP_EXTENT <- c(xmin = 459285.739, xmax= 566303.192, ymin = 2923705.077, ymax = 2774389.980) # Fits COP extent
