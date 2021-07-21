@@ -270,6 +270,31 @@ RESTORATION_RUN_MAP <- function(DF_IND,                       # Dataframe of ind
     draw_plot(arrow, scale = 0.025, x = 0.064, y = -0.399)
   }
   if(grepl("Occupancy", MAP_TITLE)){
+    
+    if(grepl("Wood Stork", MAP_TITLE)){
+      wost_shp <- st_read(dsn = WOST_PATH)%>%
+        st_transform(crs=26917)
+      wost_st_valid <- st_is_valid(wost_shp)
+      if(all(wost_st_valid, TRUE)){
+        wost_shp <- wost_shp
+      } else {
+        wost_shp <- st_make_valid(wost_shp)}
+      
+      # crop wost colonies
+      wost.crop  <- st_crop(wost_shp, aoi.shp)
+      
+      PLOT <- PLOT+
+        geom_sf(data = wost.crop, color = "black", lwd = 4)+
+        geom_sf(data = wost.crop, colour = "orange", lwd = 2)+
+        coord_sf(expand = F)+
+        theme(plot.margin = margin(0,7.9,0,1, unit = "cm"))
+      
+      combined_plot<- ggdraw(PLOT)+
+        draw_plot(FULL_legend, x = 0.405, y = 0.0, vjust = 0.02)+
+        draw_label(MAP_TITLE, x = 0.17, y = .93, vjust = 0, fontfamily = "serif", size = 30)+
+        draw_plot(arrow, scale = 0.025, x = 0.064, y = -0.399)
+    }else{
+    
     PLOT <- PLOT+
       theme(plot.margin = margin(0,7.9,0,1, unit = "cm"))
     
@@ -277,7 +302,7 @@ RESTORATION_RUN_MAP <- function(DF_IND,                       # Dataframe of ind
       draw_plot(FULL_legend, x = 0.405, y = 0.0, vjust = 0.02)+
       draw_label(MAP_TITLE, x = 0.17, y = .93, vjust = 0, fontfamily = "serif", size = 30)+
       draw_plot(arrow, scale = 0.025, x = 0.064, y = -0.399)
-  }
+  }}
   
 ## SAVE FINAL PLOT ##  
   #ggsave(OUTPUT_FILE_NAME, combined_plot, height = 9.5, width = 9.5, units = "in", dpi= 300, scale = 2)
