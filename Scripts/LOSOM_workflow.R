@@ -27,13 +27,13 @@ dsd_sp_string <- "dsd"
 ### USER SET FACTORS ###
 
 # Folder containing species output
-PARENT_PATH <- "../LOSOM/Data/LOSOM_Round1_2021_05/Model Output/Alligator/JEM_Alligator_Production_Probability_Model_Data/JEM_Alligator_Production_Probability_Model_Data/"
+PARENT_PATH <- "../LOSOM/Data/LOSOM_Round1_2021_05/Model Output/Apple_Snail/JEM_Apple_Snail_Model_Data/JEM_Apple_Snail_Model_Data/"
 
 # Is Species output already cropped to AOI? (TRUE/FALSE)
-cropped <- FALSE
+cropped <- TRUE
 
 # Folder to output CSV and figures - include "/" after path to get file names correct when saving 
-OUTPUT_PATH <- "../Figure Development/Output/TESTING/"
+OUTPUT_PATH <- "../LOSOM/Output/LOSOM_Round1_2021_05/Apple_Snail/"
 
 # Path to AOI
 AOI_PATH <- "../../GIS_Library/COP_AOI_mask/COP_AOI_mask.shp"
@@ -50,7 +50,7 @@ AOI_PATH <- "../../GIS_Library/COP_AOI_mask/COP_AOI_mask.shp"
   FL_PATH <- "../../GIS_Library/FL_outline_ESRI_2010/FL_outline_ESRI_2010/FL_outline_ESRI_2010.shp" # ESRI Fl boundary
 
 # set target species from species string options at top of script
-sp_string <- gator_sp_string
+sp_string <- apsn_sp_string
 
 # Set Alternate scenario names
 #alt_names <- c("Sim_0001")
@@ -348,6 +348,16 @@ for(n in 1:length(sp_string)){ # This part is to accomodate multiple species out
   write.csv(acreage_diff_df, output_filename, row.names = FALSE)
   
   ####
+  # Crop out forst 3 years for Apple snail
+  ####
+  if("Apple_Snail" %in% sp_string){
+    minyear <- as.numeric(min(percent_diff$Year))
+    startyr <- minyear+3
+    exclude_yrs <- seq(minyear, startyr-1, 1)
+    percent_diff <- percent_diff[percent_diff$Year != exclude_yrs,]
+  }
+  
+  ####
   # Export Percent diff data, and make Bar plots
   ####
   # Export dataframe with all percent differences
@@ -417,4 +427,4 @@ for(n in 1:length(sp_string)){ # This part is to accomodate multiple species out
   save_string <- sp_string}
 
 save(process_list_all, FILES, BASE_LIST_MASKED, ALT_LIST_MASKED, file = paste0(out_path, save_string, "_processed_data.RData"))
-#load('../LOSOM/Output/LOSOM_Round1_2021_05/EverWaders/Everwaders_newflow/EverWaders_processed_data.RData')
+#load('../LOSOM/Output/LOSOM_Round1_2021_05/Apple_Snail/Apple_Snail_processed_data.RData')
