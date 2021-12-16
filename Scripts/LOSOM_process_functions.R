@@ -82,9 +82,10 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
   
   # Snail Kite
   snki_string <- "snki"
-  snki_varname <- "SNKI HSI"
-  snki_years <- paste0("X", c("1995.04.20", "2004.04.20"))
-  snki_year_labels <- c("Wet Year (April 20, 1995)", "Dry Year (April 20, 2004)")
+  snki_varname <- "SNKI_HSI"
+  #snki_years <- paste0("X", c("1995.04.20", "2004.04.20"))
+  snki_years <- paste0("X", c("1989.04.20" , "1995.04.20"))
+  snki_year_labels <- c("Dry Year (April 20, 1989)", "Wet Year (April 20, 1995)")
   
   snki_ind_cuts <- seq(from = 0.0, to = 1, by = 0.10)
   snki_ind_labels <- c("0.00 - 0.10", "0.11 - 0.20", "0.21 - 0.30", "0.31 - 0.40", "0.41 - 0.50",
@@ -93,7 +94,7 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
   snki_diff_cuts <- c(-1, -.775, -.55, -.325, -.10, .10, .325, .55, .775, 1)
   snki_diff_labels <- c("-0.776 to -1", "-0.551 to -0.775", "-0.326 to -0.550", "-0.101 to -0.325",
                          "0.099 to -0.100", "0.100 to 0.324", "0.325 to 0.549", "0.550 to 0.774", "0.775 to 1") 
-  snki_title <- "Snail Kite Habitat Suitability Index"
+  snki_title <- "Snail Kite Nesting Relative Selection"
   
   
   # Days Since Dry
@@ -116,8 +117,9 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
   # Apple Snail
   apsn_string <- "Apple_Snail"
   apsn_varname <- "snailPopulationAdults"
-  apsn_years <- paste0("X", c("1995.04.20", "2004.04.20"))
-  apsn_year_labels <- c("Wet Year (April 20, 1995)", "Dry Year (April 20, 2004)")
+  #apsn_years <- paste0("X", c("1995.04.20", "2004.04.20"))
+  apsn_years <- paste0("X", c("1989.04.20" , "1995.04.20"))
+  apsn_year_labels <- c("Dry Year (April 20, 1989)", "Wet Year (April 20, 1995)")
   
   apsn_ind_cuts <- c(-Inf, 1, 15001, 30001, 45001, 60001, 75001, 90001, 105001, 120001, Inf)
   apsn_ind_labels <- c("0", "1 - 15,000", "15,001 - 30,000", "30,001 - 45,000", "45,001 - 60,000", "60,001 - 75,000",
@@ -326,7 +328,7 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
     
     # Build data frame for export to csv
     diff_bins <- paste0("[", as.character(diff_cuts)[1:(length(diff_cuts) - 1)], " - ", as.character(diff_cuts)[2:length(diff_cuts)], ")")
-    acreage_diff_df <- data.frame(`Percent difference from baseline` = rev(diff_bins),
+    acreage_diff_df <- data.frame(`difference from baseline` = rev(diff_bins),
                           `Number of acres` = rev(diff_acres),
                           check.names = FALSE)
     acreage_list[[n]] <- acreage_diff_df
@@ -498,7 +500,7 @@ MASK_NC_OUTPUT <- function(NC_FILE, AOI, ALL_SCENARIO_NAMES){
 
   # Snail Kite
   snki_string <- "snki"
-  snki_varname <- "SNKI HSI"
+  snki_varname <- "SNKI_HSI"
 
   # Days Since Dry
   dsd_string <- "dsd"
@@ -612,7 +614,7 @@ STACK_NC_OUTPUT <- function(NC_FILE, AOI, ALL_SCENARIO_NAMES){
   
   # Snail Kite
   snki_string <- "snki"
-  snki_varname <- "SNKI HSI"
+  snki_varname <- "SNKI_HSI"
   
   # Days Since Dry
   dsd_string <- "dsd"
