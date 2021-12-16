@@ -110,6 +110,11 @@ MARL_MAP <- function(DF_IND,                       # Dataframe of individual sco
   scale_factor = 1.5
   legend_scale_factor = 1.3
 
+  #Get center of subpopulations for labels
+  subpop_center <- st_centroid(spop.crop)
+  subpop_coord <- as.data.frame(st_coordinates(subpop_center))
+  subpop_coord$SubPopulat <- subpop_center$SubPopulat
+  
   
 ind_plot <- ggplot()+
   
@@ -128,11 +133,17 @@ ind_plot <- ggplot()+
   geom_sf(data = wca.crop, colour = "black", alpha = 0, lwd = scale_factor*0.5, show.legend = FALSE)+
   geom_sf(data = spop.crop, colour = "Red", alpha = 0, lwd = scale_factor*0.4, show.legend = FALSE)+
   #geom_sf_text(data = filter(spop.crop, SubPopulat == "A"), aes(label = SubPopulat), size = 5)+
-  geom_sf_text(data = filter(spop.crop, SubPopulat != "A" & SubPopulat != "AX"), aes(label = SubPopulat), color = "White", size = 5)+
-  annotate("text", x = 509491.978, y = 2837582.318, label = "A", size = 5)+
-  annotate("text", x = 496950.703, y= 2835201.064, label = "A", size = 5)+
-  annotate("text", x = 518937.622, y = 2844011.706, label = "AX", size = 5)+
-  annotate("text", x = 514730.738, y = 2827819.174, label = "AX", size = 5)+
+  #geom_sf_text(data = filter(spop.crop, SubPopulat != "A" & SubPopulat != "AX"), aes(label = SubPopulat), color = "White", size = 6, fontface = "bold")+
+  geom_shadowtext(data = filter(subpop_coord, SubPopulat != "A" & SubPopulat != "AX"), aes(x = X, y =Y,label = SubPopulat), color = "White", size = 5, fontface = "bold")+
+  geom_shadowtext(data =subpop_coord, aes(x = 509491.978, y = 2837582.318, label = "A"), color = "White", size = 5, fontface = "bold")+
+  geom_shadowtext(data =subpop_coord,aes(x = 496950.703, y= 2835201.064,label = "A"), color = "White", size = 5, fontface = "bold")+
+  geom_shadowtext(data =subpop_coord,aes(x = 518937.622, y = 2844011.706,label = "AX"), color = "White", size = 5, fontface = "bold")+
+  geom_shadowtext(data =subpop_coord,aes(x = 514730.738, y = 2827819.174,label = "AX"), color = "White", size = 5, fontface = "bold")+
+  
+  #annotate("text", x = 509491.978, y = 2837582.318, label = "A", size = 5)+
+  #annotate("text", x = 496950.703, y= 2835201.064, label = "A", size = 5)+
+  #annotate("text", x = 518937.622, y = 2844011.706, label = "AX", size = 5)+
+  #annotate("text", x = 514730.738, y = 2827819.174, label = "AX", size = 5)+
   #geom_sf(data = aoi.crop, colour = "Brown", alpha = 0, lwd = scale_factor*1, show.legend = FALSE)+
   
   # Add scalebar
@@ -184,11 +195,11 @@ diff_plot <- ggplot()+
   geom_sf(data = mpr.crop, colour = "black", lwd = scale_factor*0.5, show.legend = F, lty = "dashed")+
   geom_sf(data = wca.crop, colour = "black", alpha = 0, lwd = scale_factor*0.5, show.legend = FALSE)+
   geom_sf(data = spop.crop, colour = "Red", alpha = 0, lwd = scale_factor*0.4, show.legend = FALSE)+
-  geom_sf_text(data = filter(spop.crop, SubPopulat != "A" & SubPopulat != "AX"), aes(label = SubPopulat), color = "black", size = 5)+
-  annotate("text", x = 509491.978, y = 2837582.318, label = "A", size = 5)+
-  annotate("text", x = 496950.703, y= 2835201.064, label = "A", size = 5)+
-  annotate("text", x = 518937.622, y = 2844011.706, label = "AX", size = 5)+
-  annotate("text", x = 514730.738, y = 2827819.174, label = "AX", size = 5)+
+  geom_sf_text(data = filter(spop.crop, SubPopulat != "A" & SubPopulat != "AX"), aes(label = SubPopulat), color = "black", size = 5, fontface = "bold")+
+  annotate("text", x = 509491.978, y = 2837582.318, label = "A", size = 5, fontface = "bold")+
+  annotate("text", x = 496950.703, y= 2835201.064, label = "A", size = 5, fontface = "bold")+
+  annotate("text", x = 518937.622, y = 2844011.706, label = "AX", size = 5, fontface = "bold")+
+  annotate("text", x = 514730.738, y = 2827819.174, label = "AX", size = 5, fontface = "bold")+
   #geom_sf(data = aoi.crop, colour = "Brown", alpha = 0, lwd = scale_factor*1, show.legend = FALSE)+
   
   # Add scalebar
