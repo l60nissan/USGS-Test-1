@@ -12,6 +12,7 @@ library(RColorBrewer)
 library(ggnewscale)
 library(sf)
 library(ggsn)
+library(shadowtext)
 
 
 MPR_PATH <- "../../GIS_Library/ENP_main_road/ENP_main_road.shp" # Main Park Road
