@@ -101,7 +101,7 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
   dsd_string <- "dsd"
   dsd_varname <- "dsd"
   dsd_years <- paste0("X", c("1978.06.01", "1989.06.01", "1995.06.01"))
-  dsd_year_labels <- c("Average Year (Jun 1, 1978)", "Dry Year (June 1, 1989)", "Wet Year (Jun 1, 1995)")
+  dsd_year_labels <- c("Average Year (June 1, 1978)", "Dry Year (June 1, 1989)", "Wet Year (June 1, 1995)")
   
   dsd_ind_cuts <- c(0.0, 110,  219,  329,  438,  548,  657,  767,  876,  986, Inf)
   dsd_ind_labels <- c("0 - 109", "110 - 218", "219 - 328", "329 - 437", "438 - 547", "548 - 656", "657 - 766",
@@ -144,8 +144,8 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
                          "0.51 - 0.60", "0.61 - 0.70", "0.71 - 0.80", "0.81 - 0.90", "0.91 - 1.00")
   
   waders_diff_cuts <- c(-1, -.775, -.55, -.325, -.10, .10, .325, .55, .775, 1)
-  waders_diff_labels <- c("-0.776 to -1", "-0.551 to -0.775", "-0.326 to -0.550", "-0.101 To -0.325",
-                          "-0.100 to .099", "0.100 to 0.324", "0.325 to 0.549", ".550 to .774", "0.775 to 1") 
+  waders_diff_labels <- c("-0.776 to -1", "-0.551 to -0.775", "-0.326 to -0.550", "-0.101 to -0.325",
+                          ".099 to -0.100", "0.100 to 0.324", "0.325 to 0.549", ".550 to .774", "0.775 to 1") 
   
   waders_sp_abr <- c("GBHE", "GLIB", "GREG", "LBHE", "ROSP", "WHIB", "WOST")
   waders_sp_name <- c("Great Blue Heron", "Glossy Ibis", "Great Egret", "Little Blue Heron", "Roseate Spoonbill", "White Ibis", "Wood Stork")
@@ -328,7 +328,7 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
     
     # Build data frame for export to csv
     diff_bins <- paste0("[", as.character(diff_cuts)[1:(length(diff_cuts) - 1)], " - ", as.character(diff_cuts)[2:length(diff_cuts)], ")")
-    acreage_diff_df <- data.frame(`difference from baseline` = rev(diff_bins),
+    acreage_diff_df <- data.frame(`Difference from baseline` = rev(diff_bins),
                           `Number of acres` = rev(diff_acres),
                           check.names = FALSE)
     acreage_list[[n]] <- acreage_diff_df
