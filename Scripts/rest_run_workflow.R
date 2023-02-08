@@ -64,19 +64,16 @@ message("USER IPUTS SET TO: \nparent path: ", print(parent_path),
 ## -----------------------------------------------------------------------------
 
 # Scenario Name strings
-ALT_NAMES <- paste0(alt_names, collapse = "|")
-ALT_NAMES
+alt_string <- paste0(alt_names, collapse = "|")
+alt_string
 
 # Base Name strings
-BASE_NAMES <- paste0(base_names, collapse = "|")
-BASE_NAMES
+base_string <- paste0(base_names, collapse = "|")
+base_string
 
 # Alt and Base Names
-#if(length(base_names) == 1){BASE_NAMES <- paste0(BASE_NAMES, "|")
-#}else {BASE_NAMES <- BASE_NAMES}
-BASE_NAMES_join <- paste0(BASE_NAMES, "|")
-BASE_NAMES_join
-all_scenario_names <- paste0(BASE_NAMES_join, ALT_NAMES, collapse = "|")
+all_scenario_names <- paste0(paste0(base_string, "|"),
+                             alt_string, collapse = "|")
 all_scenario_names
 
 # Loop through species, process output, output acreage csv and map
