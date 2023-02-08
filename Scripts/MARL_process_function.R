@@ -19,7 +19,7 @@ MARL_PROCESS_OUTPUT <- function(BASE_FILE, ALT_FILE, MP_FILE){
                        "51 - 60%", "61 - 70%", "71 - 80%", "81 - 90%", "91 - 100%")
   
   marl_diff_cuts <- c(-100, -78, -55, -33, -10, 11, 34, 56, 79, 100)
-  marl_diff_labels <- c("-79 to -100", "-56 to -78", "-34 to -55", "-11 to -33", "-10 to 10",
+  marl_diff_labels <- c("-79 to -100", "-56 to -78", "-34 to -55", "-11 to -33", "10 to -10",
                         "11 to 33", "34 to 55", "56 to 78", "79 to 100") 
   marl_title <- "Marl Prairie Score: Percent to Target"
   
