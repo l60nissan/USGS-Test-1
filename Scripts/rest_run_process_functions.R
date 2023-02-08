@@ -1,8 +1,8 @@
-############################################################
+## -----------------------------------------------------------------------------
 # Functions used to process netcdf output from restoration runs
 #
 # Caitlin Hackett chakett@usgs.gov
-############################################################
+## -----------------------------------------------------------------------------
 ############################################################
 #TO DO:
  # * PROCESS_OUTPUT: Update snki kite map_title
@@ -12,28 +12,35 @@
 
 #Pull file names for base and alt scenarios for target species
 # Returns a list containing strings of all files, alt files, and base files
-SP_SCENARIO_FILES <- function(alt_names, base_names, folder_path, species_string){
+sp_scenario_files <- function(alt_names, # names of alternate scenarios
+                              base_names, # names of base scenarios
+                              folder_path, # path to folder with output
+                              species_string # species string to process
+                              ){ # species string to process 
   
   # All Files
-  ALL_FILES <- list.files(folder_path, full.names = TRUE, recursive = TRUE)
-  ALL_FILES
+  all_files <- list.files(folder_path, full.names = TRUE, recursive = TRUE)
+  all_files
   
   # Alt Files
   alt_names <- paste0(alt_names, collapse = "|")
-  ALT_LIST <- intersect(grep(alt_names, value = TRUE, ALL_FILES), grep(species_string, value = TRUE, ALL_FILES))
-  ALT_LIST
+  alt_list <- intersect(grep(alt_names, value = TRUE, all_files),
+                        grep(species_string, value = TRUE, all_files))
+  alt_list
   
   # Base Files
   base_names <- paste0(base_names, collapse = "|")
-  BASE_LIST <- intersect(grep(base_names, value = TRUE, ALL_FILES), grep(species_string, value = TRUE, ALL_FILES))
-  BASE_LIST
+  base_list <- intersect(grep(base_names, value = TRUE, all_files),
+                         grep(species_string, value = TRUE, all_files))
+  base_list
   
   # Alt and Base Names
-  if(length(base_names) == 1){base_names <- paste0(BASE_NAMES, "|")}
+  if (length(base_names) == 1) {base_names <- paste0(BASE_NAMES, "|")}
   all_scenario_names <- paste0(base_names, ALT_NAMES, collapse = "|")
   all_scenario_names
   
-  file_name_list <- list("ALL_FILES" = ALL_FILES, "ALT_LIST" = ALT_LIST, "BASE_LIST" = BASE_LIST, "SPECIES" = species_string)
+  file_name_list <- list("all_files" = all_files, "alt_list" = alt_list,
+                         "base_list" = base_list, "species" = species_string)
   return(file_name_list)
 }
 
