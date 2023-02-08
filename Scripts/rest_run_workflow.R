@@ -28,7 +28,7 @@ dsd_sp_string <- "dsd"
 # START: USER SET FACTORS
 
 # Folder containing species output
-parent_path <- "../LOSOM/Data/LOSOM_Round3_2021_12/Model Output/EverWaders/JEM_EverWaders_Data/JEM_EverWaders_Data/"
+parent_path <- "../LOSOM/Data/LOSOM_Round3_2021_12/Model Output/Alligator/JEM_Alligator_Production_Probability_Model_Data/JEM_Alligator_Production_Probability_Model_Data/"
 parent_path
 
 # Folder to output CSV and figures - 
@@ -80,45 +80,46 @@ all_scenario_names
 # Loop through target species
 process_list_all <- list() # list to store all output
 #n <- 1
-for(n in 1:length(sp_string)){ # This part is to accomodate multiple species output in the everwaders path
+for (n in 1:length(sp_string)) { # This part is to accomodate multiple 
+                                 # species output in the everwaders path
 
   ## Extract species name
   species <- sp_string[n]
   
   ## List All files, Alternate scenario files, and Baseline files
-  FILES <- SP_SCENARIO_FILES(ALT_NAMES, BASE_NAMES, PARENT_PATH, sp_string[n])
-  FILES
-  ALT_LIST <- FILES$ALT_LIST
-  ALT_LIST
-  BASE_LIST <- FILES$BASE_LIST
-  BASE_LIST
+  files <- sp_scenario_files(alt_string, base_string, parent_path, sp_string[n])
+  files
+  alt_list <- files$alt_list
+  alt_list
+  base_list <- files$base_list
+  base_list
   
-  ## Loop to process data and make maps, acreage table and barplot 
+  # Loop to process data and make maps, acreage table and barplot 
   # Process each baselinee and alt combination
-    process_list <- list() # list to hold processed data
-    percent_diff <- data.frame() # data frame to hold percent difference data for barplot
-    acreage_diff_df <- data.frame() # data frame to hold acreage data 
+  process_list <- list() # list to hold processed data
+  percent_diff <- data.frame() # data frame to hold percent difference data for barplot
+  acreage_diff_df <- data.frame() # data frame to hold acreage data 
     #b <- 1
     #i <- 1
     
     # Process baseline file b
-    for(b in 1:length(BASE_LIST)){  
+  for (b in 1:length(base_list)) {  
       
-      # Create empty list for output for each baseline
-      b_name <- str_extract_all(BASE_LIST[b], all_scenario_names)[[1]]
-      process_list[[b]] <- list()
-      names(process_list)[[b]] <- b_name
+    # Create empty list for output for each baseline
+    b_name <- str_extract_all(base_list[b], all_scenario_names)[[1]]
+    process_list[[b]] <- list()
+    names(process_list)[[b]] <- b_name
       
-      # process alternate file i
-      for(i in 1:length(ALT_LIST)){
+    # process alternate file i
+    for (i in 1:length(alt_list)) {
       
-      a_name <- str_extract_all(ALT_LIST[i], all_scenario_names)[[1]]
+      a_name <- str_extract_all(alt_list[i], all_scenario_names)[[1]]
       print(paste0("Processing :: ALT_", a_name, " minus BASE_", b_name, " -- ", Sys.time()))
       
       ####
       # Process data to build maps and calculate acreage
       ####
-      map_dfs <- PROCESS_OUTPUT(BASE_LIST[b], ALT_LIST[i], AOI_PATH, all_scenario_names)#, CROPPED = cropped)
+      map_dfs <- ProcessOutput(base_list[b], alt_list[i], aoi_path, all_scenario_names)#, CROPPED = cropped)
       
       ####
       # Add data to list of processed data
@@ -176,13 +177,13 @@ for(n in 1:length(sp_string)){ # This part is to accomodate multiple species out
       # MASK BASELINES & CALC CELL STATS (landscape means)
       ###
       BASE_LIST_MASKED <- list()
-      for(b in 1:length(BASE_LIST)){
-        b_name <- str_extract_all(BASE_LIST[b], all_scenario_names)[[1]]
+      for(b in 1:length(base_list)){
+        b_name <- str_extract_all(base_list[b], all_scenario_names)[[1]]
         
         print(paste0("Masking Base :: ", b_name))
         
         # Mask the nc stack
-        masked <- MASK_NC_OUTPUT(BASE_LIST[b], AOI_PATH, all_scenario_names)
+        masked <- MASK_NC_OUTPUT(base_list[b], AOI_PATH, all_scenario_names)
         
         print(paste0("Calculating Landscape Mean Base :: ", b_name, " -- ", Sys.time()))
         
@@ -198,13 +199,13 @@ for(n in 1:length(sp_string)){ # This part is to accomodate multiple species out
       # MASK ALTERNATES & CALC CELL STATS (landscale means)
       ##
       ALT_LIST_MASKED <- list()
-      for(i in 1:length(ALT_LIST)){
-        a_name <- str_extract_all(ALT_LIST[i], all_scenario_names)[[1]]
+      for(i in 1:length(alt_list)){
+        a_name <- str_extract_all(alt_list[i], all_scenario_names)[[1]]
         
         print(paste0("Masking Alt :: ", a_name))
         
         # Mask the nc stack
-        masked <- MASK_NC_OUTPUT(ALT_LIST[i], AOI_PATH, all_scenario_names)
+        masked <- MASK_NC_OUTPUT(alt_list[i], AOI_PATH, all_scenario_names)
         
         print(paste0("Calculating Landscape Mean Alt :: ", a_name, " -- ", Sys.time()))
         
@@ -220,13 +221,13 @@ for(n in 1:length(sp_string)){ # This part is to accomodate multiple species out
       # READ BASELINES & CALC CELL STATS
       ###
       BASE_LIST_MASKED <- list()
-      for(b in 1:length(BASE_LIST)){
-        b_name <- str_extract_all(BASE_LIST[b], all_scenario_names)[[1]]
+      for(b in 1:length(base_list)){
+        b_name <- str_extract_all(base_list[b], all_scenario_names)[[1]]
         
         print(paste0("Stacking Base :: ", b_name,  " -- ", Sys.time()))
         
         # Read nc stack - no masking since already masked (cropped = TRUE)
-        masked <- STACK_NC_OUTPUT(BASE_LIST[b], AOI_PATH, all_scenario_names)
+        masked <- STACK_NC_OUTPUT(base_list[b], AOI_PATH, all_scenario_names)
         
         print(paste0("Calculating Landscape Mean Base :: ", b_name, " -- ", Sys.time()))
         
@@ -241,13 +242,13 @@ for(n in 1:length(sp_string)){ # This part is to accomodate multiple species out
       # READ ALTERNATES & CALC CELL STATS
       ###
       ALT_LIST_MASKED <- list()
-      for(i in 1:length(ALT_LIST)){
-        a_name <- str_extract_all(ALT_LIST[i], all_scenario_names)[[1]]
+      for(i in 1:length(alt_list)){
+        a_name <- str_extract_all(alt_list[i], all_scenario_names)[[1]]
         
         print(paste0("Stacking Alt :: ", a_name))
         
         # Read nc stack - no masking since already masked (cropped = TRUE)
-        masked <- STACK_NC_OUTPUT(ALT_LIST[i], AOI_PATH, all_scenario_names)
+        masked <- STACK_NC_OUTPUT(alt_list[i], AOI_PATH, all_scenario_names)
         
         print(paste0("Calculating Landscape Mean Alt :: ", a_name, " -- ", Sys.time()))
         
