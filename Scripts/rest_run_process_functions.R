@@ -59,13 +59,12 @@ raster_to_df <- function(raster_name, scenario_name){
 #BASE_ALT_NAMES <- all_scenario_names
 #CROPPED = cropped
 
-PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
-                           ALT_FILE,      # Alternate netcdf to process
-                           AOI_FILE,      # Area of interest - Shapefile
-                           BASE_ALT_NAMES#,# All base and alternate names. format with "|" between names, example ("BASE1|BASE2|ALT1|ALT2")
-                           #CROPPED        # TRUE/FALSE, Are BASE_FILE and ALT_FILE already cropped to AOI
-                           ){
-  
+ProcessOutput <- function(base_file,     # Baseline netcdf to process
+                          alt_file,      # Alternate netcdf to process
+                          aoi_file,      # Area of interest - Shapefile
+                          base_alt_names ) { # All base and alternate names. format with "|" between names, example ("BASE1|BASE2|ALT1|ALT2")
+                          #CROPPED        # TRUE/FALSE, Are base_file and alt_file already cropped to AOI
+                          
   # ----
   # Define Strings for each species for Function
   # ----
@@ -75,15 +74,20 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
   gator_varname <- "Habitat_Suitability"
   #gator_varname <- "Breeding_Potential"
   gator_years <- paste0("X", c("1978", "1989", "1995"))
-  gator_year_labels <- c("Average Year (1978)", "Dry Year (1989)", "Wet Year (1995)")
+  gator_year_labels <- c("Average Year (1978)",
+                         "Dry Year (1989)",
+                         "Wet Year (1995)")
   
   gator_ind_cuts <- seq(from = 0.0, to = 1, by = 0.10)
-  gator_ind_labels <- c("0.00 - 0.10", "0.11 - 0.20", "0.21 - 0.30", "0.31 - 0.40", "0.41 - 0.50",
-                        "0.51 - 0.60", "0.61 - 0.70", "0.71 - 0.80", "0.81 - 0.90", "0.91 - 1.00")
+  gator_ind_labels <- c("0.00 - 0.10", "0.11 - 0.20", "0.21 - 0.30",
+                        "0.31 - 0.40", "0.41 - 0.50", "0.51 - 0.60",
+                        "0.61 - 0.70", "0.71 - 0.80", "0.81 - 0.90",
+                        "0.91 - 1.00")
   
   gator_diff_cuts <- c(-1, -.775, -.55, -.325, -.10, .10, .325, .55, .775, 1)
-  gator_diff_labels <- c("-0.776 to -1", "-0.551 to -0.775", "-0.326 to -0.550", "-0.101 to -0.325",
-                         "0.099 to -0.100", "0.100 to 0.324", "0.325 to 0.549", "0.550 to 0.774", "0.775 to 1") 
+  gator_diff_labels <- c("-0.776 to -1", "-0.551 to -0.775", "-0.326 to -0.550",
+                         "-0.101 to -0.325", "0.099 to -0.100", "0.100 to 0.324",
+                         "0.325 to 0.549", "0.550 to 0.774", "0.775 to 1") 
   gator_title <- "Alligator Habitat Suitability Index"
   
   
@@ -95,12 +99,14 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
   snki_year_labels <- c("Dry Year (April 20, 1989)", "Wet Year (April 20, 1995)")
   
   snki_ind_cuts <- seq(from = 0.0, to = 1, by = 0.10)
-  snki_ind_labels <- c("0.00 - 0.10", "0.11 - 0.20", "0.21 - 0.30", "0.31 - 0.40", "0.41 - 0.50",
-                        "0.51 - 0.60", "0.61 - 0.70", "0.71 - 0.80", "0.81 - 0.90", "0.91 - 1.00")
+  snki_ind_labels <- c("0.00 - 0.10", "0.11 - 0.20", "0.21 - 0.30",
+                       "0.31 - 0.40", "0.41 - 0.50", "0.51 - 0.60",
+                       "0.61 - 0.70", "0.71 - 0.80", "0.81 - 0.90", "0.91 - 1.00")
   
   snki_diff_cuts <- c(-1, -.775, -.55, -.325, -.10, .10, .325, .55, .775, 1)
-  snki_diff_labels <- c("-0.776 to -1", "-0.551 to -0.775", "-0.326 to -0.550", "-0.101 to -0.325",
-                         "0.099 to -0.100", "0.100 to 0.324", "0.325 to 0.549", "0.550 to 0.774", "0.775 to 1") 
+  snki_diff_labels <- c("-0.776 to -1", "-0.551 to -0.775", "-0.326 to -0.550",
+                        "-0.101 to -0.325", "0.099 to -0.100", "0.100 to 0.324",
+                        "0.325 to 0.549", "0.550 to 0.774", "0.775 to 1") 
   snki_title <- "Snail Kite Nesting Relative Selection"
   
   
@@ -108,15 +114,18 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
   dsd_string <- "dsd"
   dsd_varname <- "dsd"
   dsd_years <- paste0("X", c("1978.06.01", "1989.06.01", "1995.06.01"))
-  dsd_year_labels <- c("Average Year (June 1, 1978)", "Dry Year (June 1, 1989)", "Wet Year (June 1, 1995)")
+  dsd_year_labels <- c("Average Year (June 1, 1978)", "Dry Year (June 1, 1989)",
+                       "Wet Year (June 1, 1995)")
   
   dsd_ind_cuts <- c(0.0, 110,  219,  329,  438,  548,  657,  767,  876,  986, Inf)
-  dsd_ind_labels <- c("0 - 109", "110 - 218", "219 - 328", "329 - 437", "438 - 547", "548 - 656", "657 - 766",
-                      "767 - 875", "876 - 985", "986 - 1,095+")
+  dsd_ind_labels <- c("0 - 109", "110 - 218", "219 - 328", "329 - 437",
+                      "438 - 547", "548 - 656", "657 - 766", "767 - 875",
+                      "876 - 985", "986 - 1,095+")
   
   dsd_diff_cuts <- seq(from = -1095, to = 1095, length.out = 10)
   dsd_diff_cuts <- c(-Inf, -852, -608, -365, -122, 122, 365, 608, 852, Inf)
-  dsd_diff_labels <- c("-853 to -1,095+", "-609 to -852", "-366 to -608", "-123 to -365", "121 to -122", "122 to 364", "365 to 607",
+  dsd_diff_labels <- c("-853 to -1,095+", "-609 to -852", "-366 to -608",
+                       "-123 to -365", "121 to -122", "122 to 364", "365 to 607",
                        "608 to 851", "852 to 1,095+") 
   dsd_title <- "Days Since Drydown"
   
@@ -128,13 +137,20 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
   apsn_years <- paste0("X", c("1989.04.20" , "1995.04.20"))
   apsn_year_labels <- c("Dry Year (April 20, 1989)", "Wet Year (April 20, 1995)")
   
-  apsn_ind_cuts <- c(-Inf, 1, 15001, 30001, 45001, 60001, 75001, 90001, 105001, 120001, Inf)
-  apsn_ind_labels <- c("0", "1 - 15,000", "15,001 - 30,000", "30,001 - 45,000", "45,001 - 60,000", "60,001 - 75,000",
-                       "75,001 - 90,000", "90,001 - 105,000", "105,001 - 120,000", "120,001 - 140,000+")
+  apsn_ind_cuts <- c(-Inf, 1, 15001, 30001, 45001, 60001, 75001, 90001,
+                     105001, 120001, Inf)
+  apsn_ind_labels <- c("0", "1 - 15,000", "15,001 - 30,000", "30,001 - 45,000",
+                       "45,001 - 60,000", "60,001 - 75,000", "75,001 - 90,000",
+                       "90,001 - 105,000", "105,001 - 120,000",
+                       "120,001 - 140,000+")
   
-  apsn_diff_cuts <- c(-140000, -107500, -75000, -42500, -10000, 10001, 42501, 75001, 107501, 140000)
-  apsn_diff_labels <- c("-107,501 to -140,000", "-75,001 to -107,500", "-42,501 to 75,000", "-10,001 to -42,500", "10,000 to -10,000",
-                        "10,001 to 42,500", "42,501 to 75,000", "75,001 to 107,500", "107,501 to 140,000")
+  apsn_diff_cuts <- c(-140000, -107500, -75000, -42500, -10000, 10001, 42501,
+                      75001, 107501, 140000)
+  apsn_diff_labels <- c("-107,501 to -140,000", "-75,001 to -107,500",
+                        "-42,501 to 75,000", "-10,001 to -42,500",
+                        "10,000 to -10,000", "10,001 to 42,500",
+                        "42,501 to 75,000", "75,001 to 107,500",
+                        "107,501 to 140,000")
   apsn_title <- "Adult Apple Snail Population"
   
   
@@ -142,20 +158,24 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
   waders_string <- "EverWaders"
   waders_varname <- "_Occupancy"
   waders_years <- paste0("X", c("1978", "1989", "1995"))
-  waders_year_labels <- c("Average Year (1978)", "Dry Year (1989)", "Wet Year (1995)")
-  #waders_years <- paste0("X", c("2021")) - used when testing with everforecast output
-  #waders_year_labels <- c("TESTING")
-  
+  waders_year_labels <- c("Average Year (1978)", "Dry Year (1989)",
+                          "Wet Year (1995)")
+
   waders_ind_cuts <- seq(from = 0.0, to = 1, by = 0.10)
-  waders_ind_labels <- c("0.00 - 0.10", "0.11 - 0.20", "0.21 - 0.30", "0.31 - 0.40", "0.41 - 0.50",
-                         "0.51 - 0.60", "0.61 - 0.70", "0.71 - 0.80", "0.81 - 0.90", "0.91 - 1.00")
+  waders_ind_labels <- c("0.00 - 0.10", "0.11 - 0.20", "0.21 - 0.30",
+                         "0.31 - 0.40", "0.41 - 0.50", "0.51 - 0.60",
+                         "0.61 - 0.70", "0.71 - 0.80", "0.81 - 0.90",
+                         "0.91 - 1.00")
   
   waders_diff_cuts <- c(-1, -.775, -.55, -.325, -.10, .10, .325, .55, .775, 1)
-  waders_diff_labels <- c("-0.776 to -1", "-0.551 to -0.775", "-0.326 to -0.550", "-0.101 to -0.325",
-                          ".099 to -0.100", "0.100 to 0.324", "0.325 to 0.549", ".550 to .774", "0.775 to 1") 
+  waders_diff_labels <- c("-0.776 to -1", "-0.551 to -0.775", "-0.326 to -0.550",
+                          "-0.101 to -0.325", ".099 to -0.100", "0.100 to 0.324",
+                          "0.325 to 0.549", ".550 to .774", "0.775 to 1") 
   
   waders_sp_abr <- c("GBHE", "GLIB", "GREG", "LBHE", "ROSP", "WHIB", "WOST")
-  waders_sp_name <- c("Great Blue Heron", "Glossy Ibis", "Great Egret", "Little Blue Heron", "Roseate Spoonbill", "White Ibis", "Wood Stork")
+  waders_sp_name <- c("Great Blue Heron", "Glossy Ibis", "Great Egret",
+                      "Little Blue Heron", "Roseate Spoonbill",
+                      "White Ibis", "Wood Stork")
   names(waders_sp_abr) <- waders_sp_name
   
   #----
@@ -163,7 +183,7 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
   #----
   
   # If Species is Alligator
-  if(grepl(gator_string, BASE_FILE)){
+  if (grepl(gator_string, base_file)) {
     
     ind_cuts <- gator_ind_cuts
     ind_labs <- gator_ind_labels
@@ -171,16 +191,16 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
     diff_cuts <- gator_diff_cuts
     diff_labs <- gator_diff_labels
     
-    TARGET_VAR <- gator_varname
-    TARGET_YEARS <- gator_years
-    TARGET_YEARS_LABELS <- gator_year_labels
+    target_var <- gator_varname
+    target_years <- gator_years
+    target_years_labels <- gator_year_labels
     
     output_title <- gator_title
-    DAILY_OUTPUT <- FALSE
+    daily_output <- FALSE
   }
   
   # If Species is snail kite
-  if(grepl(snki_string, BASE_FILE)){
+  if (grepl(snki_string, base_file)) {
     
     ind_cuts <- snki_ind_cuts
     ind_labs <- snki_ind_labels
@@ -188,16 +208,16 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
     diff_cuts <- snki_diff_cuts
     diff_labs <- snki_diff_labels
     
-    TARGET_VAR <- snki_varname
-    TARGET_YEARS <- snki_years
-    TARGET_YEARS_LABELS <- snki_year_labels
+    target_var <- snki_varname
+    target_years <- snki_years
+    target_years_labels <- snki_year_labels
     
     output_title <- snki_title
-    DAILY_OUTPUT <- TRUE
+    daily_output <- TRUE
   }
   
   # If Species is DaysSinceDryDown
-  if(grepl(dsd_string, BASE_FILE)){
+  if (grepl(dsd_string, base_file)) {
     
     ind_cuts <- dsd_ind_cuts
     ind_labs <- dsd_ind_labels
@@ -205,33 +225,33 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
     diff_cuts <- dsd_diff_cuts
     diff_labs <- dsd_diff_labels
     
-    TARGET_VAR <- dsd_varname
-    TARGET_YEARS <- dsd_years
-    TARGET_YEARS_LABELS <- dsd_year_labels
+    target_var <- dsd_varname
+    target_years <- dsd_years
+    target_years_labels <- dsd_year_labels
     
     output_title <- dsd_title
-    DAILY_OUTPUT <- TRUE
+    daily_output <- TRUE
   }
   
   # If species is Applesnail
-  if(grepl(apsn_string, BASE_FILE)){
+  if (grepl(apsn_string, base_file)) {
     ind_cuts <- apsn_ind_cuts
     ind_labs <- apsn_ind_labels
     
     diff_cuts <- apsn_diff_cuts
     diff_labs <- apsn_diff_labels
     
-    TARGET_VAR <- apsn_varname
-    TARGET_YEARS <- apsn_years
-    TARGET_YEARS_LABELS <- apsn_year_labels
+    target_var <- apsn_varname
+    target_years <- apsn_years
+    target_years_labels <- apsn_year_labels
     
     output_title <- apsn_title
-    DAILY_OUTPUT <- TRUE
+    daily_output <- TRUE
   }
   
   # If Species is Everwaders
-  if(grepl(waders_string, BASE_FILE)) {
-    wadervar <- BASE_FILE
+  if (grepl(waders_string, base_file)) {
+    wadervar <- base_file
     wadervar <- gsub(".*EverWaders_|\\.nc.*", "", wadervar)
     sp_waders_varname <- paste0(wadervar, waders_varname)
     
@@ -241,19 +261,19 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
     diff_cuts <- waders_diff_cuts
     diff_labs <- waders_diff_labels
     
-    TARGET_VAR <- sp_waders_varname
-    TARGET_YEARS <- waders_years
-    TARGET_YEARS_LABELS <- waders_year_labels
+    target_var <- sp_waders_varname
+    target_years <- waders_years
+    target_years_labels <- waders_year_labels
     
     full_sp_name <-  grep(wadervar, waders_sp_abr, value = TRUE)
     output_title <- paste0(names(full_sp_name), sub("_", " ", waders_varname))
-    DAILY_OUTPUT <- FALSE
+    daily_output <- FALSE
   }
   
   # ----
   # Get layer/Band names from Netcdf
   # ----
-  nc <- nc_open(BASE_FILE)
+  nc <- nc_open(base_file)
   
   # Get dates for bands
   time_att <- nc$dim$t$units
@@ -263,53 +283,53 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
   start_date <- as.Date(time_split[[1]][1])
   start_year <- as.numeric(format(start_date, format = "%Y"))
   
-  if(DAILY_OUTPUT){
+  if (daily_output) {
     end_year <- start_date + (time_length - 1)
     
-    BAND_YEARS <- seq(start_date, end_year, 1)
-    BAND_YEARS <- paste0("X", BAND_YEARS)
+    band_years <- seq(start_date, end_year, 1)
+    band_years <- paste0("X", band_years)
     #BAND_YEARS
   } else {
     end_year <- start_year + (time_length - 1) # subtract 1 to account for starting year in length
     
     # Sequence years for band names
-    BAND_YEARS <- seq(start_year, end_year, 1)
-    BAND_YEARS <- paste0("X", BAND_YEARS)
+    band_years <- seq(start_year, end_year, 1)
+    band_years <- paste0("X", band_years)
     #BAND_YEARS
   }
   
-  nc_close(nc) # Clsoe netcdf
+  nc_close(nc) # Close netcdf
   
   # ----
   # Process for raw difference 
   # ----
   
   # Load files
-  base_stack <- stack(BASE_FILE, varname = TARGET_VAR)
-  alt_stack <- stack(ALT_FILE, varname = TARGET_VAR)
+  base_stack <- stack(base_file, varname = target_var)
+  alt_stack <- stack(alt_file, varname = target_var)
   
   # Add names to bands
-  names(base_stack) <- BAND_YEARS
-  names(alt_stack) <- BAND_YEARS
+  names(base_stack) <- band_years
+  names(alt_stack) <- band_years
   
   # Extract the dates of interest
-  base_target <- subset(base_stack, TARGET_YEARS)
-  alt_target <- subset(alt_stack, TARGET_YEARS)
+  base_target <- subset(base_stack, target_years)
+  alt_target <- subset(alt_stack, target_years)
   
   # Mask the subsets to AOI
-  AOI <- shapefile(AOI_FILE)
+  AOI <- shapefile(aoi_file)
   
   base_mask <- mask(base_target, AOI)
   alt_mask <- mask(alt_target, AOI)
   
   # Do raster math to get difference
-  alt_base <- alt_mask-base_mask
-  names(alt_base) <- TARGET_YEARS # in case the raster math drops layer names
+  alt_base <- alt_mask - base_mask
+  names(alt_base) <- target_years # in case the raster math drops layer names
   
   #Extract alt and base name from files
-  base_name <- str_extract_all(BASE_FILE, BASE_ALT_NAMES)[[1]]
+  base_name <- str_extract_all(base_file, base_alt_names)[[1]]
   base_name
-  alt_name <- str_extract_all(ALT_FILE, BASE_ALT_NAMES)[[1]]
+  alt_name <- str_extract_all(alt_file, base_alt_names)[[1]]
   alt_name
   diff_name <- paste0(alt_name, "-", base_name)
   diff_name
@@ -319,22 +339,25 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
   # ----
   
   acreage_list <- list() 
-  for(n in 1:nlayers(alt_base)){
-    diff_hist <- hist(alt_base[[n]], breaks = diff_cuts, right = FALSE, plot = FALSE)
+  for (n in 1:nlayers(alt_base)) {
+    diff_hist <- hist(alt_base[[n]], breaks = diff_cuts,
+                      right = FALSE, plot = FALSE)
     
-    if(grepl(paste0(gator_string, "|", apsn_string, "|", waders_string, "|", snki_string, "|", dsd_string), BASE_FILE)){
+    if (grepl(paste0(gator_string, "|", apsn_string, "|", waders_string, "|",
+                     snki_string, "|", dsd_string), base_file)) {
       # Convert number of cells to number of acres
       # Each cell is 400m x 400 m; 4046.86 sq meters = 1 acres
       diff_acres <- diff_hist$counts * 400 * 400 / 4046.86
     }
     
-    #if(grepl("MARL", BASE_FILE)){
+    #if(grepl("MARL", base_file)){
       # for marl prairie **marl prairie uses different mesh!
      # diff_acres <- diff_hist$counts * 478.95 * 478.95 / 4046.86
     #}
     
     # Build data frame for export to csv
-    diff_bins <- paste0("[", as.character(diff_cuts)[1:(length(diff_cuts) - 1)], " - ", as.character(diff_cuts)[2:length(diff_cuts)], ")")
+    diff_bins <- paste0("[", as.character(diff_cuts)[1:(length(diff_cuts) - 1)],
+                        " - ", as.character(diff_cuts)[2:length(diff_cuts)], ")")
     acreage_diff_df <- data.frame(`Difference from baseline` = rev(diff_bins),
                           `Number of acres` = rev(diff_acres),
                           check.names = FALSE)
@@ -360,28 +383,36 @@ PROCESS_OUTPUT <- function(BASE_FILE,     # Baseline netcdf to process
   diff_df <- filter(diff_df, !is.na(value) | !is.nan(value))
   
   # Add breaks and labels to the dataframes - for plotting maps
-  ind_df$breaks <- cut(ind_df$value, ind_cuts, right = FALSE, include.lowest = TRUE)
-  ind_df$labs   <- cut(ind_df$value, ind_cuts, ind_labs, right = FALSE, include.lowest = TRUE)
+  ind_df$breaks <- cut(ind_df$value, ind_cuts,
+                       right = FALSE, include.lowest = TRUE)
+  ind_df$labs   <- cut(ind_df$value, ind_cuts,
+                       ind_labs, right = FALSE, include.lowest = TRUE)
   
-  diff_df$breaks <- cut(diff_df$value, diff_cuts, right = FALSE, include.lowest = TRUE)
-  diff_df$labs <- cut(diff_df$value, diff_cuts, diff_labs, right = FALSE, include.lowest = TRUE)
+  diff_df$breaks <- cut(diff_df$value, diff_cuts,
+                        right = FALSE, include.lowest = TRUE)
+  diff_df$labs <- cut(diff_df$value, diff_cuts,
+                      diff_labs, right = FALSE, include.lowest = TRUE)
   
   # set levels so all get plotted
   ind_df$labs <- factor(ind_df$labs, levels = ind_labs)
   diff_df$labs <- factor(diff_df$labs, levels = diff_labs)
   
-  ind_df$name <- factor(ind_df$name, levels = TARGET_YEARS)
-  diff_df$name <- factor(diff_df$name, levels = TARGET_YEARS)
+  ind_df$name <- factor(ind_df$name, levels = target_years)
+  diff_df$name <- factor(diff_df$name, levels = target_years)
   
-  ind_df$Scenario <- factor(ind_df$Scenario, levels = c(base_name, alt_name, diff_name))
-  diff_df$Scenario <- factor(diff_df$Scenario, levels = c(base_name, alt_name, diff_name))
+  ind_df$Scenario <- factor(ind_df$Scenario,
+                            levels = c(base_name, alt_name, diff_name))
+  diff_df$Scenario <- factor(diff_df$Scenario,
+                            levels = c(base_name, alt_name, diff_name))
   
   #Name the Target Years to display on figure facet labels
-  name.labs <- TARGET_YEARS_LABELS
-  names(name.labs) <- TARGET_YEARS
+  name.labs <- target_years_labels
+  names(name.labs) <- target_years
   
-  df_list <- list("ind_df" = ind_df, "diff_df" = diff_df, "alt_name" = alt_name, "base_name" = base_name, 
-                  "name.labs" = name.labs, "map_title" = output_title, "acreage_df" = acreage_df)
+  df_list <- list("ind_df" = ind_df, "diff_df" = diff_df,
+                  "alt_name" = alt_name, "base_name" = base_name, 
+                  "name.labs" = name.labs, "map_title" = output_title,
+                  "acreage_df" = acreage_df)
   return(df_list)
 }
 
@@ -527,29 +558,29 @@ MASK_NC_OUTPUT <- function(NC_FILE, AOI, ALL_SCENARIO_NAMES){
   
   if(grepl(gator_string, NC_FILE)){
     nc_varname <- gator_varname
-    DAILY_OUTPUT <- FALSE
+    daily_output <- FALSE
   }
   
   if(grepl(snki_string, NC_FILE)){
     nc_varname <- snki_varname
-    DAILY_OUTPUT <- TRUE
+    daily_output <- TRUE
   }
   
   if(grepl(dsd_string, NC_FILE)){
     nc_varname <- dsd_varname
-    DAILY_OUTPUT <- TRUE
+    daily_output <- TRUE
   }
   
   if(grepl(apsn_string, NC_FILE)){
     nc_varname <- apsn_varname
-    DAILY_OUTPUT <- TRUE
+    daily_output <- TRUE
   }
   
   if(grepl(waders_string, NC_FILE)){
     nc_varname <- waders_varname
     species <- gsub(".*EverWaders_|\\.nc.*", "", NC_FILE)
     nc_varname <- paste0(species, waders_varname)
-    DAILY_OUTPUT <- FALSE
+    daily_output <- FALSE
   }
   
     # ----
@@ -565,18 +596,18 @@ MASK_NC_OUTPUT <- function(NC_FILE, AOI, ALL_SCENARIO_NAMES){
   start_date <- as.Date(time_split[[1]][1])
   start_year <- as.numeric(format(start_date, format = "%Y"))
   
-  if(DAILY_OUTPUT){
+  if(daily_output){
     end_year <- start_date + (time_length - 1)
     
-    BAND_YEARS <- seq(start_date, end_year, 1)
-    BAND_YEARS <- paste0("X", BAND_YEARS)
+    band_years <- seq(start_date, end_year, 1)
+    band_years <- paste0("X", band_years)
     #BAND_YEARS
   } else {
     end_year <- start_year + (time_length - 1) # subtract 1 to account for starting year in length
     
     # Sequence years for band names
-    BAND_YEARS <- seq(start_year, end_year, 1)
-    BAND_YEARS <- paste0("X", BAND_YEARS)
+    band_years <- seq(start_year, end_year, 1)
+    band_years <- paste0("X", band_years)
     #BAND_YEARS
   }
   
@@ -590,7 +621,7 @@ MASK_NC_OUTPUT <- function(NC_FILE, AOI, ALL_SCENARIO_NAMES){
   nc_stack <- stack(NC_FILE, varname = nc_varname)
 
   # Add names to bands
-  names(nc_stack) <- BAND_YEARS
+  names(nc_stack) <- band_years
   
   #nc_stack <- nc_stack[[1:2]] # subset used when testing function to increase speed
   
@@ -641,29 +672,29 @@ STACK_NC_OUTPUT <- function(NC_FILE, AOI, ALL_SCENARIO_NAMES){
   
   if(grepl(gator_string, NC_FILE)){
     nc_varname <- gator_varname
-    DAILY_OUTPUT <- FALSE
+    daily_output <- FALSE
   }
   
   if(grepl(snki_string, NC_FILE)){
     nc_varname <- snki_varname
-    DAILY_OUTPUT <- TRUE
+    daily_output <- TRUE
   }
   
   if(grepl(dsd_string, NC_FILE)){
     nc_varname <- dsd_varname
-    DAILY_OUTPUT <- TRUE
+    daily_output <- TRUE
   }
   
   if(grepl(apsn_string, NC_FILE)){
     nc_varname <- apsn_varname
-    DAILY_OUTPUT <- TRUE
+    daily_output <- TRUE
   }
   
   if(grepl(waders_string, NC_FILE)){
     nc_varname <- waders_varname
     species <- gsub(".*EverWaders_|\\.nc.*", "", NC_FILE)
     nc_varname <- paste0(species, waders_varname)
-    DAILY_OUTPUT <- FALSE
+    daily_output <- FALSE
   }
   
   # ----
@@ -679,18 +710,18 @@ STACK_NC_OUTPUT <- function(NC_FILE, AOI, ALL_SCENARIO_NAMES){
   start_date <- as.Date(time_split[[1]][1])
   start_year <- as.numeric(format(start_date, format = "%Y"))
   
-  if(DAILY_OUTPUT){
+  if(daily_output){
     end_year <- start_date + (time_length - 1)
     
-    BAND_YEARS <- seq(start_date, end_year, 1)
-    BAND_YEARS <- paste0("X", BAND_YEARS)
+    band_years <- seq(start_date, end_year, 1)
+    band_years <- paste0("X", band_years)
     #BAND_YEARS
   } else {
     end_year <- start_year + (time_length - 1) # subtract 1 to account for starting year in length
     
     # Sequence years for band names
-    BAND_YEARS <- seq(start_year, end_year, 1)
-    BAND_YEARS <- paste0("X", BAND_YEARS)
+    band_years <- seq(start_year, end_year, 1)
+    band_years <- paste0("X", band_years)
     #BAND_YEARS
   }
   
@@ -704,7 +735,7 @@ STACK_NC_OUTPUT <- function(NC_FILE, AOI, ALL_SCENARIO_NAMES){
   nc_stack <- stack(NC_FILE, varname = nc_varname)
   
   # Add names to bands
-  names(nc_stack) <- BAND_YEARS
+  names(nc_stack) <- band_years
   
   nc_masked_list <- list("nc_masked" = nc_stack, "Scenario" = scenario_name, "Variable" = nc_varname)
   return(nc_masked_list)
