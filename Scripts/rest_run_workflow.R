@@ -1,9 +1,9 @@
-################################################################
-# Workflow for Netcdf output for restoration runs (LOSOM)
+## -----------------------------------------------------------------------------
+# Workflow for Netcdf output for restoration runs
 # Use for Alligator, Everwaders, Snail kite, and Applesnail
 #
 # Caitlin Hackett chackett@usgs.gov
-###############################################################
+## -----------------------------------------------------------------------------
 
 #Load packages
 library(tidyverse)
@@ -23,53 +23,45 @@ apsn_sp_string <- "Apple_Snail"
 snki_sp_string <- "SnailKite"
 dsd_sp_string <- "dsd"
 
-########################################################
-### USER SET FACTORS ###
+## -----------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
+# START: USER SET FACTORS
 
 # Folder containing species output
-PARENT_PATH <- "../LOSOM/Data/LOSOM_Round3_2021_12/Model Output/EverWaders/JEM_EverWaders_Data/JEM_EverWaders_Data/"
+parent_path <- "../LOSOM/Data/LOSOM_Round3_2021_12/Model Output/EverWaders/JEM_EverWaders_Data/JEM_EverWaders_Data/"
+parent_path
+
+# Folder to output CSV and figures - 
+# include "/" after path to get file names correct when saving 
+output_path <- "../data_release_develop/"
+output_path
+
+# set target species from species string options at top of script
+sp_string <- gator_sp_string
+sp_string
 
 # Is Species output already cropped to AOI? (TRUE/FALSE)
-cropped <- TRUE
-
-# Folder to output CSV and figures - include "/" after path to get file names correct when saving 
-OUTPUT_PATH <- "../LOSOM/Output/LOSOM_Round3_2021_12/EverWaders/"
-
-# Path to AOI
-AOI_PATH <- "../../GIS_Library/COP_AOI_mask/COP_AOI_mask.shp"
-#AOI_PATH <- "../../GIS_Library/WERPzones_EDEN_mask.shp/WERPzones_EDEN_mask.shp"
-
-# Filepaths FOR MAPs
-  # Main Park Road
-  MPR_PATH <- "../../GIS_Library/ENP_main_road/ENP_main_road.shp" # Main Park Road
-
-  #Wcas Boundary
-  WCAS_PATH <- "../../GIS_Library/EVERareas_UTM/EVERareas_UTM/EVERareas_UTM.shp" # WCA Boundaries
-
-  # florida outline
-  FL_PATH <- "../../GIS_Library/FL_outline_ESRI_2010/FL_outline_ESRI_2010/FL_outline_ESRI_2010.shp" # ESRI Fl boundary
-  
-  # Wood stork colonies
-  WOST_PATH <- "../../GIS_Library/WOST_colonies/WOST_colonies_JB.shp"
-  
-# set target species from species string options at top of script
-sp_string <- waders_sp_string
+cropped <- FALSE
+cropped
 
 # Set Alternate scenario names
-#alt_names <- c("Sim_0001")
-#alt_names <- c("ALTHR")
-#alt_names <- c("WECB", "WFWO")
 alt_names <- c("PA22", "PA25")
 alt_names
 
 # Set Baseline scenario names
-#base_names <- c("Sim_0003", "Sim_0002")
 base_names <- c("ECB19", "NA22f", "NA25f")
-#base_names <- c("ALTHR")
 base_names
 
-##  END USER SET FACTORS ###########
-#########################################################
+message("USER IPUTS SET TO: \nparent path: ", print(parent_path),
+        "\noutput path: ", print(output_path),
+        "\nspecies: ", paste(sp_string, collapse = " "),
+        "\ncroppped(T/F): ", print(cropped),
+        "\nalternative scenarios: ", paste(alt_names, collapse = " "),
+        "\nbasline scenarios: ", paste(base_names, collapse = " "))
+
+# END: USER SET FACTORS
+## -----------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 
 # Scenario Name strings
 ALT_NAMES <- paste0(alt_names, collapse = "|")
