@@ -35,8 +35,8 @@ sp_scenario_files <- function(alt_names, # names of alternate scenarios
   base_list
   
   # Alt and Base Names
-  if (length(base_names) == 1) {base_names <- paste0(BASE_NAMES, "|")}
-  all_scenario_names <- paste0(base_names, ALT_NAMES, collapse = "|")
+  if (length(base_names) == 1) {base_names <- paste0(base_names, "|")}
+  all_scenario_names <- paste0(base_names, alt_names, collapse = "|")
   all_scenario_names
   
   file_name_list <- list("all_files" = all_files, "alt_list" = alt_list,
