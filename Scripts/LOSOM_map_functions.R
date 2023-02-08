@@ -64,11 +64,15 @@ RESTORATION_RUN_MAP <- function(DF_IND,                       # Dataframe of ind
   diff_pal
   
   # LEGEND TITLES
-  if(grepl("Days Since Drydown", MAP_TITLE)){
+  if (grepl("Days Since Drydown", MAP_TITLE)) {
     SCORE_LENGEND_NAME <- "Days"
-    } else {
-    SCORE_LENGEND_NAME <- "Score"
     }
+  if (grepl("Apple Snail", MAP_TITLE)) {
+    SCORE_LENGEND_NAME <- "Population Size"
+  }
+  if (!(grepl("Apple Snail|Days Since Drydown", MAP_TITLE))) {
+    SCORE_LENGEND_NAME <- "Score"
+  }
   DIFF_LEGEND_NAME <- levels(DF_DIF$Scenario)[3]
   DIFF_LEGEND_NAME <- paste0("Difference","\n", DIFF_LEGEND_NAME)
   
