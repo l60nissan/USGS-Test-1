@@ -27,13 +27,13 @@ dsd_sp_string <- "dsd"
 ### USER SET FACTORS ###
 
 # Folder containing species output
-PARENT_PATH <- "../LOSOM/Data/LOSOM_Round1_2021_05/Model Output/Apple_Snail/JEM_Apple_Snail_Model_Data/JEM_Apple_Snail_Model_Data/"
+PARENT_PATH <- "../LOSOM/Data/LOSOM_Round3_2021_12/Model Output/EverWaders/JEM_EverWaders_Data/JEM_EverWaders_Data/"
 
 # Is Species output already cropped to AOI? (TRUE/FALSE)
 cropped <- TRUE
 
 # Folder to output CSV and figures - include "/" after path to get file names correct when saving 
-OUTPUT_PATH <- "../LOSOM/Output/LOSOM_Round1_2021_05/Apple_Snail/"
+OUTPUT_PATH <- "../LOSOM/Output/LOSOM_Round3_2021_12/EverWaders/"
 
 # Path to AOI
 AOI_PATH <- "../../GIS_Library/COP_AOI_mask/COP_AOI_mask.shp"
@@ -48,20 +48,23 @@ AOI_PATH <- "../../GIS_Library/COP_AOI_mask/COP_AOI_mask.shp"
 
   # florida outline
   FL_PATH <- "../../GIS_Library/FL_outline_ESRI_2010/FL_outline_ESRI_2010/FL_outline_ESRI_2010.shp" # ESRI Fl boundary
-
+  
+  # Wood stork colonies
+  WOST_PATH <- "../../GIS_Library/WOST_colonies/WOST_colonies_JB.shp"
+  
 # set target species from species string options at top of script
-sp_string <- apsn_sp_string
+sp_string <- waders_sp_string
 
 # Set Alternate scenario names
 #alt_names <- c("Sim_0001")
 #alt_names <- c("ALTHR")
 #alt_names <- c("WECB", "WFWO")
-alt_names <- c("AA", "BB", "CC", "DD", "EE1", "EE2")
+alt_names <- c("PA22", "PA25")
 alt_names
 
 # Set Baseline scenario names
 #base_names <- c("Sim_0003", "Sim_0002")
-base_names <- c("ECBr", "NA25")
+base_names <- c("ECB19", "NA22f", "NA25f")
 #base_names <- c("ALTHR")
 base_names
 
