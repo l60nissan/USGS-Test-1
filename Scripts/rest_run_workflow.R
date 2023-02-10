@@ -52,16 +52,19 @@ alt_names
 base_names <- c("ECB19", "NA22f", "NA25f")
 base_names
 
-message("USER IPUTS SET TO: \nparent path: ", print(parent_path),
-        "\noutput path: ", print(output_path),
-        "\nspecies: ", paste(sp_string, collapse = " "),
-        "\ncroppped(T/F): ", print(cropped),
-        "\nalternative scenarios: ", paste(alt_names, collapse = " "),
-        "\nbasline scenarios: ", paste(base_names, collapse = " "))
+message("USER INPUTS SET TO: \n*parent path: ", print(parent_path),
+        "\n*output path: ", print(output_path),
+        "\n*species: ", paste(sp_string, collapse = " "),
+        "\n*croppped(T/F): ", print(cropped),
+        "\n*alternative scenarios: ", paste(alt_names, collapse = " "),
+        "\n*basline scenarios: ", paste(base_names, collapse = " "))
 
 # END: USER SET FACTORS
 ## -----------------------------------------------------------------------------
 ## -----------------------------------------------------------------------------
+
+#-----------------
+# Set scenario names
 
 # Scenario Name strings
 alt_string <- paste0(alt_names, collapse = "|")
@@ -76,6 +79,7 @@ all_scenario_names <- paste0(paste0(base_string, "|"),
                              alt_string, collapse = "|")
 all_scenario_names
 
+#-----------------
 # Loop through species, process output, output acreage csv and map
 # Loop through target species
 process_list_all <- list() # list to store all output
@@ -94,7 +98,9 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
   base_list <- files$base_list
   base_list
   
+  #-----------------
   # Loop to process data and make maps, acreage table and barplot 
+  
   # Process each baselinee and alt combination
   process_list <- list() # list to hold processed data
   percent_diff <- data.frame() # data frame to hold percent difference data for barplot
@@ -102,7 +108,7 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
     #b <- 1
     #i <- 1
     
-    # Process baseline file b
+  # Process baseline file b
   for (b in 1:length(base_list)) {  
       
     # Create empty list for output for each baseline
@@ -110,221 +116,234 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
     process_list[[b]] <- list()
     names(process_list)[[b]] <- b_name
       
-    # process alternate file i
+    # process alternate file i 
     for (i in 1:length(alt_list)) {
       
       a_name <- str_extract_all(alt_list[i], all_scenario_names)[[1]]
-      print(paste0("Processing :: ALT_", a_name, " minus BASE_", b_name, " -- ", Sys.time()))
+      print(paste0("Processing :: ALT_", a_name, " minus BASE_",
+                   b_name, " -- ", Sys.time()))
       
-      ####
+      #-----------------
       # Process data to build maps and calculate acreage
-      ####
-      map_dfs <- ProcessOutput(base_list[b], alt_list[i], aoi_path, all_scenario_names)#, CROPPED = cropped)
+
+      map_dfs <- ProcessOutput(base_list[b], alt_list[i],
+                               aoi_path, all_scenario_names)#, CROPPED = cropped)
       
-      ####
+      #-----------------
       # Add data to list of processed data
-      ####
+
       process_list[[b]][[i]] <- map_dfs
-      names(process_list[[b]])[[i]] <- paste0(map_dfs$alt_name, "-", map_dfs$base_name)
+      names(process_list[[b]])[[i]] <- paste0(map_dfs$alt_name, "-",
+                                              map_dfs$base_name)
       
-      ####
+      #-----------------
       # Make maps
-      ####
+
       print(paste0("Making Map :: ALT_", a_name, " minus BASE_", b_name))
       
       # Make Map
-      ind_fill <- 'labs'
+      ind_fill <- sym('labs')
       dif_fill <- 'labs'
       map_title <- map_dfs$map_title
-      out_path <- OUTPUT_PATH
-      out_file <- paste0(out_path, gsub(" ", "_", map_title), "_", map_dfs$alt_name, "_", map_dfs$base_name, ".pdf")
+      out_path <- output_path
+      out_file <- paste0(out_path, gsub(" ", "_", map_title), "_",
+                         map_dfs$alt_name, "_", map_dfs$base_name, ".pdf")
+      out_file
   
-      print(paste0("Making map for ", gsub(" ", "_", map_title), "_", map_dfs$alt_name, "_", map_dfs$base_name))
+      print(paste0("Making map for ", gsub(" ", "_", map_title), "_",
+                   map_dfs$alt_name, "_", map_dfs$base_name))
   
       name.labs <- map_dfs$name.labs
   
-      RESTORATION_RUN_MAP(DF_IND = map_dfs$ind_df,
-                      IND_FILL = ind_fill,
-                      DF_DIF = map_dfs$diff_df,
-                      DIF_FILL = dif_fill,
-                      SCENARIO_COL = names(map_dfs$ind_df)[5],
-                      YEAR_COL = names(map_dfs$ind_df)[3],
-                      AOI_PATH = AOI_PATH,
-                      MPR_PATH = MPR_PATH,
-                      WCAS_PATH = WCAS_PATH,
-                      FL_PATH = FL_PATH,
-                      MAP_EXTENT = MAP_EXTENT,
-                      MAP_TITLE = map_title,
-                      OUTPUT_FILE_NAME = out_file)
-      ####
+      RestorationRunMap(df_ind = map_dfs$ind_df,
+                       ind_fill = ind_fill,
+                       df_dif = map_dfs$diff_df,
+                       dif_fill = dif_fill,
+                       scenario_col = names(map_dfs$ind_df)[5],
+                       year_col = names(map_dfs$ind_df)[3],
+                       aoi_path = aoi_path,
+                       mpr_path = mpr_path,
+                       wcas_path = wcas_path,
+                       fl_path = fl_path,
+                       map_extent = map_extent,
+                       map_title = map_title,
+                       output_file_name = out_file)
+
+      #-----------------
       # Add data to Acreage dataframe
-      ####
+      
       print(paste0("Adding Acreage :: ALT_", a_name, " minus BASE_", b_name))
       acreage_diff_df <- bind_rows(acreage_diff_df, map_dfs$acreage_df)
-      } #close i
-    } #close b
+    } #close i
+  } #close b
       
-    #########################################################################
-    # Process Diff calculations for Alts and baselines
-    # - This happens within n loop so it is performed for every species in the sp_string
-    # - can use b for base and i for alt becuase they are originating from the same list of baselines and alt files
-    # - if mask is applied, it masks the entire stack. Individual years were masked above for maps
-    ##########################################################################
-    
-    # Mask FILES and Read as stack - For percent diff calcilations and barplots
-    if(!cropped){
-      ###
-      # MASK BASELINES & CALC CELL STATS (landscape means)
-      ###
-      BASE_LIST_MASKED <- list()
-      for(b in 1:length(base_list)){
-        b_name <- str_extract_all(base_list[b], all_scenario_names)[[1]]
-        
-        print(paste0("Masking Base :: ", b_name))
-        
-        # Mask the nc stack
-        masked <- MASK_NC_OUTPUT(base_list[b], AOI_PATH, all_scenario_names)
-        
-        print(paste0("Calculating Landscape Mean Base :: ", b_name, " -- ", Sys.time()))
-        
-        # Calculate mean of landscape for each day
-        daily_mean_vals <- cellStats(masked$nc_masked, stat = mean, na.rm = TRUE)
-        masked$daily_mean <- daily_mean_vals
-        
-        BASE_LIST_MASKED[[b]] <- masked
-        names(BASE_LIST_MASKED)[[b]] <- masked$Scenario 
-      } # closes b
-      
-      ##
-      # MASK ALTERNATES & CALC CELL STATS (landscale means)
-      ##
-      ALT_LIST_MASKED <- list()
-      for(i in 1:length(alt_list)){
-        a_name <- str_extract_all(alt_list[i], all_scenario_names)[[1]]
-        
-        print(paste0("Masking Alt :: ", a_name))
-        
-        # Mask the nc stack
-        masked <- MASK_NC_OUTPUT(alt_list[i], AOI_PATH, all_scenario_names)
-        
-        print(paste0("Calculating Landscape Mean Alt :: ", a_name, " -- ", Sys.time()))
-        
-        # Calculate mean of landscape for each day
-        daily_mean_vals <- cellStats(masked$nc_masked, stat = mean, na.rm = TRUE)
-        masked$daily_mean <- daily_mean_vals
-        
-        ALT_LIST_MASKED[[i]] <- masked
-        names(ALT_LIST_MASKED)[[i]] <- masked$Scenario 
-      } # closes i 
-    }else{
-      ###
-      # READ BASELINES & CALC CELL STATS
-      ###
-      BASE_LIST_MASKED <- list()
-      for(b in 1:length(base_list)){
-        b_name <- str_extract_all(base_list[b], all_scenario_names)[[1]]
-        
-        print(paste0("Stacking Base :: ", b_name,  " -- ", Sys.time()))
-        
-        # Read nc stack - no masking since already masked (cropped = TRUE)
-        masked <- STACK_NC_OUTPUT(base_list[b], AOI_PATH, all_scenario_names)
-        
-        print(paste0("Calculating Landscape Mean Base :: ", b_name, " -- ", Sys.time()))
-        
-        # Calculate mean of landscape for each day
-        daily_mean_vals <- cellStats(masked$nc_masked, stat = mean, na.rm = TRUE)
-        masked$daily_mean <- daily_mean_vals
-        
-        BASE_LIST_MASKED[[b]] <- masked
-        names(BASE_LIST_MASKED)[[b]] <- masked$Scenario
-      } # closes b
-      ###
-      # READ ALTERNATES & CALC CELL STATS
-      ###
-      ALT_LIST_MASKED <- list()
-      for(i in 1:length(alt_list)){
-        a_name <- str_extract_all(alt_list[i], all_scenario_names)[[1]]
-        
-        print(paste0("Stacking Alt :: ", a_name))
-        
-        # Read nc stack - no masking since already masked (cropped = TRUE)
-        masked <- STACK_NC_OUTPUT(alt_list[i], AOI_PATH, all_scenario_names)
-        
-        print(paste0("Calculating Landscape Mean Alt :: ", a_name, " -- ", Sys.time()))
-        
-        # Calculate mean of landscape for each day
-        daily_mean_vals <- cellStats(masked$nc_masked, stat = mean, na.rm = TRUE)
-        masked$daily_mean <- daily_mean_vals
-        
-        ALT_LIST_MASKED[[i]] <- masked
-        names(ALT_LIST_MASKED)[[i]] <- masked$Scenario 
-      } # closes i 
-    } # closes else
-    
-    ## Export first baseline and alt slices to double check masked for calculations
-      jpeg(paste0(OUTPUT_PATH, species, "_base_mask_test.jpg"))
-      plot(BASE_LIST_MASKED[[1]][[1]][[1]])
-      dev.off()
-      
-      jpeg(paste0(OUTPUT_PATH, species, "_alt_mask_test.jpg"))
-      plot(ALT_LIST_MASKED[[1]][[1]][[1]])
-      dev.off()
-    
-    ####
-    #Process data to calculate percent difference
-    ###
-    # Process baseline file b
-    percent_diff <- data.frame() # list to hold processed data
-    #percent_diff <- data.frame() # data frame to hold percent difference data for barplot
-    
-    #index <- 0
-    for(b in 1:length(BASE_LIST_MASKED)){  
-      
-      # Get baseline name
-      b_name <- BASE_LIST_MASKED[[b]]$Scenario
-      
-      # Get Baseline daily vals
-      base_vals <- BASE_LIST_MASKED[[b]]$daily_mean
+  #-----------------
+  # Process Diff calculations for Alts and baselines
+  # - Calculate for every species in the sp_string
+  # - if mask is applied, it masks the entire stack.
 
-      # process alternate file i
-      for(i in 1:length(ALT_LIST_MASKED)){
+  # Mask FILES and Read as stack - For percent diff calcilations and barplots
+  if (!cropped) {
+  
+    #-----------------
+    # MASK BASELINES & CALC CELL STATS (landscape means)
+    BASE_LIST_MASKED <- list()
+    for (b in 1:length(base_list)) {
+      b_name <- str_extract_all(base_list[b], all_scenario_names)[[1]]
         
-        # Get alternate name
-        a_name <- ALT_LIST_MASKED[[i]]$Scenario
+      print(paste0("Masking Base :: ", b_name))
         
-        # Get alternate daily vals
-        alt_vals <- ALT_LIST_MASKED[[i]]$daily_mean
+      # Mask the nc stack
+      masked <- MASK_NC_OUTPUT(base_list[b], AOI_PATH, all_scenario_names)
         
-        # Set species string - needed for DIFF_CHANGE_FUNCTION since species output is daily or yearly
-        if(species %in% waders_sp_string){
-          pchange_sp_string <- "EverWaders"
-        }else{
-          pchange_sp_string <- sp_string
-        } #close else for sp string
+      print(paste0("Calculating Landscape Mean Base :: ",
+                   b_name, " -- ", Sys.time()))
         
-        # Calculate percent change 
-        # Calculates percent change of landscale means
-        # For daily output, calculates percent change of landscape means, and then averages the daily percent change values
-        print(paste0("Calculating Percent Change :: ", a_name, "-", b_name, " -- ", Sys.time()))
-        pchange <- DIFF_CHANGE_CALC(pchange_sp_string, BASE_LIST_MASKED[[b]]$nc_masked, alt_vals, a_name, base_vals, b_name)
+      # Calculate mean of landscape for each day
+      daily_mean_vals <- cellStats(masked$nc_masked, stat = mean, na.rm = TRUE)
+      masked$daily_mean <- daily_mean_vals
         
-        ####
-        # add data to percent diff dataframe - if percent diff was calculated during data processing, bind rows to one dataframe
-        ####
-        #if(grepl(gator_sp_string, FILES$ALL_FILES[1])){
-        print(paste0("Adding Percent Difference :: ALT_", a_name, " minus BASE_", b_name))
-        #if("Percent_diff_mean" %in% names(map_dfs)){
-        if(!is.null(pchange)){
-          percent_diff <- bind_rows(percent_diff, pchange)
-        } # close if (!is.null(pchange)) 
+      BASE_LIST_MASKED[[b]] <- masked
+      names(BASE_LIST_MASKED)[[b]] <- masked$Scenario 
+    } # closes b
+      
+    #-----------------
+    # MASK ALTERNATES & CALC CELL STATS (landscale means)
+    ALT_LIST_MASKED <- list()
+    for (i in 1:length(alt_list)) {
+      a_name <- str_extract_all(alt_list[i], all_scenario_names)[[1]]
         
-        if(is.null(pchange)){
-          percent_diff <- NULL
-        } # close if (is.null(change))
-      } # Close i
-    } # close b
-  #} # closes n
+      print(paste0("Masking Alt :: ", a_name))
+        
+      # Mask the nc stack
+      masked <- MASK_NC_OUTPUT(alt_list[i], AOI_PATH, all_scenario_names)
+        
+      print(paste0("Calculating Landscape Mean Alt :: ",
+                   a_name, " -- ", Sys.time()))
+        
+      # Calculate mean of landscape for each day
+      daily_mean_vals <- cellStats(masked$nc_masked, stat = mean, na.rm = TRUE)
+      masked$daily_mean <- daily_mean_vals
+        
+      ALT_LIST_MASKED[[i]] <- masked
+      names(ALT_LIST_MASKED)[[i]] <- masked$Scenario 
+    } # closes i 
+  } else {
+     
+    #-----------------
+    # READ BASELINES & CALC CELL STATS
+    BASE_LIST_MASKED <- list()
+    for (b in 1:length(base_list)) {
+      b_name <- str_extract_all(base_list[b], all_scenario_names)[[1]]
+        
+      print(paste0("Stacking Base :: ", b_name,  " -- ", Sys.time()))
+        
+      # Read nc stack - no masking since already masked (cropped = TRUE)
+      masked <- STACK_NC_OUTPUT(base_list[b], AOI_PATH, all_scenario_names)
+        
+      print(paste0("Calculating Landscape Mean Base :: ",
+                   b_name, " -- ", Sys.time()))
+        
+      # Calculate mean of landscape for each day
+      daily_mean_vals <- cellStats(masked$nc_masked, stat = mean, na.rm = TRUE)
+      masked$daily_mean <- daily_mean_vals
+        
+      BASE_LIST_MASKED[[b]] <- masked
+      names(BASE_LIST_MASKED)[[b]] <- masked$Scenario
+    } # closes b
     
+    #-----------------
+    # READ ALTERNATES & CALC CELL STATS
+    ALT_LIST_MASKED <- list()
+    for (i in 1:length(alt_list)) {
+      a_name <- str_extract_all(alt_list[i], all_scenario_names)[[1]]
+        
+      print(paste0("Stacking Alt :: ", a_name))
+        
+      # Read nc stack - no masking since already masked (cropped = TRUE)
+      masked <- STACK_NC_OUTPUT(alt_list[i], AOI_PATH, all_scenario_names)
+        
+      print(paste0("Calculating Landscape Mean Alt :: ",
+                   a_name, " -- ", Sys.time()))
+        
+      # Calculate mean of landscape for each day
+      daily_mean_vals <- cellStats(masked$nc_masked, stat = mean, na.rm = TRUE)
+      masked$daily_mean <- daily_mean_vals
+        
+      ALT_LIST_MASKED[[i]] <- masked
+      names(ALT_LIST_MASKED)[[i]] <- masked$Scenario 
+    } # closes i 
+  } # closes else
+    
+  #-----------------
+  ## Export first baseline and alt slices to double check masked for calculations
+  jpeg(paste0(OUTPUT_PATH, species, "_base_mask_test.jpg"))
+  plot(BASE_LIST_MASKED[[1]][[1]][[1]])
+  dev.off()
+      
+  jpeg(paste0(OUTPUT_PATH, species, "_alt_mask_test.jpg"))
+  plot(ALT_LIST_MASKED[[1]][[1]][[1]])
+  dev.off()
+    
+  #-----------------
+  #Process data to calculate percent difference
+  
+  # Process baseline file b
+  percent_diff <- data.frame() # list to hold processed data
+
+  #index <- 0
+  for (b in 1:length(BASE_LIST_MASKED)) {  
+    
+    # Get baseline name
+    b_name <- BASE_LIST_MASKED[[b]]$Scenario
+      
+    # Get Baseline daily vals
+    base_vals <- BASE_LIST_MASKED[[b]]$daily_mean
+
+    # process alternate file i
+    for (i in 1:length(ALT_LIST_MASKED)) {
+        
+      # Get alternate name
+      a_name <- ALT_LIST_MASKED[[i]]$Scenario
+        
+      # Get alternate daily vals
+      alt_vals <- ALT_LIST_MASKED[[i]]$daily_mean
+        
+      # Set species string - needed for DIFF_CHANGE_FUNCTION
+      # since species output is daily or yearly
+      if (species %in% waders_sp_string) {
+        pchange_sp_string <- "EverWaders"
+      } else {
+        pchange_sp_string <- sp_string
+      } #close else for sp string
+      
+      #-----------------
+      # Calculate percent change 
+      # Calculates percent change of landscale means
+      # For daily output, calculates percent change of landscape means,
+      # and then averages the daily percent change values
+      print(paste0("Calculating Percent Change :: ",
+                   a_name, "-", b_name, " -- ", Sys.time()))
+      pchange <- DIFF_CHANGE_CALC(pchange_sp_string,
+                                  BASE_LIST_MASKED[[b]]$nc_masked,
+                                  alt_vals, a_name, base_vals, b_name)
+        
+      #-----------------
+      # add data to percent diff dataframe - 
+      # if percent diff was calculated during data processing,
+      # bind rows to one dataframe
+      print(paste0("Adding Percent Difference :: ALT_",
+                   a_name, " minus BASE_", b_name))
+      if (!is.null(pchange)) {
+        percent_diff <- bind_rows(percent_diff, pchange)
+      } # close if (!is.null(pchange)) 
+        
+      if(is.null(pchange)){
+        percent_diff <- NULL
+      } # close if (is.null(change))
+    } # Close i
+  } # close b
+
   # Print list with all processed data  
   process_list_all[[n]] <- process_list
   names(process_list_all)[[n]] <- sp_string[n]
@@ -333,20 +352,22 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
   print(paste0("Export Acreage Data CSV"))
   
   # Tidy scenario_year column to individual columns
-  acreage_diff_df <- separate(acreage_diff_df, Scenario_year, into = c("Scenario", "Year"), sep = "_X")
+  acreage_diff_df <- separate(acreage_diff_df, Scenario_year,
+                              into = c("Scenario", "Year"), sep = "_X")
   
   # Generate file name and export acreage table
-  output_filename <- paste0(out_path, "Acreage_", gsub(" ", "_", map_title), ".csv")
+  output_filename <- paste0(out_path, "Acreage_",
+                            gsub(" ", "_", map_title), ".csv")
   output_filename
   write.csv(acreage_diff_df, output_filename, row.names = FALSE)
   
   ####
   # Crop out forst 3 years for Apple snail
   ####
-  if("Apple_Snail" %in% sp_string){
+  if ("Apple_Snail" %in% sp_string) {
     minyear <- as.numeric(min(percent_diff$Year))
-    startyr <- minyear+3
-    exclude_yrs <- seq(minyear, startyr-1, 1)
+    startyr <- minyear + 3
+    exclude_yrs <- seq(minyear, startyr - 1, 1)
     percent_diff <- percent_diff[percent_diff$Year != exclude_yrs,]
   }
   
@@ -356,70 +377,74 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
   # Export dataframe with all percent differences
   # If percent diffrence data frame exists, create a bar plot
   print(paste0("Export Percent Difference Data CSV"))
-  if(!is.null(percent_diff)){
-  diff_output_filename <- paste0(out_path, "PercentDiff_", gsub(" ", "_", map_title), ".csv")
-  write.csv(percent_diff, diff_output_filename, row.names = FALSE)
+  if (!is.null(percent_diff)) {
+    diff_output_filename <- paste0(out_path, "PercentDiff_",
+                                   gsub(" ", "_", map_title), ".csv")
+    write.csv(percent_diff, diff_output_filename, row.names = FALSE)
   
-  # Make Percent diffrence bar plot
-  x_var <- "Year"
-  y_var <- "Percent_Difference"
-  fill_var <- "Scenarios"
-  title <- map_dfs$map_title
-  #y_lab <- paste0("Percent Change in ", title, "\nfrom baseline to ", map_dfs$alt_name)
-  x_lab <- "Year"
-  min_limit <-plyr::round_any(min(percent_diff[y_var]), 5, f = floor) - 10
-  max_limit <- plyr::round_any(max(percent_diff[y_var]), 5, f = ceiling) + 10
+    # Make Percent diffrence bar plot
+    x_var <- "Year"
+    y_var <- "Percent_Difference"
+    fill_var <- "Scenarios"
+    title <- map_dfs$map_title
+    x_lab <- "Year"
+    min_limit <- plyr::round_any(min(percent_diff[y_var]), 5, f = floor) - 10
+    max_limit <- plyr::round_any(max(percent_diff[y_var]), 5, f = ceiling) + 10
   
-  # make bar plots - 1 plot for each alt against all baselines
-  for(a in 1:length(alt_names)){
-    print(paste0("Making Differnce Bar Plot :: ", alt_names[a]))
+    # make bar plots - 1 plot for each alt against all baselines
+    for (a in 1:length(alt_names)) {
+      print(paste0("Making Differnce Bar Plot :: ", alt_names[a]))
     
-    per_diff_alt <- percent_diff[grep(alt_names[a], percent_diff$Scenarios),]
-    TEST <- PER_DIFF_PLOT(
-      DF = per_diff_alt,
-      X_VAR = x_var,
-      Y_VAR = y_var,
-      FILL_VAR = fill_var,
-      TITLE = title,
-      Y_LAB = paste0("Percent Change in ", title, "\nfrom Baseline to ", alt_names[a]),
-      X_LAB = x_lab,
-      MIN_LIMIT = min_limit,
-      MAX_LIMIT = max_limit
-    )
-    #diff_plot_filename <- paste0(out_path, "PercentDiff_BarPlot_", gsub(" ", "_", map_title),"_", alt_names[a], ".pdf")
-    #ggsave(diff_plot_filename, TEST, width=11, height=8.5, units="in", dpi=300)
-    diff_plot_filename <- paste0(out_path, "PercentDiff_BarPlot_", gsub(" ", "_", map_title),"_", alt_names[a], ".png")
-    ggsave(diff_plot_filename, TEST, width=15, height=8.5, units="in", dpi=300, scale = 1)
-  } # closes alt bar plots
+      per_diff_alt <- percent_diff[grep(alt_names[a], percent_diff$Scenarios),]
+      TEST <- PER_DIFF_PLOT(
+        DF = per_diff_alt,
+        X_VAR = x_var,
+        Y_VAR = y_var,
+        FILL_VAR = fill_var,
+        TITLE = title,
+        Y_LAB = paste0("Percent Change in ", title, "\nfrom Baseline to ", alt_names[a]),
+        X_LAB = x_lab,
+        MIN_LIMIT = min_limit,
+        MAX_LIMIT = max_limit
+      )
+      diff_plot_filename <- paste0(out_path, "PercentDiff_BarPlot_",
+                                   gsub(" ", "_", map_title),"_",
+                                   alt_names[a], ".png")
+      ggsave(diff_plot_filename, TEST,
+             width = 15, height = 8.5, units = "in", dpi = 300, scale = 1)
+    } # closes alt bar plots
   
-  # make bar plots - 1 bar plot for each baselines that shows all alts
-  for(l in 1:length(base_names)){
-    print(paste0("Making Differnce Bar Plot :: ", base_names[l]))
+    # make bar plots - 1 bar plot for each baselines that shows all alts
+    for (l in 1:length(base_names)) {
+      print(paste0("Making Differnce Bar Plot :: ", base_names[l]))
     
-    per_diff_base <- percent_diff[grep(base_names[l], percent_diff$Scenarios),]
-    TEST <- PER_DIFF_PLOT_ALTS(
-      DF = per_diff_base,
-      X_VAR = x_var,
-      Y_VAR = y_var,
-      FILL_VAR = fill_var,
-      TITLE = title,
-      Y_LAB = paste0("Percent Change in ", title, "\nfrom Baseline ", base_names[l]),
-      X_LAB = x_lab,
-      MIN_LIMIT = min_limit,
-      MAX_LIMIT = max_limit
-    )
+      per_diff_base <- percent_diff[grep(base_names[l], percent_diff$Scenarios),]
+      TEST <- PER_DIFF_PLOT_ALTS(
+        DF = per_diff_base,
+        X_VAR = x_var,
+        Y_VAR = y_var,
+        FILL_VAR = fill_var,
+        TITLE = title,
+        Y_LAB = paste0("Percent Change in ", title, "\nfrom Baseline ", base_names[l]),
+        X_LAB = x_lab,
+        MIN_LIMIT = min_limit,
+        MAX_LIMIT = max_limit
+      )
     
-  diff_plot_filename <- paste0(OUTPUT_PATH, "/PercentDiff_BarPlot_", gsub(" ", "_", title),"_", base_names[l], ".png")
-  ggsave(diff_plot_filename, TEST, width=15, height=8.5, units="in", dpi=300, scale = 1)
-  } # closes base barplots
+      diff_plot_filename <- paste0(OUTPUT_PATH, "/PercentDiff_BarPlot_",
+                                   gsub(" ", "_", title),"_",
+                                   base_names[l], ".png")
+      ggsave(diff_plot_filename, TEST,
+             width = 15, height = 8.5, units = "in", dpi = 300, scale = 1)
+    } # closes base barplots
   } # closes bar plots if percent diff ! null
-  } # closes n
+} # closes n
 
 # Save R object that has processed data stored
-  if(grepl("EverWaders", FILES$ALL_FILES[1])){
+  if (grepl("EverWaders", FILES$ALL_FILES[1])) {
   save_string <- "EverWaders"
-  }else{
+  } else {
   save_string <- sp_string}
 
-save(process_list_all, FILES, BASE_LIST_MASKED, ALT_LIST_MASKED, file = paste0(out_path, save_string, "_processed_data.RData"))
-#load('../LOSOM/Output/LOSOM_Round1_2021_05/Apple_Snail/Apple_Snail_processed_data.RData')
+save(process_list_all, FILES, BASE_LIST_MASKED, ALT_LIST_MASKED,
+     file = paste0(out_path, save_string, "_processed_data.RData"))
