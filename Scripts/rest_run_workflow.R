@@ -324,7 +324,7 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
       # and then averages the daily percent change values
       print(paste0("Calculating Percent Change :: ",
                    a_name, "-", b_name, " -- ", Sys.time()))
-      pchange <- DIFF_CHANGE_CALC(pchange_sp_string,
+      pchange <- DiffChangeCalc(pchange_sp_string,
                                   base_list_masked[[b]]$nc_masked,
                                   alt_vals, a_name, base_vals, b_name)
         
