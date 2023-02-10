@@ -483,25 +483,26 @@ PerDiffPlotAlt <- function(df, # dataframe to plot
 # Calculate Percent change
 # cell stats alredy calculated to landscape means
 ##############################
-DIFF_CHANGE_CALC <- function(species_string, #species string -- match sp_string set at beginign of workflow script
-                             NC_STACK,       # One nc stack to extract layer names
-                             ALT_VALS,       # landscape means for alternate scenario
-                             ALT_SCEN,       # name of alternate scenario
-                             BASE_VALS,      # landscape means for baseline scenario
-                             BASE_SCEN){     # name of baseline scenario
+DiffChangeCalc <- function(
+    species_string, #species string -- match sp_string set at beginign of workflow script
+    nc_stack,       # One nc stack to extract layer names
+    alt_vals,       # landscape means for alternate scenario
+    alt_scen,       # name of alternate scenario
+    base_vals,      # landscape means for baseline scenario
+    base_scen){     # name of baseline scenario
   
   #Get diff name
-  diff_name <- paste0(ALT_SCEN, "-", BASE_SCEN)
+  diff_name <- paste0(alt_scen, "-", base_scen)
   
   # Get species string
   species_string <- species_string
   
-  if(grepl(paste0("Alligator", "|", "EverWaders"), species_string)){
+  if (grepl(paste0("Alligator", "|", "EverWaders"), species_string)) {
     
     #Calculate percent diffrence of the landscape mean
-    per_diff <- as.data.frame(((ALT_VALS - BASE_VALS)/BASE_VALS)*100)
+    per_diff <- as.data.frame(((alt_vals - base_vals)/base_vals)*100)
       
-    #Make data frame for bar chart
+    # Make data frame for bar chart
     rownames(per_diff) <- sub("X", "", rownames(per_diff))
     colnames(per_diff) <- "Percent_Difference"
     per_diff$Scenarios <- diff_name
@@ -509,30 +510,32 @@ DIFF_CHANGE_CALC <- function(species_string, #species string -- match sp_string 
     per_diff_mean <- per_diff
   } 
   
-  if(grepl(paste0("Apple_Snail", "|", "SnailKite"), species_string)){
+  if (grepl(paste0("Apple_Snail", "|", "SnailKite"), species_string)) {
     
     # Calculate daily percent change across the landscape between alt and baseline
     
     #percent difference of the daily landscape meand
-    per_diff <- as.data.frame(((ALT_VALS - BASE_VALS)/BASE_VALS)*100)
+    per_diff <- as.data.frame(((alt_vals - base_vals)/base_vals)*100)
 
     # calculate average of daily percent change for each year
     #Get indices for years
-    indicies <- format(as.Date(names(NC_STACK), format="X%Y.%m.%d"), format="%Y")
+    indicies <- format(as.Date(names(nc_stack),
+                               format = "X%Y.%m.%d"), format = "%Y")
     indicies <- indicies
     names(per_diff) <- "Percent_Difference"
     per_diff$Year <- indicies
     
     #Mean across year
-    per_diff_mean <- per_diff%>%
-      group_by(Year)%>%
+    per_diff_mean <- per_diff %>%
+      group_by(Year) %>%
       summarise("Percent_Difference" = mean(Percent_Difference))
     
     per_diff_mean$Scenarios <- diff_name
   } 
   
-  # Set dataframe as NULL for dsd. If not, will get error that object does not exist when writing out to list at end of function
-  if(grepl("dsd", species_string)){
+  # Set dataframe as NULL for dsd. If not, will get error that object
+  # does not exist when writing out to list at end of function
+  if (grepl("dsd", species_string)) {
     per_diff_mean <- NULL
   }
   
