@@ -544,13 +544,16 @@ DIFF_CHANGE_CALC <- function(species_string, #species string -- match sp_string 
 # FUNCTION TO MASK NETCDF
 ##############################
 
-MASK_NC_OUTPUT <- function(NC_FILE, AOI, ALL_SCENARIO_NAMES){
+MaskNcOutput <- function(nc_file, # full path to NetCDF file to mask
+                         aoi, # shapefile path of mask
+                         all_scenario_names){ # character string of scenario
+                                              # names separated by '|' 
   
   #Extract NAME FROM FILE
-  scenario_name <- str_extract_all(NC_FILE, ALL_SCENARIO_NAMES)[[1]]
+  scenario_name <- str_extract_all(nc_fil, all_scenario_names)[[1]]
   
   # Load shapefile
-  AOI_mask <- shapefile(AOI)
+  aoi_mask <- shapefile(aoi)
   
   # ----
   # Define Strings for each species for Function
@@ -580,37 +583,37 @@ MASK_NC_OUTPUT <- function(NC_FILE, AOI, ALL_SCENARIO_NAMES){
   # Set read in varname
   ###
   
-  if(grepl(gator_string, NC_FILE)){
+  if (grepl(gator_string, nc_file)) {
     nc_varname <- gator_varname
     daily_output <- FALSE
   }
   
-  if(grepl(snki_string, NC_FILE)){
+  if (grepl(snki_string, nc_file)) {
     nc_varname <- snki_varname
     daily_output <- TRUE
   }
   
-  if(grepl(dsd_string, NC_FILE)){
+  if (grepl(dsd_string, nc_file)) {
     nc_varname <- dsd_varname
     daily_output <- TRUE
   }
   
-  if(grepl(apsn_string, NC_FILE)){
+  if (grepl(apsn_string, nc_file)) {
     nc_varname <- apsn_varname
     daily_output <- TRUE
   }
   
-  if(grepl(waders_string, NC_FILE)){
+  if (grepl(waders_string, nc_file)) {
     nc_varname <- waders_varname
-    species <- gsub(".*EverWaders_|\\.nc.*", "", NC_FILE)
+    species <- gsub(".*EverWaders_|\\.nc.*", "", nc_file)
     nc_varname <- paste0(species, waders_varname)
     daily_output <- FALSE
   }
   
-    # ----
+  # ----
   # Get layer/Band names from Netcdf
   # ----
-  nc <- nc_open(NC_FILE)
+  nc <- nc_open(nc_file)
   
   # Get dates for bands
   time_att <- nc$dim$t$units
@@ -620,19 +623,18 @@ MASK_NC_OUTPUT <- function(NC_FILE, AOI, ALL_SCENARIO_NAMES){
   start_date <- as.Date(time_split[[1]][1])
   start_year <- as.numeric(format(start_date, format = "%Y"))
   
-  if(daily_output){
+  if (daily_output) {
     end_year <- start_date + (time_length - 1)
     
     band_years <- seq(start_date, end_year, 1)
     band_years <- paste0("X", band_years)
-    #BAND_YEARS
   } else {
-    end_year <- start_year + (time_length - 1) # subtract 1 to account for starting year in length
+    # subtract 1 to account for starting year in length
+    end_year <- start_year + (time_length - 1) 
     
     # Sequence years for band names
     band_years <- seq(start_year, end_year, 1)
     band_years <- paste0("X", band_years)
-    #BAND_YEARS
   }
   
   nc_close(nc) # Clsoe netcdf
@@ -642,7 +644,7 @@ MASK_NC_OUTPUT <- function(NC_FILE, AOI, ALL_SCENARIO_NAMES){
   # ----
   
   # Load files
-  nc_stack <- stack(NC_FILE, varname = nc_varname)
+  nc_stack <- stack(nc_file, varname = nc_varname)
 
   # Add names to bands
   names(nc_stack) <- band_years
@@ -650,7 +652,7 @@ MASK_NC_OUTPUT <- function(NC_FILE, AOI, ALL_SCENARIO_NAMES){
   #nc_stack <- nc_stack[[1:2]] # subset used when testing function to increase speed
   
   # Apply Mask
-  nc_masked <- mask(nc_stack, AOI_mask)
+  nc_masked <- mask(nc_stack, aoi_mask)
   
   nc_masked_list <- list("nc_masked" = nc_masked, "Scenario" = scenario_name, "Variable" = nc_varname)
   return(nc_masked_list)
@@ -661,10 +663,13 @@ MASK_NC_OUTPUT <- function(NC_FILE, AOI, ALL_SCENARIO_NAMES){
 # already masked
 ##############################
 
-STACK_NC_OUTPUT <- function(NC_FILE, AOI, ALL_SCENARIO_NAMES){
+StackNcOutput <- function(nc_file, # full path to NetCDF file to mask
+                          aoi, # shapefile path of mask
+                          all_scenario_names){ # character string of scenario
+                                               # names separated by '|' 
   
   #Extract NAME FROM FILE
-  scenario_name <- str_extract_all(NC_FILE, ALL_SCENARIO_NAMES)[[1]]
+  scenario_name <- str_extract_all(nc_file, all_scenario_names)[[1]]
   
   # ----
   # Define Strings for each species for Function
@@ -694,29 +699,29 @@ STACK_NC_OUTPUT <- function(NC_FILE, AOI, ALL_SCENARIO_NAMES){
   # Set read in varname
   ###
   
-  if(grepl(gator_string, NC_FILE)){
+  if (grepl(gator_string, nc_file)) {
     nc_varname <- gator_varname
     daily_output <- FALSE
   }
   
-  if(grepl(snki_string, NC_FILE)){
+  if (grepl(snki_string, nc_file)) {
     nc_varname <- snki_varname
     daily_output <- TRUE
   }
   
-  if(grepl(dsd_string, NC_FILE)){
+  if (grepl(dsd_string, nc_file)) {
     nc_varname <- dsd_varname
     daily_output <- TRUE
   }
   
-  if(grepl(apsn_string, NC_FILE)){
+  if (grepl(apsn_string, nc_file)) {
     nc_varname <- apsn_varname
     daily_output <- TRUE
   }
   
-  if(grepl(waders_string, NC_FILE)){
+  if (grepl(waders_string, nc_file)) {
     nc_varname <- waders_varname
-    species <- gsub(".*EverWaders_|\\.nc.*", "", NC_FILE)
+    species <- gsub(".*EverWaders_|\\.nc.*", "", nc_file)
     nc_varname <- paste0(species, waders_varname)
     daily_output <- FALSE
   }
@@ -724,7 +729,7 @@ STACK_NC_OUTPUT <- function(NC_FILE, AOI, ALL_SCENARIO_NAMES){
   # ----
   # Get layer/Band names from Netcdf
   # ----
-  nc <- nc_open(NC_FILE)
+  nc <- nc_open(nc_file)
   
   # Get dates for bands
   time_att <- nc$dim$t$units
@@ -734,19 +739,17 @@ STACK_NC_OUTPUT <- function(NC_FILE, AOI, ALL_SCENARIO_NAMES){
   start_date <- as.Date(time_split[[1]][1])
   start_year <- as.numeric(format(start_date, format = "%Y"))
   
-  if(daily_output){
+  if (daily_output) {
     end_year <- start_date + (time_length - 1)
     
     band_years <- seq(start_date, end_year, 1)
     band_years <- paste0("X", band_years)
-    #BAND_YEARS
   } else {
-    end_year <- start_year + (time_length - 1) # subtract 1 to account for starting year in length
-    
+    # subtract 1 to account for starting year in length
+    end_year <- start_year + (time_length - 1) 
     # Sequence years for band names
     band_years <- seq(start_year, end_year, 1)
     band_years <- paste0("X", band_years)
-    #BAND_YEARS
   }
   
   nc_close(nc) # Clsoe netcdf
@@ -756,7 +759,7 @@ STACK_NC_OUTPUT <- function(NC_FILE, AOI, ALL_SCENARIO_NAMES){
   # ----
   
   # Load files
-  nc_stack <- stack(NC_FILE, varname = nc_varname)
+  nc_stack <- stack(nc_file, varname = nc_varname)
   
   # Add names to bands
   names(nc_stack) <- band_years
