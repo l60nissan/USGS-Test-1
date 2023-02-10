@@ -417,42 +417,66 @@ ProcessOutput <- function(base_file,     # Baseline netcdf to process
 }
 
 # Make percent diff Bar plot
-PER_DIFF_PLOT <- function(DF, X_VAR, Y_VAR, FILL_VAR, TITLE, Y_LAB, X_LAB, MIN_LIMIT, MAX_LIMIT){
-  DIFF_PLOT <- ggplot(data = DF, aes_string(x=X_VAR, y=Y_VAR, fill = FILL_VAR))+ 
-    geom_bar(stat="identity", position="dodge", width=0.7, colour="black") + 
-    labs(y = Y_LAB, x = X_LAB, title = TITLE, fill = "Percent Change \nfrom Baseline:")+
-    scale_y_continuous(limits=c(MIN_LIMIT,MAX_LIMIT)) +
-    theme(axis.title.x=element_text(size=15),
-          axis.title.y=element_text(size=15),
-          plot.title=element_text(size=20),
-          axis.text.x=element_text(size=12, angle=70, hjust=1), 
-          axis.text.y=element_text(size=12), 
-          legend.text=element_text(size=12),
-          legend.title=element_text(size=15), 
+PerDiffPlot <- function(df, # dataframe to plot
+                        x_var, # string of x variable
+                        y_var, # string of y variable
+                        fill_var, # string of fill variable
+                        title, # string of plot title
+                        y_lab, # string of y label
+                        x_lab, # string of x label
+                        min_limit, # value of minimum value for y scale
+                        max_limit){ # values of maximum value for y scale
+  diff_plot <- ggplot(data = df, aes(x = !!sym(x_var), y = !!sym(y_var), 
+                                    fill = !!sym(fill_var))) + 
+    geom_bar(stat = "identity", position = "dodge",
+             width = 0.7,colour = "black") + 
+    labs(y = y_lab, x = x_lab, title = title,
+         fill = "Percent Change \nfrom Baseline:") +
+    scale_y_continuous(limits = c(min_limit, max_limit)) +
+    theme(axis.title.x = element_text(size = 15),
+          axis.title.y = element_text(size = 15),
+          plot.title = element_text(size = 20),
+          axis.text.x = element_text(size = 12, angle = 70, hjust = 1), 
+          axis.text.y = element_text(size = 12), 
+          legend.text = element_text(size = 12),
+          legend.title = element_text(size = 15), 
           legend.title.align = 0.5,
-          plot.margin = margin(1,.5,1,.5, unit = "in")) # Set margins for plot - wider on right side to make space fore legend
+          # Set margins for plot - wider on right side to make space fore legend
+          plot.margin = margin(1, .5, 1, .5, unit = "in")) 
   
-  return(DIFF_PLOT)
+  return(diff_plot)
 }
 
-PER_DIFF_PLOT_ALTS <- function(DF, X_VAR, Y_VAR, FILL_VAR, TITLE, Y_LAB, X_LAB, MIN_LIMIT, MAX_LIMIT){
+PerDiffPlotAlt <- function(df, # dataframe to plot
+                          x_var, # string of x variable
+                          y_var, # string of y variable
+                          fill_var, # string of fill variable
+                          title, # string of plot title
+                          y_lab, # string of y label
+                          x_lab, # string of x label
+                          min_limit, # value of minimum value for y scale
+                          max_limit){ # values of maximum value for y scale
   bar_pal <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00")
-  DIFF_PLOT <- ggplot(data = DF, aes_string(x=X_VAR, y=Y_VAR, fill = FILL_VAR))+ 
-    geom_bar(stat="identity", position = "dodge", width=0.7, colour="black") + 
-    scale_fill_manual(values = bar_pal )+
-    labs(y = Y_LAB, x = X_LAB, title = TITLE, fill = "Percent Change \nfrom Baseline:")+
-    scale_y_continuous(limits=c(MIN_LIMIT,MAX_LIMIT)) +
-    theme(axis.title.x=element_text(size=15),
-          axis.title.y=element_text(size=15),
-          plot.title=element_text(size=20),
-          axis.text.x=element_text(size=12, angle=70, hjust=1), 
-          axis.text.y=element_text(size=12), 
-          legend.text=element_text(size=12),
-          legend.title=element_text(size=15), 
+  diff_plot <- ggplot(data = df, aes(x = !!sym(x_var), y = !!sym(y_var),
+                                     fill = !!sym(fill_var))) + 
+    geom_bar(stat = "identity", position = "dodge",
+             width = 0.7, colour = "black") + 
+    scale_fill_manual(values = bar_pal ) +
+    labs(y = y_lab, x = x_lab, title = title,
+         fill = "Percent Change \nfrom Baseline:") +
+    scale_y_continuous(limits = c(min_limit, max_limit)) +
+    theme(axis.title.x = element_text(size = 15),
+          axis.title.y = element_text(size = 15),
+          plot.title = element_text(size = 20),
+          axis.text.x = element_text(size = 12, angle = 70, hjust = 1), 
+          axis.text.y = element_text(size = 12), 
+          legend.text = element_text(size = 12),
+          legend.title = element_text(size = 15), 
           legend.title.align = 0.5,
-          plot.margin = margin(1,.5,1,.5, unit = "in")) # Set margins for plot - wider on right side to make space fore legend
+          # Set margins for plot - wider on right side to make space fore legend
+          plot.margin = margin(1, .5, 1, .5, unit = "in")) 
   
-  return(DIFF_PLOT)
+  return(diff_plot)
 }
 
 ##############################
