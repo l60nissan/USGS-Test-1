@@ -187,14 +187,14 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
   
     #-----------------
     # MASK BASELINES & CALC CELL STATS (landscape means)
-    BASE_LIST_MASKED <- list()
+    base_list_masked <- list()
     for (b in 1:length(base_list)) {
       b_name <- str_extract_all(base_list[b], all_scenario_names)[[1]]
         
       print(paste0("Masking Base :: ", b_name))
         
       # Mask the nc stack
-      masked <- MASK_NC_OUTPUT(base_list[b], AOI_PATH, all_scenario_names)
+      masked <- MaskNcOutput(base_list[b], aoi_path, all_scenario_names)
         
       print(paste0("Calculating Landscape Mean Base :: ",
                    b_name, " -- ", Sys.time()))
@@ -203,20 +203,20 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
       daily_mean_vals <- cellStats(masked$nc_masked, stat = mean, na.rm = TRUE)
       masked$daily_mean <- daily_mean_vals
         
-      BASE_LIST_MASKED[[b]] <- masked
-      names(BASE_LIST_MASKED)[[b]] <- masked$Scenario 
+      base_list_masked[[b]] <- masked
+      names(base_list_masked)[[b]] <- masked$Scenario 
     } # closes b
       
     #-----------------
     # MASK ALTERNATES & CALC CELL STATS (landscale means)
-    ALT_LIST_MASKED <- list()
+    alt_list_masked <- list()
     for (i in 1:length(alt_list)) {
       a_name <- str_extract_all(alt_list[i], all_scenario_names)[[1]]
         
       print(paste0("Masking Alt :: ", a_name))
         
       # Mask the nc stack
-      masked <- MASK_NC_OUTPUT(alt_list[i], AOI_PATH, all_scenario_names)
+      masked <- MaskNcOutput(alt_list[i], aoi_path, all_scenario_names)
         
       print(paste0("Calculating Landscape Mean Alt :: ",
                    a_name, " -- ", Sys.time()))
@@ -225,21 +225,21 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
       daily_mean_vals <- cellStats(masked$nc_masked, stat = mean, na.rm = TRUE)
       masked$daily_mean <- daily_mean_vals
         
-      ALT_LIST_MASKED[[i]] <- masked
-      names(ALT_LIST_MASKED)[[i]] <- masked$Scenario 
+      alt_list_masked[[i]] <- masked
+      names(alt_list_masked)[[i]] <- masked$Scenario 
     } # closes i 
   } else {
      
     #-----------------
     # READ BASELINES & CALC CELL STATS
-    BASE_LIST_MASKED <- list()
+    base_list_masked <- list()
     for (b in 1:length(base_list)) {
       b_name <- str_extract_all(base_list[b], all_scenario_names)[[1]]
         
       print(paste0("Stacking Base :: ", b_name,  " -- ", Sys.time()))
         
       # Read nc stack - no masking since already masked (cropped = TRUE)
-      masked <- STACK_NC_OUTPUT(base_list[b], AOI_PATH, all_scenario_names)
+      masked <- StackNcOutput(base_list[b], aoi_path, all_scenario_names)
         
       print(paste0("Calculating Landscape Mean Base :: ",
                    b_name, " -- ", Sys.time()))
@@ -248,20 +248,20 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
       daily_mean_vals <- cellStats(masked$nc_masked, stat = mean, na.rm = TRUE)
       masked$daily_mean <- daily_mean_vals
         
-      BASE_LIST_MASKED[[b]] <- masked
-      names(BASE_LIST_MASKED)[[b]] <- masked$Scenario
+      base_list_masked[[b]] <- masked
+      names(base_list_masked)[[b]] <- masked$Scenario
     } # closes b
     
     #-----------------
     # READ ALTERNATES & CALC CELL STATS
-    ALT_LIST_MASKED <- list()
+    alt_list_masked <- list()
     for (i in 1:length(alt_list)) {
       a_name <- str_extract_all(alt_list[i], all_scenario_names)[[1]]
         
       print(paste0("Stacking Alt :: ", a_name))
         
       # Read nc stack - no masking since already masked (cropped = TRUE)
-      masked <- STACK_NC_OUTPUT(alt_list[i], AOI_PATH, all_scenario_names)
+      masked <- StackNcOutput(alt_list[i], aoi_path, all_scenario_names)
         
       print(paste0("Calculating Landscape Mean Alt :: ",
                    a_name, " -- ", Sys.time()))
@@ -270,19 +270,19 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
       daily_mean_vals <- cellStats(masked$nc_masked, stat = mean, na.rm = TRUE)
       masked$daily_mean <- daily_mean_vals
         
-      ALT_LIST_MASKED[[i]] <- masked
-      names(ALT_LIST_MASKED)[[i]] <- masked$Scenario 
+      alt_list_masked[[i]] <- masked
+      names(alt_list_masked)[[i]] <- masked$Scenario 
     } # closes i 
   } # closes else
     
   #-----------------
   ## Export first baseline and alt slices to double check masked for calculations
-  jpeg(paste0(OUTPUT_PATH, species, "_base_mask_test.jpg"))
-  plot(BASE_LIST_MASKED[[1]][[1]][[1]])
+  jpeg(paste0(output_path, species, "_base_mask_test.jpg"))
+  plot(base_list_masked[[1]][[1]][[1]])
   dev.off()
       
-  jpeg(paste0(OUTPUT_PATH, species, "_alt_mask_test.jpg"))
-  plot(ALT_LIST_MASKED[[1]][[1]][[1]])
+  jpeg(paste0(output_path, species, "_alt_mask_test.jpg"))
+  plot(alt_list_masked[[1]][[1]][[1]])
   dev.off()
     
   #-----------------
@@ -292,22 +292,22 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
   percent_diff <- data.frame() # list to hold processed data
 
   #index <- 0
-  for (b in 1:length(BASE_LIST_MASKED)) {  
+  for (b in 1:length(base_list_masked)) {  
     
     # Get baseline name
-    b_name <- BASE_LIST_MASKED[[b]]$Scenario
+    b_name <- base_list_masked[[b]]$Scenario
       
     # Get Baseline daily vals
-    base_vals <- BASE_LIST_MASKED[[b]]$daily_mean
+    base_vals <- base_list_masked[[b]]$daily_mean
 
     # process alternate file i
-    for (i in 1:length(ALT_LIST_MASKED)) {
+    for (i in 1:length(alt_list_masked)) {
         
       # Get alternate name
-      a_name <- ALT_LIST_MASKED[[i]]$Scenario
+      a_name <- alt_list_masked[[i]]$Scenario
         
       # Get alternate daily vals
-      alt_vals <- ALT_LIST_MASKED[[i]]$daily_mean
+      alt_vals <- alt_list_masked[[i]]$daily_mean
         
       # Set species string - needed for DIFF_CHANGE_FUNCTION
       # since species output is daily or yearly
@@ -325,7 +325,7 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
       print(paste0("Calculating Percent Change :: ",
                    a_name, "-", b_name, " -- ", Sys.time()))
       pchange <- DIFF_CHANGE_CALC(pchange_sp_string,
-                                  BASE_LIST_MASKED[[b]]$nc_masked,
+                                  base_list_masked[[b]]$nc_masked,
                                   alt_vals, a_name, base_vals, b_name)
         
       #-----------------
@@ -348,6 +348,7 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
   process_list_all[[n]] <- process_list
   names(process_list_all)[[n]] <- sp_string[n]
   
+  #-----------------
   # Export acreage Data
   print(paste0("Export Acreage Data CSV"))
   
@@ -361,9 +362,7 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
   output_filename
   write.csv(acreage_diff_df, output_filename, row.names = FALSE)
   
-  ####
-  # Crop out forst 3 years for Apple snail
-  ####
+  # Crop out first 3 years for Apple snail
   if ("Apple_Snail" %in% sp_string) {
     minyear <- as.numeric(min(percent_diff$Year))
     startyr <- minyear + 3
@@ -371,9 +370,9 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
     percent_diff <- percent_diff[percent_diff$Year != exclude_yrs,]
   }
   
-  ####
+  #-----------------
   # Export Percent diff data, and make Bar plots
-  ####
+
   # Export dataframe with all percent differences
   # If percent diffrence data frame exists, create a bar plot
   print(paste0("Export Percent Difference Data CSV"))
@@ -396,7 +395,7 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
       print(paste0("Making Differnce Bar Plot :: ", alt_names[a]))
     
       per_diff_alt <- percent_diff[grep(alt_names[a], percent_diff$Scenarios),]
-      TEST <- PER_DIFF_PLOT(
+      diff_plot <- PerDiffPlot(
         DF = per_diff_alt,
         X_VAR = x_var,
         Y_VAR = y_var,
@@ -410,7 +409,7 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
       diff_plot_filename <- paste0(out_path, "PercentDiff_BarPlot_",
                                    gsub(" ", "_", map_title),"_",
                                    alt_names[a], ".png")
-      ggsave(diff_plot_filename, TEST,
+      ggsave(diff_plot_filename, diff_plot,
              width = 15, height = 8.5, units = "in", dpi = 300, scale = 1)
     } # closes alt bar plots
   
@@ -419,7 +418,7 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
       print(paste0("Making Differnce Bar Plot :: ", base_names[l]))
     
       per_diff_base <- percent_diff[grep(base_names[l], percent_diff$Scenarios),]
-      TEST <- PER_DIFF_PLOT_ALTS(
+      diff_plot_a <- PerDiffPlotAlt(
         DF = per_diff_base,
         X_VAR = x_var,
         Y_VAR = y_var,
@@ -431,10 +430,10 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
         MAX_LIMIT = max_limit
       )
     
-      diff_plot_filename <- paste0(OUTPUT_PATH, "/PercentDiff_BarPlot_",
+      diff_plot_filename <- paste0(output_path, "/PercentDiff_BarPlot_",
                                    gsub(" ", "_", title),"_",
                                    base_names[l], ".png")
-      ggsave(diff_plot_filename, TEST,
+      ggsave(diff_plot_filename, diff_plot_a,
              width = 15, height = 8.5, units = "in", dpi = 300, scale = 1)
     } # closes base barplots
   } # closes bar plots if percent diff ! null
@@ -446,5 +445,5 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
   } else {
   save_string <- sp_string}
 
-save(process_list_all, FILES, BASE_LIST_MASKED, ALT_LIST_MASKED,
+save(process_list_all, FILES, base_list_masked, alt_list_masked,
      file = paste0(out_path, save_string, "_processed_data.RData"))
