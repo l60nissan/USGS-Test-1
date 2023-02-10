@@ -317,10 +317,10 @@ ProcessOutput <- function(base_file,     # Baseline netcdf to process
   alt_target <- subset(alt_stack, target_years)
   
   # Mask the subsets to AOI
-  AOI <- shapefile(aoi_file)
+  aoi <- shapefile(aoi_file)
   
-  base_mask <- mask(base_target, AOI)
-  alt_mask <- mask(alt_target, AOI)
+  base_mask <- mask(base_target, aoi)
+  alt_mask <- mask(alt_target, aoi)
   
   # Do raster math to get difference
   alt_base <- alt_mask - base_mask
