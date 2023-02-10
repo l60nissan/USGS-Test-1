@@ -396,15 +396,15 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
     
       per_diff_alt <- percent_diff[grep(alt_names[a], percent_diff$Scenarios),]
       diff_plot <- PerDiffPlot(
-        DF = per_diff_alt,
-        X_VAR = x_var,
-        Y_VAR = y_var,
-        FILL_VAR = fill_var,
-        TITLE = title,
-        Y_LAB = paste0("Percent Change in ", title, "\nfrom Baseline to ", alt_names[a]),
-        X_LAB = x_lab,
-        MIN_LIMIT = min_limit,
-        MAX_LIMIT = max_limit
+        df = per_diff_alt,
+        x_var = x_var,
+        y_var = y_var,
+        fill_var = fill_var,
+        title = title,
+        y_lab = paste0("Percent Change in ", title, "\nfrom Baseline to ", alt_names[a]),
+        x_lab = x_lab,
+        min_limit = min_limit,
+        max_limit = max_limit
       )
       diff_plot_filename <- paste0(out_path, "PercentDiff_BarPlot_",
                                    gsub(" ", "_", map_title),"_",
@@ -419,15 +419,15 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
     
       per_diff_base <- percent_diff[grep(base_names[l], percent_diff$Scenarios),]
       diff_plot_a <- PerDiffPlotAlt(
-        DF = per_diff_base,
-        X_VAR = x_var,
-        Y_VAR = y_var,
-        FILL_VAR = fill_var,
-        TITLE = title,
-        Y_LAB = paste0("Percent Change in ", title, "\nfrom Baseline ", base_names[l]),
-        X_LAB = x_lab,
-        MIN_LIMIT = min_limit,
-        MAX_LIMIT = max_limit
+        df = per_diff_base,
+        x_var = x_var,
+        y_var = y_var,
+        fill_var = fill_var,
+        title = title,
+        y_lab = paste0("Percent Change in ", title, "\nfrom Baseline ", base_names[l]),
+        x_lab = x_lab,
+        min_limit = min_limit,
+        max_limit = max_limit
       )
     
       diff_plot_filename <- paste0(output_path, "/PercentDiff_BarPlot_",
@@ -440,10 +440,10 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
 } # closes n
 
 # Save R object that has processed data stored
-  if (grepl("EverWaders", FILES$ALL_FILES[1])) {
+  if (grepl("EverWaders", files$all_files[1])) {
   save_string <- "EverWaders"
   } else {
   save_string <- sp_string}
 
-save(process_list_all, FILES, base_list_masked, alt_list_masked,
+save(process_list_all, files, base_list_masked, alt_list_masked,
      file = paste0(out_path, save_string, "_processed_data.RData"))
