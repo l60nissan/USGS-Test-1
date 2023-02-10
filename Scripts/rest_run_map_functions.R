@@ -154,7 +154,7 @@ RestorationRunMap <- function(
   # Individual score legend
   ind_legend <- get_legend(
   ggplot() +
-    geom_raster(data = df_ind , aes_string(x = "x", y = "y", fill = ind_fill),
+    geom_raster(data = df_ind , aes(x = x, y = y, fill = !!sym(ind_fill)),
                 na.rm = TRUE, show.legend = TRUE) +
     scale_fill_manual(values = rev(score_pal), 
                       name = score_legend_name, drop = FALSE) +
@@ -172,7 +172,7 @@ RestorationRunMap <- function(
   # Difference legend
   dif_legend <- get_legend(
   ggplot() +
-    geom_raster(data = df_dif , aes_string(x = "x", y = "y", fill = dif_fill),
+    geom_raster(data = df_dif , aes(x = x, y = y, fill = !!sym(dif_fill)),
                 na.rm = TRUE, show.legend = TRUE) +
     scale_fill_manual(values = diff_pal,
                       name = diff_legend_name, drop = FALSE) +
@@ -198,7 +198,7 @@ RestorationRunMap <- function(
   map_plot <- ggplot() +
     
     # Plot Individual score 
-    geom_raster(data = df_ind , aes_string(x = "x", y = "y", fill = ind_fill),
+    geom_raster(data = df_ind , aes(x = x, y = y, fill = !!sym(ind_fill)),
                 na.rm = T, show.legend = FALSE) +
     scale_fill_manual(values = rev(score_pal),
                       name = score_legend_name, drop = FALSE) +
@@ -209,7 +209,7 @@ RestorationRunMap <- function(
     new_scale_fill() + 
   
     #Plot Difference 
-    geom_raster(data = df_dif , aes_string(x = "x", y = "y", fill = dif_fill),
+    geom_raster(data = df_dif , aes(x = x, y = y, fill = !!sym(dif_fill)),
                 na.rm = TRUE, show.legend = FALSE) +
     scale_fill_manual(values = diff_pal,
                       name = diff_legend_name, drop = FALSE) +
