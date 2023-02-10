@@ -7,7 +7,7 @@
 packages <- c("tidyverse", "cowplot", "RcolorBrewer",
                   "ggnewscale", "sf", "ggsn")
 not_installed <- packages[!(packages %in% installed.packages()[,"Package"])]
-if (length(not_installed)) {install.packages(not_installed)}
+if (length(not_installed)) install.packages(not_installed)
 
 library(tidyverse)
 library(cowplot)
