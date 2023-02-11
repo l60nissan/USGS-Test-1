@@ -553,7 +553,7 @@ MaskNcOutput <- function(nc_file, # full path to NetCDF file to mask
                                               # names separated by '|' 
   
   #Extract NAME FROM FILE
-  scenario_name <- str_extract_all(nc_fil, all_scenario_names)[[1]]
+  scenario_name <- str_extract_all(nc_file, all_scenario_names)[[1]]
   
   # Load shapefile
   aoi_mask <- shapefile(aoi)
