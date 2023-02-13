@@ -12,24 +12,19 @@ library(raster)
 library(sf)
 library(cowplot)
 
-source("./Scripts/LOSOM_process_functions.R")
-source("./Scripts/LOSOM_map_functions.R")
+source("./Scripts/rest_run_process_functions.R")
+source("./Scripts/rest_run_map_functions.R")
+source("./Scripts/input_paths.R")
 
 # Species string options
-gator_sp_string <- "Alligator"
-#waders_sp_string <- c("GBHE", "GLIB", "GREG", "LBHE", "ROSP", "WHIB", "WOST")
-waders_sp_string <- c("GREG", "ROSP", "WHIB", "WOST")
-apsn_sp_string <- "Apple_Snail"
-snki_sp_string <- "SnailKite"
-dsd_sp_string <- "dsd"
+source("./Scripts/species_string_definitions.R")
 
 ## -----------------------------------------------------------------------------
 ## -----------------------------------------------------------------------------
 # START: USER SET FACTORS
 
 # Folder containing species output
-parent_path <- "../LOSOM/Data/LOSOM_Round3_2021_12/Model Output/Alligator/JEM_Alligator_Production_Probability_Model_Data/JEM_Alligator_Production_Probability_Model_Data/"
-parent_path
+parent_path <- "../LOSOM/Data/LOSOM_Round3_2021_12/Model Output/SnailKite/"
 
 # Folder to output CSV and figures - 
 # include "/" after path to get file names correct when saving 
@@ -37,11 +32,11 @@ output_path <- "../data_release_develop/"
 output_path
 
 # set target species from species string options at top of script
-sp_string <- gator_sp_string
+sp_string <- waders_string
 sp_string
 
 # Is Species output already cropped to AOI? (TRUE/FALSE)
-cropped <- FALSE
+cropped <- TRUE
 cropped
 
 # Set Alternate scenario names
@@ -49,7 +44,7 @@ alt_names <- c("PA22", "PA25")
 alt_names
 
 # Set Baseline scenario names
-base_names <- c("ECB19", "NA22f", "NA25f")
+base_names <- c("ECB19", "NA22F", "NA25F")
 base_names
 
 message("USER INPUTS SET TO: \n*parent path: ", print(parent_path),
@@ -78,6 +73,12 @@ base_string
 all_scenario_names <- paste0(paste0(base_string, "|"),
                              alt_string, collapse = "|")
 all_scenario_names
+
+#-----------------
+# If Everwaders, set sp_string to list of species to process
+if (sp_string == waders_string) {
+  sp_string <- waders_sp_process
+}
 
 #-----------------
 # Loop through species, process output, output acreage csv and map
@@ -311,8 +312,8 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
         
       # Set species string - needed for DIFF_CHANGE_FUNCTION
       # since species output is daily or yearly
-      if (species %in% waders_sp_string) {
-        pchange_sp_string <- "EverWaders"
+      if (species %in% waders_sp_process) {
+        pchange_sp_string <- waders_string
       } else {
         pchange_sp_string <- sp_string
       } #close else for sp string
@@ -363,7 +364,7 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
   write.csv(acreage_diff_df, output_filename, row.names = FALSE)
   
   # Crop out first 3 years for Apple snail
-  if ("Apple_Snail" %in% sp_string) {
+  if (apsn_string %in% sp_string) {
     minyear <- as.numeric(min(percent_diff$Year))
     startyr <- minyear + 3
     exclude_yrs <- seq(minyear, startyr - 1, 1)
@@ -440,8 +441,8 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
 } # closes n
 
 # Save R object that has processed data stored
-  if (grepl("EverWaders", files$all_files[1])) {
-  save_string <- "EverWaders"
+  if (grepl(waders_string, files$all_files[1])) {
+  save_string <- waders_string
   } else {
   save_string <- sp_string}
 
