@@ -24,7 +24,7 @@ source("./Scripts/species_string_definitions.R")
 # START: USER SET FACTORS
 
 # Folder containing species output
-parent_path <- "../LOSOM/Data/LOSOM_Round3_2021_12/Model Output/SnailKite/"
+parent_path <- "../LOSOM/Data/LOSOM_Round3_2021_12/Model Output/Alligator/JEM_Alligator_Production_Probability_Model_Data/"
 
 # Folder to output CSV and figures - 
 # include "/" after path to get file names correct when saving 
@@ -32,7 +32,7 @@ output_path <- "../data_release_develop/"
 output_path
 
 # set target species from species string options at top of script
-sp_string <- waders_string
+sp_string <- gator_string
 sp_string
 
 # Is Species output already cropped to AOI? (TRUE/FALSE)
@@ -59,19 +59,49 @@ message("USER INPUTS SET TO: \n*parent path: ", print(parent_path),
 ## -----------------------------------------------------------------------------
 
 #-----------------
+# Define strings to avoid hard coding
+collapse_str <- "|"
+sep_str <- "_"
+labs_str <- "labs"
+base_mask_str <- "_base_mask_test.jpg"
+alt_mask_str <- "_alt_mask_test.jpg"
+scenario_str <- "Scenario"
+year_str <- "Year"
+scyr_sep_str <- "_X"
+acreage_str <- "Acreage_"
+csv_str <- ".csv"
+perdiff_name_str <- "PercentDiff_"
+perdiff_var_str <- "Percent_Difference"
+scenarios_str <- "Scenarios"
+round_accuracy <- 5
+min_max_adjust <- 10
+bar_title_str1 <- "Percent Change in "
+bar_title_str2 <- "\nfrom Baseline to "
+bar_title_str3 <- "\nfrom Baseline "
+bar_out_str <- "/PercentDiff_BarPlot_"
+png_str <- ".png"
+bar_width <- 15
+bar_height <- 8.5
+bar_units <- "in"
+bar_dpi <- 300
+bar_scale <- 1
+rdata_str <- "_processed_data.RData"
+apsn_yr_trim <- 3
+
+#-----------------
 # Set scenario names
 
 # Scenario Name strings
-alt_string <- paste0(alt_names, collapse = "|")
+alt_string <- paste0(alt_names, collapse = collapse_str)
 alt_string
 
 # Base Name strings
-base_string <- paste0(base_names, collapse = "|")
+base_string <- paste0(base_names, collapse = collapse_str)
 base_string
 
 # Alt and Base Names
-all_scenario_names <- paste0(paste0(base_string, "|"),
-                             alt_string, collapse = "|")
+all_scenario_names <- paste0(paste0(base_string, collapse_str),
+                             alt_string, collapse = collapse_str)
 all_scenario_names
 
 #-----------------
@@ -84,7 +114,7 @@ if (sp_string == waders_string) {
 # Loop through species, process output, output acreage csv and map
 # Loop through target species
 process_list_all <- list() # list to store all output
-#n <- 1
+n <- 1
 for (n in 1:length(sp_string)) { # This part is to accomodate multiple 
                                  # species output in the everwaders path
 
@@ -143,16 +173,16 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
       print(paste0("Making Map :: ALT_", a_name, " minus BASE_", b_name))
       
       # Make Map
-      ind_fill <- sym('labs')
-      dif_fill <- 'labs'
+      ind_fill <- sym(labs_str)
+      dif_fill <- sym(labs_str)
       map_title <- map_dfs$map_title
       out_path <- output_path
-      out_file <- paste0(out_path, gsub(" ", "_", map_title), "_",
-                         map_dfs$alt_name, "_", map_dfs$base_name, ".pdf")
+      out_file <- paste0(out_path, gsub(" ", sep_str, map_title), sep_str,
+                         map_dfs$alt_name, sep_str, map_dfs$base_name, ".pdf")
       out_file
   
-      print(paste0("Making map for ", gsub(" ", "_", map_title), "_",
-                   map_dfs$alt_name, "_", map_dfs$base_name))
+      print(paste0("Making map for ", gsub(" ", sep_str, map_title), sep_str,
+                   map_dfs$alt_name, sep_str, map_dfs$base_name))
   
       name.labs <- map_dfs$name.labs
   
@@ -278,11 +308,11 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
     
   #-----------------
   ## Export first baseline and alt slices to double check masked for calculations
-  jpeg(paste0(output_path, species, "_base_mask_test.jpg"))
+  jpeg(paste0(output_path, species, base_mask_str))
   plot(base_list_masked[[1]][[1]][[1]])
   dev.off()
       
-  jpeg(paste0(output_path, species, "_alt_mask_test.jpg"))
+  jpeg(paste0(output_path, species, alt_mask_str))
   plot(alt_list_masked[[1]][[1]][[1]])
   dev.off()
     
@@ -355,18 +385,18 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
   
   # Tidy scenario_year column to individual columns
   acreage_diff_df <- separate(acreage_diff_df, Scenario_year,
-                              into = c("Scenario", "Year"), sep = "_X")
+                              into = c(scenario_str, year_str), sep = scyr_sep_str)
   
   # Generate file name and export acreage table
-  output_filename <- paste0(out_path, "Acreage_",
-                            gsub(" ", "_", map_title), ".csv")
+  output_filename <- paste0(out_path, acreage_str,
+                            gsub(" ", sep_str, map_title), csv_str)
   output_filename
   write.csv(acreage_diff_df, output_filename, row.names = FALSE)
   
   # Crop out first 3 years for Apple snail
   if (apsn_string %in% sp_string) {
     minyear <- as.numeric(min(percent_diff$Year))
-    startyr <- minyear + 3
+    startyr <- minyear + apsn_yr_trim
     exclude_yrs <- seq(minyear, startyr - 1, 1)
     percent_diff <- percent_diff[percent_diff$Year != exclude_yrs,]
   }
@@ -378,18 +408,20 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
   # If percent diffrence data frame exists, create a bar plot
   print(paste0("Export Percent Difference Data CSV"))
   if (!is.null(percent_diff)) {
-    diff_output_filename <- paste0(out_path, "PercentDiff_",
-                                   gsub(" ", "_", map_title), ".csv")
+    diff_output_filename <- paste0(out_path, perdiff_name_str,
+                                   gsub(" ", sep_str, map_title), csv_str)
     write.csv(percent_diff, diff_output_filename, row.names = FALSE)
   
     # Make Percent diffrence bar plot
-    x_var <- "Year"
-    y_var <- "Percent_Difference"
-    fill_var <- "Scenarios"
+    x_var <- year_str
+    y_var <- perdiff_var_str
+    fill_var <- scenarios_str
     title <- map_dfs$map_title
-    x_lab <- "Year"
-    min_limit <- plyr::round_any(min(percent_diff[y_var]), 5, f = floor) - 10
-    max_limit <- plyr::round_any(max(percent_diff[y_var]), 5, f = ceiling) + 10
+    x_lab <- year_str
+    min_limit <- plyr::round_any(min(percent_diff[y_var]), round_accuracy,
+                                 f = floor) - min_max_adjust
+    max_limit <- plyr::round_any(max(percent_diff[y_var]), round_accuracy,
+                                 f = ceiling) + min_max_adjust
   
     # make bar plots - 1 plot for each alt against all baselines
     for (a in 1:length(alt_names)) {
@@ -402,16 +434,16 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
         y_var = y_var,
         fill_var = fill_var,
         title = title,
-        y_lab = paste0("Percent Change in ", title, "\nfrom Baseline to ", alt_names[a]),
+        y_lab = paste0(bar_title_str1, title, bar_title_str2, alt_names[a]),
         x_lab = x_lab,
         min_limit = min_limit,
         max_limit = max_limit
       )
-      diff_plot_filename <- paste0(out_path, "PercentDiff_BarPlot_",
-                                   gsub(" ", "_", map_title),"_",
-                                   alt_names[a], ".png")
+      diff_plot_filename <- paste0(out_path, bar_out_str,
+                                   gsub(" ", sep_str, map_title),sep_str,
+                                   alt_names[a], png_str)
       ggsave(diff_plot_filename, diff_plot,
-             width = 15, height = 8.5, units = "in", dpi = 300, scale = 1)
+             width = bar_width, height = bar_height, units = bar_units, dpi = bar_dpi, scale = 1)
     } # closes alt bar plots
   
     # make bar plots - 1 bar plot for each baselines that shows all alts
@@ -425,17 +457,17 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
         y_var = y_var,
         fill_var = fill_var,
         title = title,
-        y_lab = paste0("Percent Change in ", title, "\nfrom Baseline ", base_names[l]),
+        y_lab = paste0(bar_title_str1, title, bar_title_str3, base_names[l]),
         x_lab = x_lab,
         min_limit = min_limit,
         max_limit = max_limit
       )
     
-      diff_plot_filename <- paste0(output_path, "/PercentDiff_BarPlot_",
-                                   gsub(" ", "_", title),"_",
-                                   base_names[l], ".png")
+      diff_plot_filename <- paste0(output_path, bar_out_str,
+                                   gsub(" ", sep_str, title),sep_str,
+                                   base_names[l], png_str)
       ggsave(diff_plot_filename, diff_plot_a,
-             width = 15, height = 8.5, units = "in", dpi = 300, scale = 1)
+             width = bar_width, height = bar_height, units = bar_units, dpi = bar_dpi, scale = bar_scale)
     } # closes base barplots
   } # closes bar plots if percent diff ! null
 } # closes n
@@ -447,4 +479,4 @@ for (n in 1:length(sp_string)) { # This part is to accomodate multiple
   save_string <- sp_string}
 
 save(process_list_all, files, base_list_masked, alt_list_masked,
-     file = paste0(out_path, save_string, "_processed_data.RData"))
+     file = paste0(out_path, save_string, rdata_str))
