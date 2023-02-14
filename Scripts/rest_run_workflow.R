@@ -128,7 +128,7 @@ for (n in 1:length(sp_string)) { # This is to accomodate multiple
   species <- sp_string[n]
   
   ## List All files, Alternate scenario files, and Baseline files
-  files <- sp_scenario_files(alt_string, base_string, parent_path, sp_string[n])
+  files <- SpScenarioFiles(alt_string, base_string, parent_path, sp_string[n])
   files
   alt_list <- files$alt_list
   alt_list
