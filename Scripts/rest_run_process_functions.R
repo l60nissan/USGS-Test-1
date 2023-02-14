@@ -3,16 +3,10 @@
 #
 # Caitlin Hackett chakett@usgs.gov
 ## -----------------------------------------------------------------------------
-############################################################
-#TO DO:
- # * PROCESS_OUTPUT: Update snki kite map_title
- # * PROCESS_OUTPUT: Update set variables for snki
- # * check line 334 - does this match how snki should be processed for daily output?
-############################################################
 
-#Pull file names for base and alt scenarios for target species
+# Pull file names for base and alt scenarios for target species
 # Returns a list containing strings of all files, alt files, and base files
-sp_scenario_files <- function(alt_names, # names of alternate scenarios
+SpScenarioFiles <- function(alt_names, # names of alternate scenarios
                               base_names, # names of base scenarios
                               folder_path, # path to folder with output
                               species_string # species string to process
@@ -45,7 +39,7 @@ sp_scenario_files <- function(alt_names, # names of alternate scenarios
 }
 
 # Make rasters dataframe for plotting
-raster_to_df <- function(raster_name, scenario_name){
+RasterToDf <- function(raster_name, scenario_name){
   ras_df  <- as.data.frame(rasterToPoints(raster_name, xy = TRUE))
   long_df <- pivot_longer(ras_df, cols = c(3:ncol(ras_df)))
   long_df$Scenario <- scenario_name
@@ -264,9 +258,9 @@ ProcessOutput <- function(base_file,     # Baseline netcdf to process
   # ----
   
   # Make raster df and include Scenario name - for maps
-  base_df <- raster_to_df(raster_name = base_mask, scenario_name = base_name)
-  alt_df <- raster_to_df(raster_name = alt_mask, scenario_name = alt_name)
-  diff_df <- raster_to_df(raster_name = alt_base, scenario_name = diff_name)
+  base_df <- RasterToDf(raster_name = base_mask, scenario_name = base_name)
+  alt_df <- RasterToDf(raster_name = alt_mask, scenario_name = alt_name)
+  diff_df <- RasterToDf(raster_name = alt_base, scenario_name = diff_name)
   
   # Combine individual score dataframes for base and alt
   ind_df <- bind_rows(base_df, alt_df)
