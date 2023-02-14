@@ -4,14 +4,15 @@
 # Caitlin Hackett chakett@usgs.gov
 ## -----------------------------------------------------------------------------
 
-# Pull file names for base and alt scenarios for target species
+
+## -----------------------------------------------------------------------------
+# Pull file names for base and alternate scenarios for target species
 # Returns a list containing strings of all files, alt files, and base files
 SpScenarioFiles <- function(alt_names, # names of alternate scenarios
-                              base_names, # names of base scenarios
-                              folder_path, # path to folder with output
-                              species_string # species string to process
-                              ){ # species string to process 
-  
+                            base_names, # names of base scenarios
+                            folder_path, # path to folder with output
+                            species_string ){ # species string to process
+                             
   # All Files
   all_files <- list.files(folder_path, full.names = TRUE, recursive = TRUE)
   all_files
@@ -38,6 +39,7 @@ SpScenarioFiles <- function(alt_names, # names of alternate scenarios
   return(file_name_list)
 }
 
+## -----------------------------------------------------------------------------
 # Make rasters dataframe for plotting
 RasterToDf <- function(raster_name, scenario_name){
   ras_df  <- as.data.frame(rasterToPoints(raster_name, xy = TRUE))
@@ -46,19 +48,15 @@ RasterToDf <- function(raster_name, scenario_name){
   return(long_df)
 }
 
-# Function to process output - These are helpful when trouble shooting
-#BASE_FILE <- BASE_LIST[1]
-#ALT_FILE <- ALT_LIST[1]
-#AOI_FILE <- AOI_PATH
-#BASE_ALT_NAMES <- all_scenario_names
-#CROPPED = cropped
+## -----------------------------------------------------------------------------
+# Process output for maps and acreage tables
+ProcessOutput <- function(
+    base_file,     # Baseline netcdf to process
+    alt_file,      # Alternate netcdf to process
+    aoi_file,      # Area of interest - Shapefile
+    base_alt_names ) { # All base and alternate names. format with "|" between
+                       # names, example ("BASE1|BASE2|ALT1|ALT2")
 
-ProcessOutput <- function(base_file,     # Baseline netcdf to process
-                          alt_file,      # Alternate netcdf to process
-                          aoi_file,      # Area of interest - Shapefile
-                          base_alt_names ) { # All base and alternate names. format with "|" between names, example ("BASE1|BASE2|ALT1|ALT2")
-                          #CROPPED        # TRUE/FALSE, Are base_file and alt_file already cropped to AOI
-                          
   # ----
   # Define Strings for each species for Function
   # ----
@@ -177,7 +175,8 @@ ProcessOutput <- function(base_file,     # Baseline netcdf to process
     band_years <- paste0("X", band_years)
     #BAND_YEARS
   } else {
-    end_year <- start_year + (time_length - 1) # subtract 1 to account for starting year in length
+    # subtract 1 to account for starting year in length
+    end_year <- start_year + (time_length - 1) 
     
     # Sequence years for band names
     band_years <- seq(start_year, end_year, 1)
@@ -303,7 +302,8 @@ ProcessOutput <- function(base_file,     # Baseline netcdf to process
   return(df_list)
 }
 
-# Make percent diff Bar plot
+## -----------------------------------------------------------------------------
+# Make percent difference bar plot alternate shown against all baselines
 PerDiffPlot <- function(df, # dataframe to plot
                         x_var, # string of x variable
                         y_var, # string of y variable
@@ -334,6 +334,8 @@ PerDiffPlot <- function(df, # dataframe to plot
   return(diff_plot)
 }
 
+## -----------------------------------------------------------------------------
+# Make percent difference bar plot each baseline shown against all alternates
 PerDiffPlotAlt <- function(df, # dataframe to plot
                           x_var, # string of x variable
                           y_var, # string of y variable
@@ -366,17 +368,17 @@ PerDiffPlotAlt <- function(df, # dataframe to plot
   return(diff_plot)
 }
 
-##############################
+## -----------------------------------------------------------------------------
 # Calculate Percent change
 # cell stats alredy calculated to landscape means
-##############################
+
 DiffChangeCalc <- function(
-    species_string, #species string -- match sp_string set at beginign of workflow script
-    nc_stack,       # One nc stack to extract layer names
-    alt_vals,       # landscape means for alternate scenario
-    alt_scen,       # name of alternate scenario
-    base_vals,      # landscape means for baseline scenario
-    base_scen){     # name of baseline scenario
+  species_string, # species string -- match sp_string set in workflow 
+  nc_stack,       # one nc stack to extract layer names
+  alt_vals,       # landscape means for alternate scenario
+  alt_scen,       # name of alternate scenario
+  base_vals,      # landscape means for baseline scenario
+  base_scen){     # name of baseline scenario
   
   source("./scripts/species_string_definitions.R")
   
@@ -432,9 +434,11 @@ DiffChangeCalc <- function(
 }
 
 
-##############################
-# FUNCTION TO MASK NETCDF
-##############################
+## -----------------------------------------------------------------------------
+# Mask NetCDF and return a list with:
+# nc_masked: input NetCDF masked to defined "aoi"
+# Scenario: Scenario name for input/masked NetCDF
+# Varible: NetCDF variable for input/masked NetCDF
 
 MaskNcOutput <- function(nc_file, # full path to NetCDF file to mask
                          aoi, # shapefile path of mask
@@ -522,19 +526,20 @@ MaskNcOutput <- function(nc_file, # full path to NetCDF file to mask
   # Add names to bands
   names(nc_stack) <- band_years
   
-  #nc_stack <- nc_stack[[1:2]] # subset used when testing function to increase speed
-  
   # Apply Mask
   nc_masked <- mask(nc_stack, aoi_mask)
   
-  nc_masked_list <- list("nc_masked" = nc_masked, "Scenario" = scenario_name, "Variable" = nc_varname)
+  nc_masked_list <- list("nc_masked" = nc_masked,
+                         "Scenario" = scenario_name,
+                         "Variable" = nc_varname)
   return(nc_masked_list)
 }
 
-##############################
-# Function to stack nc output if
-# already masked
-##############################
+## -----------------------------------------------------------------------------
+# Mask NetCDF and return a list with:
+# nc_masked: input NetCDF that is already masked to defined "aoi"
+# Scenario: Scenario name for input/masked NetCDF
+# Varible: NetCDF variable for input/masked NetCDF
 
 StackNcOutput <- function(nc_file, # full path to NetCDF file to mask
                           aoi, # shapefile path of mask
@@ -618,7 +623,9 @@ StackNcOutput <- function(nc_file, # full path to NetCDF file to mask
   # Add names to bands
   names(nc_stack) <- band_years
   
-  nc_masked_list <- list("nc_masked" = nc_stack, "Scenario" = scenario_name, "Variable" = nc_varname)
+  nc_masked_list <- list("nc_masked" = nc_stack,
+                         "Scenario" = scenario_name,
+                         "Variable" = nc_varname)
   return(nc_masked_list)
 }
 
