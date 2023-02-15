@@ -440,10 +440,11 @@ DiffChangeCalc <- function(
 # Scenario: Scenario name for input/masked NetCDF
 # Varible: NetCDF variable for input/masked NetCDF
 
-MaskNcOutput <- function(nc_file, # full path to NetCDF file to mask
-                         aoi, # shapefile path of mask
-                         all_scenario_names){ # character string of scenario
-                                              # names separated by '|' 
+StackNcOutput <- function(nc_file, # full path to NetCDF file to stack/mask
+                  masked, # TRUE/FALSE, is the NetCDf already masked?
+                  aoi = NULL, # shapefile path of mask - NULL if already masked
+                  all_scenario_names){ # character string of scenario
+                                       # names separated by '|' 
   
   #Extract NAME FROM FILE
   scenario_name <- str_extract_all(nc_file, all_scenario_names)[[1]]
@@ -526,107 +527,33 @@ MaskNcOutput <- function(nc_file, # full path to NetCDF file to mask
   # Add names to bands
   names(nc_stack) <- band_years
   
-  # Apply Mask
-  nc_masked <- mask(nc_stack, aoi_mask)
+  # If NetCDf is not masked, apply mask
+
+  if (!masked) {
+    if (is.null(aoi)) {
+      stop("NetCDF is not masked, aoi must be defined")
+    }
+    
+    if (!is.null(aoi)) {
+      message(paste0("NetCDF is not masked. aoi mask applied: ", aoi))
+      print(paste0("masking NetCDF scenario: ", scenario_name))
+    }
+
+    # Apply Mask
+    nc_masked <- mask(nc_stack, aoi_mask)
+  
+  } else {
+    
+    # If NetCDF is masked, stack NetCDF without applying mask  
+    print(paste0("stacking NetCDF Scenario: ", scenario_name,
+                 " - no mask applied"))
+    
+    nc_masked <- nc_stack
+  }
   
   nc_masked_list <- list("nc_masked" = nc_masked,
                          "Scenario" = scenario_name,
                          "Variable" = nc_varname)
   return(nc_masked_list)
 }
-
-## -----------------------------------------------------------------------------
-# Mask NetCDF and return a list with:
-# nc_masked: input NetCDF that is already masked to defined "aoi"
-# Scenario: Scenario name for input/masked NetCDF
-# Varible: NetCDF variable for input/masked NetCDF
-
-StackNcOutput <- function(nc_file, # full path to NetCDF file to mask
-                          aoi, # shapefile path of mask
-                          all_scenario_names){ # character string of scenario
-                                               # names separated by '|' 
-  
-  #Extract NAME FROM FILE
-  scenario_name <- str_extract_all(nc_file, all_scenario_names)[[1]]
-  
-  # ----
-  # Define Strings for each species for Function
-  # ----
-  source("./Scripts/species_string_definitions.R")
-  
-  ###
-  # Set read in varname
-  ###
-  
-  if (grepl(gator_string, nc_file)) {
-    nc_varname <- gator_varname
-    daily_output <- FALSE
-  }
-  
-  if (grepl(snki_string, nc_file)) {
-    nc_varname <- snki_varname
-    daily_output <- TRUE
-  }
-  
-  if (grepl(dsd_string, nc_file)) {
-    nc_varname <- dsd_varname
-    daily_output <- TRUE
-  }
-  
-  if (grepl(apsn_string, nc_file)) {
-    nc_varname <- apsn_varname
-    daily_output <- TRUE
-  }
-  
-  if (grepl(waders_string, nc_file)) {
-    nc_varname <- waders_varname
-    species <- gsub(".*EverWaders_|\\.nc.*", "", nc_file)
-    nc_varname <- paste0(species, waders_varname)
-    daily_output <- FALSE
-  }
-  
-  # ----
-  # Get layer/Band names from Netcdf
-  # ----
-  nc <- nc_open(nc_file)
-  
-  # Get dates for bands
-  time_att <- nc$dim$t$units
-  time_length <- as.numeric(nc$dim$t$len)
-  time_split <- strsplit(time_att, split = " ")
-  time_split <- strsplit(time_split[[1]][3], split = "T")
-  start_date <- as.Date(time_split[[1]][1])
-  start_year <- as.numeric(format(start_date, format = "%Y"))
-  
-  if (daily_output) {
-    end_year <- start_date + (time_length - 1)
-    
-    band_years <- seq(start_date, end_year, 1)
-    band_years <- paste0("X", band_years)
-  } else {
-    # subtract 1 to account for starting year in length
-    end_year <- start_year + (time_length - 1) 
-    # Sequence years for band names
-    band_years <- seq(start_year, end_year, 1)
-    band_years <- paste0("X", band_years)
-  }
-  
-  nc_close(nc) # Clsoe netcdf
-  
-  # ----
-  # Process for raw difference 
-  # ----
-  
-  # Load files
-  nc_stack <- stack(nc_file, varname = nc_varname)
-  
-  # Add names to bands
-  names(nc_stack) <- band_years
-  
-  nc_masked_list <- list("nc_masked" = nc_stack,
-                         "Scenario" = scenario_name,
-                         "Variable" = nc_varname)
-  return(nc_masked_list)
-}
-
 
