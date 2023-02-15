@@ -30,28 +30,28 @@ source("./Scripts/species_string_definitions.R")
 # START: USER SET FACTORS
 
 # Folder containing species output
-parent_path <- "../LOSOM/Data/LOSOM_Round3_2021_12/Model Output/Alligator/JEM_Alligator_Production_Probability_Model_Data/"
+#parent_path <- "../LOSOM/Data/LOSOM_Round3_2021_12/Model Output/Alligator/JEM_Alligator_Production_Probability_Model_Data/"
 
 # Folder to output CSV and figures - 
 # include "/" after path to get file names correct when saving 
-output_path <- "../data_release_develop/"
-output_path
+#output_path <- "../data_release_develop/"
+#output_path
 
 # set target species from species string options at top of script
-sp_string <- gator_string
-sp_string
+#sp_string <- gator_string
+#sp_string
 
 # Is Species output already cropped to AOI? (TRUE/FALSE)
-cropped <- TRUE
-cropped
+#cropped <- TRUE
+#cropped
 
 # Set Alternate scenario names
-alt_names <- c("PA22", "PA25")
-alt_names
+#alt_names <- c("PA22", "PA25")
+#
 
 # Set Baseline scenario names
-base_names <- c("ECB19", "NA22F", "NA25F")
-base_names
+#base_names <- c("ECB19", "NA22F", "NA25F")
+#base_names
 
 message("USER INPUTS SET TO: \n*parent path: ", print(parent_path),
         "\n*output path: ", print(output_path),
@@ -224,108 +224,61 @@ for (n in 1:length(sp_string)) { # This is to accomodate multiple
   # - Calculate for every species in the sp_string within loop n
   # - if mask is applied, it masks the entire stack.
 
-  # Mask files and read as stack
-  # - For percent difference calculations and barplots
+  # Stack NetCDF percent difference calculations and barplots
+  # Mask is applied if cropped = FALSE
   
-  # If input nc is not cropped, apply aoi mask before calculations
-  if (!cropped) {
-  
-    #-----------------
-    # Mask baseline scenarios and calculate cell stats (landcape means)
-    base_list_masked <- list()
-    for (b in 1:length(base_list)) {
-      b_name <- str_extract_all(base_list[b], all_scenario_names)[[1]]
-        
-      print(paste0("Masking Base :: ", b_name))
-        
-      # Mask the nc stack
-      masked <- MaskNcOutput(base_list[b], aoi_path, all_scenario_names)
-        
-      print(paste0("Calculating Landscape Mean Base :: ",
-                   b_name, " -- ", Sys.time()))
-        
-      # Calculate mean of landscape for each day
-      daily_mean_vals <- cellStats(masked$nc_masked, stat = mean, na.rm = TRUE)
-      masked$daily_mean <- daily_mean_vals
-        
-      # add masked cell stats to list
-      base_list_masked[[b]] <- masked
-      names(base_list_masked)[[b]] <- masked$Scenario 
-    } # closes b
+  #-----------------
+  # Stack/mask baseline scenarios and calculate cell stats (landcape means)
+  base_list_masked <- list()
+  for (b in 1:length(base_list)) {
+    b_name <- str_extract_all(base_list[b], all_scenario_names)[[1]]
       
-    #-----------------
-    # Mask alternate scenarios and calculate cell stats (landscape means)
-    alt_list_masked <- list()
-    for (i in 1:length(alt_list)) {
-      a_name <- str_extract_all(alt_list[i], all_scenario_names)[[1]]
-        
-      print(paste0("Masking Alt :: ", a_name))
-        
-      # Mask the nc stack
-      masked <- MaskNcOutput(alt_list[i], aoi_path, all_scenario_names)
-        
-      print(paste0("Calculating Landscape Mean Alt :: ",
-                   a_name, " -- ", Sys.time()))
-        
-      # Calculate mean of landscape for each day
-      daily_mean_vals <- cellStats(masked$nc_masked, stat = mean, na.rm = TRUE)
-      masked$daily_mean <- daily_mean_vals
-        
-      # add masked cell stats to list
-      alt_list_masked[[i]] <- masked
-      names(alt_list_masked)[[i]] <- masked$Scenario 
-    } # closes i 
-  
-  } else {
-  # If input nc is cropped calculate cell stats without applying aoi mask
-  
-    #-----------------
-    # Read baseline scenarios and calculate cell stats
-    base_list_masked <- list()
-    for (b in 1:length(base_list)) {
-      b_name <- str_extract_all(base_list[b], all_scenario_names)[[1]]
-        
-      print(paste0("Stacking Base :: ", b_name,  " -- ", Sys.time()))
-        
-      # Read nc stack - no masking since already masked (cropped = TRUE)
-      masked <- StackNcOutput(base_list[b], aoi_path, all_scenario_names)
-        
-      print(paste0("Calculating Landscape Mean Base :: ",
+    print(paste0("Stacking Base :: ", b_name))
+
+    # Stack the NetCDf - mask applied within StackNcOutput()
+    masked <- StackNcOutput(nc_file = base_list[b],
+                            masked = cropped,
+                            aoi = aoi_path,
+                            all_scenario_names = all_scenario_names)
+
+    print(paste0("Calculating Landscape Mean Base :: ",
                    b_name, " -- ", Sys.time()))
+      
+    # Calculate mean of landscape for each day
+    daily_mean_vals <- cellStats(masked$nc_masked, stat = mean, na.rm = TRUE)
+    masked$daily_mean <- daily_mean_vals
         
-      # Calculate mean of landscape for each day
-      daily_mean_vals <- cellStats(masked$nc_masked, stat = mean, na.rm = TRUE)
-      masked$daily_mean <- daily_mean_vals
+    # add masked cell stats to list
+    base_list_masked[[b]] <- masked
+    names(base_list_masked)[[b]] <- masked$Scenario 
+  } # closes b
+      
+  #-----------------
+  # stack/mask alternate scenarios and calculate cell stats (landscape means)
+  alt_list_masked <- list()
+  for (i in 1:length(alt_list)) {
+    a_name <- str_extract_all(alt_list[i], all_scenario_names)[[1]]
         
-      # add cell stats to list
-      base_list_masked[[b]] <- masked
-      names(base_list_masked)[[b]] <- masked$Scenario
-    } # closes b
-    
-    #-----------------
-    # Read alternate scenarios and calculate cell stats
-    alt_list_masked <- list()
-    for (i in 1:length(alt_list)) {
-      a_name <- str_extract_all(alt_list[i], all_scenario_names)[[1]]
+    print(paste0("Stacking Alt :: ", a_name))
         
-      print(paste0("Stacking Alt :: ", a_name))
+    # Stack the NetCDf - mask applied within StackNcOutput()
+    masked <- StackNcOutput(alt_list[i],
+                            masked = cropped,
+                            aoi = aoi_path,
+                            all_scenario_names = all_scenario_names)
         
-      # Read nc stack - no masking since already masked (cropped = TRUE)
-      masked <- StackNcOutput(alt_list[i], aoi_path, all_scenario_names)
-        
-      print(paste0("Calculating Landscape Mean Alt :: ",
+    print(paste0("Calculating Landscape Mean Alt :: ",
                    a_name, " -- ", Sys.time()))
         
-      # Calculate mean of landscape for each day
-      daily_mean_vals <- cellStats(masked$nc_masked, stat = mean, na.rm = TRUE)
-      masked$daily_mean <- daily_mean_vals
-        
-      # add cell stats to list
-      alt_list_masked[[i]] <- masked
-      names(alt_list_masked)[[i]] <- masked$Scenario 
-    } # closes i 
-  } # closes else
-    
+    # Calculate mean of landscape for each day
+    daily_mean_vals <- cellStats(masked$nc_masked, stat = mean, na.rm = TRUE)
+    masked$daily_mean <- daily_mean_vals
+      
+    # add masked cell stats to list
+    alt_list_masked[[i]] <- masked
+    names(alt_list_masked)[[i]] <- masked$Scenario 
+  } # closes i 
+  
   #-----------------
   ## Export first baseline and alternate scenarios slices to double check
   # that data is masked for calculations
