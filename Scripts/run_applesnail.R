@@ -1,6 +1,8 @@
 ## -----------------------------------------------------------------------------
 # Run Apple Snail workflow
 ## -----------------------------------------------------------------------------
+print(paste0("APPLE SNAIL :: START -- ", Sys.time()))
+
 # Source inputs/definitions
 source("./Scripts/workflow_inputs.R") # workflow inputs
 source("./Scripts/species_string_definitions.R") # species strings
@@ -14,4 +16,4 @@ cropped <- apsn_cropped # cropped?
 # source/run workflow
 source("./Scripts/rest_run_workflow.R")
 
-rm(list = ls()) # Clear environment
+print(paste0("APPLE SNAIL :: END -- ", Sys.time()))
