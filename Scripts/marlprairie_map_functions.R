@@ -15,11 +15,6 @@ library(ggsn)
 library(shadowtext)
 
 
-MPR_PATH <- "../../GIS_Library/ENP_main_road/ENP_main_road.shp" # Main Park Road
-WCAS_PATH <- "../../GIS_Library/EVERareas_UTM/EVERareas_UTM/EVERareas_UTM.shp" # WCA Boundaries
-FL_PATH <- "../../GIS_Library/FL_outline_ESRI_2010/FL_outline_ESRI_2010/FL_outline_ESRI_2010.shp" # ESRI Fl boundary
-SUBPOP_PATH <- "../../GIS_Library/CSSS_subpopulations_wAX/CSSS_subpopulations_wAX.shp" # CSSS subpopulation - includes AX
-
 MAP_EXTENT <- c(xmin = 485489.89, xmax= 554055.08, ymin = 2791119.88, ymax = 2850143.30) # Fits COP extent
 
 
