@@ -1,9 +1,8 @@
-########################################
+## -----------------------------------------------------------------------------
 # Function to generate marl prairie maps
 #
 # Caitlin Hackett chackett@usgs.gov
-#######################################
-
+## -----------------------------------------------------------------------------
 
 #Load Packages
 library(tidyverse)
@@ -14,8 +13,12 @@ library(sf)
 library(ggsn)
 library(shadowtext)
 
-
-MAP_EXTENT <- c(xmin = 485489.89, xmax= 554055.08, ymin = 2791119.88, ymax = 2850143.30) # Fits COP extent
+# Define map extent - use set extent instead of extent used for full aoi
+# since marl extent is always the same
+map_extent <- c(xmin = 485489.89,
+                xmax = 554055.08,
+                ymin = 2791119.88,
+                ymax = 2850143.30) 
 
 
 MARL_MAP <- function(DF_IND,                       # Dataframe of individual score output with coordinate column names "x", and "y", 
@@ -86,10 +89,10 @@ MARL_MAP <- function(DF_IND,                       # Dataframe of individual sco
   
   
   # Crop to map extent
-  wca.crop <- st_crop(wcas.shp, MAP_EXTENT)
-  mpr.crop <- st_crop(mpr.shp, MAP_EXTENT)
-  #aoi.crop <- st_crop(aoi.shp, MAP_EXTENT)
-  spop.crop <- st_crop(spop.shp, MAP_EXTENT)
+  wca.crop <- st_crop(wcas.shp, map_extent)
+  mpr.crop <- st_crop(mpr.shp, map_extent)
+  #aoi.crop <- st_crop(aoi.shp, map_extent)
+  spop.crop <- st_crop(spop.shp, map_extent)
   
   # Set scale to create scalebar
   df_scale <- DF_DIF
@@ -147,7 +150,7 @@ ind_plot <- ggplot()+
   #               height=0.014, border.size = 1, anchor = c(x = 561000 , y = 2778500), family = "sans", facet.var = c(SCENARIO_COL), facet.lev = c(scale_y))+
   
   # Can use this to set crs or crop the map output if needed, Expand = FALSE does not add extra buffer around plotted extent
-  coord_sf(expand = F, xlim = c(MAP_EXTENT[1], MAP_EXTENT[2]), ylim = c(MAP_EXTENT[3], MAP_EXTENT[4]))+
+  coord_sf(expand = F, xlim = c(map_extent[1], map_extent[2]), ylim = c(map_extent[3], map_extent[4]))+
   
   # Set which graticule displayed on x and y axis
   scale_x_continuous(breaks = c(-80.5, -81, -81.5))+
@@ -207,7 +210,7 @@ diff_plot <- ggplot()+
   
   
   # Can use this to set crs or crop the map output if needed, Expand = FALSE does not add extra buffer around plotted extent
-  coord_sf(expand = F, xlim = c(MAP_EXTENT[1], MAP_EXTENT[2]), ylim = c(MAP_EXTENT[3], MAP_EXTENT[4]))+
+  coord_sf(expand = F, xlim = c(map_extent[1], map_extent[2]), ylim = c(map_extent[3], map_extent[4]))+
   
   # Set which graticule displayed on x and y axis
   scale_x_continuous(breaks = c(-80.5, -81, -81.5))+
