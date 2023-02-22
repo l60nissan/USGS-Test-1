@@ -8,8 +8,16 @@ library(tidyverse)
 library(sf)
 library(raster)
 
-MarlProcess <- function(base_file, alt_file, mp_file){
+MarlProcess <- function(base_file,
+                        alt_file,
+                        mp_file){
   ## Define Strings for Function ----
+  
+  rsm_string <- "RSM"
+  hsi_string <- "hsi_CombinedScore"
+  base_string <- "BASE"
+  alt_string <- "ALT"
+  
   
   # Marl
   marl_string <- "Marl"
@@ -35,22 +43,22 @@ MarlProcess <- function(base_file, alt_file, mp_file){
   
   # Read CSV
   base_csv <- read.csv(base_file, header = TRUE, stringsAsFactors = FALSE)
-  base_csv <- base_csv[, c("RSM", "hsi_CombinedScore")]
-  names(base_csv) <- c("RSM", "BASE")
+  base_csv <- base_csv[, c(rsm_string, hsi_string)]
+  names(base_csv) <- c(rsm_string, base_string)
   
   alt_csv <- read.csv(alt_file, header = TRUE, stringsAsFactors = FALSE)
-  alt_csv <- alt_csv[, c("RSM", "hsi_CombinedScore")]
-  names(alt_csv) <- c("RSM", "ALT")
+  alt_csv <- alt_csv[, c(rsm_string, hsi_string)]
+  names(alt_csv) <- c(rsm_string, alt_string)
   
   # Calculate differences and make data frame of differences for plotting
-  alt_base <- full_join(base_csv, alt_csv, by = "RSM")
+  alt_base <- full_join(base_csv, alt_csv, by = rsm_string)
   alt_base$RSM <- as.numeric(alt_base$RSM)
   alt_base[diff_name] <- alt_base$ALT - alt_base$BASE
-  names(alt_base)[names(alt_base) == "ALT"] <- paste0(alt_name)
-  names(alt_base)[names(alt_base) == "BASE"] <- paste0(base_name)
+  names(alt_base)[names(alt_base) == alt_string] <- paste0(alt_name)
+  names(alt_base)[names(alt_base) == base_string] <- paste0(base_name)
   alt_base_long <- pivot_longer(alt_base, cols = c(2:4),
                                 names_to = "Scenario",
-                                values_to = "hsi_CombinedScore")
+                                values_to = hsi_string)
   
   # Load shapefile
   mp <- st_read(mp_file) %>%
@@ -61,7 +69,7 @@ MarlProcess <- function(base_file, alt_file, mp_file){
                                "RSM_ID")]
   
   # Merge shapefile and diff_data to save out if needed
-  mp_diff <- merge(mp, alt_base, by = "RSM")
+  mp_diff <- merge(mp, alt_base, by = rsm_string)
   #st_write(mp_diff, "./Output/SHAPEFILE.shp")
   
   # Merge shapefile and long data for plotting -
@@ -96,9 +104,9 @@ MarlProcess <- function(base_file, alt_file, mp_file){
   r <- raster(ext, res = 478.95) 
   crs(r) <-  crs(diff_df)
   
-  diff_sp <- diff_df[, names(diff_df) %in% c("hsi_CombinedScore")]
+  diff_sp <- diff_df[, names(diff_df) %in% c(hsi_string)]
   
-  rr <- rasterize(diff_sp, r, field = "hsi_CombinedScore", na.rm = TRUE)
+  rr <- rasterize(diff_sp, r, field = hsi_string, na.rm = TRUE)
   
   diff_mask <- mask(rr, sub_pop)
   diff_mask <- crop(diff_mask, sub_pop)
