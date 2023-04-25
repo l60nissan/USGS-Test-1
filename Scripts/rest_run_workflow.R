@@ -26,9 +26,7 @@ source("./Scripts/input_paths.R")
 source("./Scripts/species_string_definitions.R")
 
 ## -----------------------------------------------------------------------------
-## -----------------------------------------------------------------------------
-# START: USER SET FACTORS
-
+# User set factors
 # Folder containing species output
 #parent_path <- "../LOSOM/Data/LOSOM_Round3_2021_12/Model Output/Alligator/JEM_Alligator_Production_Probability_Model_Data/"
 
