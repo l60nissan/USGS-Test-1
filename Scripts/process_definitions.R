@@ -105,3 +105,16 @@ waders_sp_name <- c("Great Blue Heron", "Glossy Ibis", "Great Egret",
                     "Little Blue Heron", "Roseate Spoonbill",
                     "White Ibis", "Wood Stork")
 names(waders_sp_abr) <- waders_sp_name
+
+# Marl Prairie
+marl_ind_cuts <- seq(from = 0, to = 100, by = 10)
+marl_ind_labels <- c("0 - 10%", "11 - 20%", "21 - 30%",
+                     "31 - 40%", "41 - 50%", "51 - 60%",
+                     "61 - 70%", "71 - 80%", "81 - 90%", "91 - 100%")
+
+marl_diff_cuts <- c(-100, -78, -55, -33, -10, 11, 34, 56, 79, 100)
+marl_diff_labels <- c("-79 to -100", "-56 to -78", "-34 to -55",
+                      "-11 to -33", "10 to -10", "11 to 33",
+                      "34 to 55", "56 to 78", "79 to 100") 
+marl_title <- "Marl Prairie Score: Percent to Target"
+
