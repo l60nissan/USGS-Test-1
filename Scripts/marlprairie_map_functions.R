@@ -65,7 +65,7 @@ MarlMap <- function(
   # create file used to generate scale bar
   
   # WCAS boundaries
-  wcas.shp <- st_read(dsn = WCAS_PATH)
+  wcas.shp <- st_read(dsn = wcas_path)
   wcas_st_valid <- st_is_valid(wcas.shp)
   if (all(wcas_st_valid, TRUE)) {
     wcas.shp <- wcas.shp
