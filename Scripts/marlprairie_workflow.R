@@ -25,31 +25,7 @@ source("./Scripts/species_string_definitions.R")
 # Define strings to avoid hard coding
 mp_file_pattern <- "\\MP_Scores.csv"
 
-########################################################
-### USER SET FACTORS ###
-
-# Folder containing species output
-#PARENT_PATH <- "./Data/LOSOM_Round1_2021_05/Model Output/MarlPrairie/MarlPrairie_Data/MarlPrairie_Data/"
-
-# Folder to output CSV and figures - include "/" after path to get file names correct when saving 
-#OUTPUT_PATH <- "./Output/LOSOM_Round1_2021_05/MarlPrairie/test/"
-
-# Marl Shapefile Path
-#mp_shp <- "./Data/LOSOM_Round1_2021_05/Model Output/MarlPrairie/MarlPrairie_Data/MarlPrairie_Data/depth_AA/MP_Scores.shp"
-
-# Set Alternate scenario names
-#alt_names <- c("Sim_0001")
-#alt_names <- c("AA", "BB", "CC", "DD", "EE1", "EE2")
-#alt_names <- c("WECB", "WFWO")
-#alt_names
-
-# Set Baseline scenario names
-#base_names <- c("Sim_0003", "Sim_0002")
-#base_names <- c("ECBr", "NA25")
-#base_names <- c("ALTHR")
-#base_names
 #########################################################
-
 # Scenario Name strings
 alt_names <- paste0(alt_names, collapse = "|")
 alt_names
