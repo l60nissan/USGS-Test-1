@@ -130,16 +130,3 @@ write.csv(acreage_diff_df,
 save(marl_process_list, all_files,
      file = paste0(OUTPUT_PATH, marl_process$sp_string,
                    "_processed_data.RData"))
-
-
-######
-# Examine output since difference maps look similar, values are different but falling within the same bin      
-ecbr_diff <- lapply(marl_process_list$ECBr, function(x) x$diff_df)
-ecbr_diff_values <- lapply(ecbr_diff, function(x) x$hsi_CombinedScore)
-ecbr_diff_df <- bind_cols(ecbr_diff_values)
-ecbr_diff_df <- bind_cols(ecbr_diff_df, marl_process_list$ECBr$`AA-ECBr`$diff_df$RSM)
-
-na25_diff <- lapply(marl_process_list$NA25, function(x) x$diff_df)
-na25_diff_values <- lapply(na25_diff, function(x) x$hsi_CombinedScore)
-na25_diff_df <- bind_cols(na25_diff_values)
-na25_diff_df <- bind_cols(na25_diff_df, marl_process_list$ECBr$`AA-ECBr`$diff_df$RSM)
