@@ -21,6 +21,10 @@ wost_path <- "../../GIS_Library/WOST_colonies/WOST_colonies_JB.shp"
 # CSSS subpopulation - includes AX
 subpop_path <- "../../GIS_Library/CSSS_subpopulations_wAX/CSSS_subpopulations_wAX.shp" 
 
+# Marl Prairie Shapefile
+# This can be any MP_scores.shp file from the target restoration run output
+mp_shp <- "./Data/LOSOM_Round1_2021_05/Model Output/MarlPrairie/MarlPrairie_Data/MarlPrairie_Data/depth_AA/MP_Scores.shp"
+
 # Map extent - Will be used to crop shapefiles to desired map extent - 
 # can be changed manually to fit different extenxt 
 map_extent <- c(xmin = 459839,
