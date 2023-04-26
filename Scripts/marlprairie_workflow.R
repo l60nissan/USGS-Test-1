@@ -88,7 +88,7 @@ acreage_diff_df <- data.frame()
     for (a in 1:length(alt_list)) {
       a_name <- str_extract_all(alt_list[a], all_scenario_names)[[1]]
       print(paste0("Processing :: ALT_", a_name, " minus BASE_", b_name))
-      marl_process <- MARL_PROCESS_OUTPUT(base_list[b], alt_list[a], mp_shp)
+      marl_process <- MarlProcess(base_list[b], alt_list[a], mp_shp)
     
       marl_process_list[[b]][[a]] <- marl_process
       names(marl_process_list[[b]])[[a]] <- marl_process$diff_name
