@@ -1,5 +1,5 @@
 ######################################
-# Workflow for Restoration Run MArl Praire Output
+# Workflow for Restoration Run Marl Praire Output
 #
 # Caitlin Hackett chackett@usgs.gov
 ######################################
