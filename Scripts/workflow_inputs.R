@@ -49,3 +49,10 @@ dsd_parent_path <- NULL
 dsd_output_path <- "../data_release_develop/"
 dsd_cropped <- FALSE
 
+## ----------
+# Marl Prairie
+
+marl_parent_path <- NULL
+marl_output_path <- "../data_release_develop/"
+
+
