@@ -22,6 +22,8 @@ source("./Scripts/input_paths.R")
 # Defined species strings - for consistency across coordinated scripts
 source("./Scripts/species_string_definitions.R")
 
+# Define strings to avoid hard coding
+mp_file_pattern <- "\\MP_Scores.csv"
 
 ########################################################
 ### USER SET FACTORS ###
@@ -63,7 +65,7 @@ all_scenario_names <- paste0(base_names_join, alt_names, collapse = "|")
 all_scenario_names
 
 # All Files
-all_files <- list.files(paren_path, pattern = "\\MP_Scores.csv",
+all_files <- list.files(paren_path, pattern = mp_file_pattern,
                         full.names = TRUE, recursive = TRUE)
 all_files
 
