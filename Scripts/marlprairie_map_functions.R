@@ -11,6 +11,7 @@ library(RColorBrewer)
 library(ggnewscale)
 library(sf)
 library(ggsn)
+#install.packages("shadowtext", dependencies=TRUE, repos='http://cran.rstudio.com/')
 library(shadowtext)
 
 # Define map extent - use set extent instead of extent used for full aoi
@@ -122,8 +123,8 @@ MarlMap <- function(
   ind_plot <- ggplot() +
   
     # Plot Individual score 
-    geom_sf(data = df_ind, aes_string(fill = ind_fill),
-            color = "grey25", lwd = 0.05) +
+    geom_sf(data = df_ind, aes(fill = !!sym(ind_fill)),
+            color = "grey25", linewidth = 0.05) +
     scale_fill_manual(values = rev(score_pal),
                       guide = guide_legend(order = 1, reverse = TRUE,
                                            override.aes = list(color = NA)),
@@ -133,12 +134,12 @@ MarlMap <- function(
     facet_wrap(~Scenario) +
     
     # Plot shapefiles for Main Park Road, WCAS, and area of interest
-    geom_sf(data = mpr.crop, colour = "black", lwd = scale_factor*0.5,
+    geom_sf(data = mpr.crop, colour = "black", linewidth = scale_factor*0.5,
             show.legend = F, lty = "dashed") +
     geom_sf(data = wca.crop, colour = "black", alpha = 0,
-            lwd = scale_factor*0.5, show.legend = FALSE) +
+            linewidth = scale_factor*0.5, show.legend = FALSE) +
     geom_sf(data = spop.crop, colour = "Red", alpha = 0,
-            lwd = scale_factor*0.4, show.legend = FALSE) +
+            linewidth = scale_factor*0.4, show.legend = FALSE) +
     geom_shadowtext(data = filter(subpop_coord,
                                   SubPopulat != "A" & SubPopulat != "AX"),
                     aes(x = X, y = Y,label = SubPopulat),
@@ -193,8 +194,8 @@ MarlMap <- function(
 ind_plot
 
 diff_plot <- ggplot() +
-  geom_sf(data = df_dif, aes_string(fill = ind_fill),
-          color = "gray25", lwd = 0.05) +
+  geom_sf(data = df_dif, aes(fill = !!sym(dif_fill)),
+          color = "gray25", linewidth = 0.05) +
   scale_fill_manual(values = diff_pal, name = DIFF_LEGEND_NAME, drop = FALSE) +
   guides(fill = guide_legend(ncol = 1, reverse = TRUE,
                              override.aes = list(color = NA))) +
@@ -203,11 +204,11 @@ diff_plot <- ggplot() +
   
   # Plot shapefiles for Main Park Road, WCAS, and area of interest
   geom_sf(data = mpr.crop, colour = "black",
-          lwd = scale_factor*0.5, show.legend = F, lty = "dashed") +
+          linewidth = scale_factor*0.5, show.legend = F, lty = "dashed") +
   geom_sf(data = wca.crop, colour = "black", alpha = 0, 
-          lwd = scale_factor*0.5, show.legend = FALSE) +
+          linewidth = scale_factor*0.5, show.legend = FALSE) +
   geom_sf(data = spop.crop, colour = "Red", alpha = 0,
-          lwd = scale_factor*0.4, show.legend = FALSE) +
+          linewidth = scale_factor*0.4, show.legend = FALSE) +
   geom_sf_text(data = filter(spop.crop, SubPopulat != "A" & SubPopulat != "AX"),
                aes(label = SubPopulat),
                color = "black", size = 5, fontface = "bold") +
@@ -226,6 +227,7 @@ diff_plot <- ggplot() +
                  height = 0.008, border.size = 1,
                  anchor = c(x = 508000, y = 2794151), family = "sans") +
   ggsn::north(data = df_scale, symbol = 12, scale = 0.03,
+              x.min = NULL, x.max = NULL, y.min = NULL, y.max = NULL,
               anchor = c(x = 493000, y = 2800500)) +
   
   
@@ -244,7 +246,7 @@ diff_plot <- ggplot() +
     panel.grid.minor = element_blank(), # remove grid lines,
     
     #panel.background = element_rect(fill = "white"),
-    panel.border = element_rect(fill = NA, color = "black", size = 1),
+    panel.border = element_rect(fill = NA, color = "black", linewidth = 1),
     
     # rotate and position y axis labels
     axis.text.y = element_text(angle = 90, hjust = 0.5, vjust = 0.0, size = 13), 
@@ -267,13 +269,14 @@ diff_plot <- ggplot() +
 diff_plot
 
 comb <- plot_grid(ind_plot, diff_plot,
-                  ncol = 1, rel_widths = 1, rel_heights = 1)
+                  ncol = 1, nrow = 2,
+                  rel_widths = c(1, 1), rel_heights = c(1, 1))
 comb <- ggdraw(comb) +
   draw_label(map_title, x = 0.32, y = .95, vjust = 0,
              fontfamily = "serif", size = 20)
 
 ggsave(output_file_name, comb,
-       height = 8.5, width = 11, units = "in", scale = 1)
+       height = 8.5, width = 11, units = "in", scale = 1, bg = "white")
 }
 
 
