@@ -47,9 +47,9 @@ MarlMap <- function(
   diff_pal
   
   # Legend titles
-  SCORE_LENGEND_NAME <- "Percent to Target"
-  DIFF_LEGEND_NAME <- levels(df_dif$Scenario)[3]
-  DIFF_LEGEND_NAME <- paste0("Difference","\n", DIFF_LEGEND_NAME)
+  score_legend_name <- "Percent to Target"
+  diff_legend_name <- levels(df_dif$Scenario)[3]
+  diff_legend_name <- paste0("Difference","\n", diff_legend_name)
   
   #-----------------
   # Read Shapefiles
@@ -59,38 +59,38 @@ MarlMap <- function(
   # create file used to generate scale bar
   
   # WCAS boundaries
-  wcas.shp <- st_read(dsn = wcas_path)
-  wcas_st_valid <- st_is_valid(wcas.shp)
+  wcas_shp <- st_read(dsn = wcas_path)
+  wcas_st_valid <- st_is_valid(wcas_shp)
   if (all(wcas_st_valid, TRUE)) {
-    wcas.shp <- wcas.shp
+    wcas_shp <- wcas_shp
   } else {
-    wcas.shp <- st_make_valid(wcas.shp)}  
+    wcas_shp <- st_make_valid(wcas_shp)}  
   
   # Main Park Road 
-  mpr.shp <- st_read(dsn = mpr_path) %>%
+  mpr_shp <- st_read(dsn = mpr_path) %>%
     sf::st_transform(crs = 26917)
-  mpr_st_valid <- st_is_valid(mpr.shp)
+  mpr_st_valid <- st_is_valid(mpr_shp)
   if (all(mpr_st_valid, TRUE)) {
-    mpr.shp <- mpr.shp
+    mpr_shp <- mpr_shp
   } else {
-    mpr.shp <- st_make_valid(mpr.shp)}  
+    mpr_shp <- st_make_valid(mpr_shp)}  
   
   # Load CSSS Subpopulations
   # Load AOI mask shapefile
-  spop.shp <- st_read(dsn = spop_path) %>%
+  spop_shp <- st_read(dsn = spop_path) %>%
     st_transform(crs = 26917)
-  spop_st_valid <- st_is_valid(spop.shp)
+  spop_st_valid <- st_is_valid(spop_shp)
   if (all(spop_st_valid, TRUE)) {
-    spop.shp <- spop.shp
+    spop_shp <- spop_shp
   } else {
-    spop.shp <- st_make_valid(spop.shp)} 
+    spop_shp <- st_make_valid(spop_shp)} 
   # rename NA subpop to AX for later plotting
-  spop.shp$SubPopulat[is.na(spop.shp$SubPopulat)] <- "AX"  
+  spop_shp$SubPopulat[is.na(spop_shp$SubPopulat)] <- "AX"  
   
   # Crop to map extent
-  wca.crop <- st_crop(wcas.shp, map_extent)
-  mpr.crop <- st_crop(mpr.shp, map_extent)
-  spop.crop <- st_crop(spop.shp, map_extent)
+  wca.crop <- st_crop(wcas_shp, map_extent)
+  mpr.crop <- st_crop(mpr_shp, map_extent)
+  spop.crop <- st_crop(spop_shp, map_extent)
   
   # Set scale to create scalebar
   df_scale <- df_dif
@@ -121,7 +121,7 @@ MarlMap <- function(
     scale_fill_manual(values = rev(score_pal),
                       guide = guide_legend(order = 1, reverse = TRUE,
                                            override.aes = list(color = NA)),
-                      name = SCORE_LENGEND_NAME, drop = FALSE) +
+                      name = score_legend_name, drop = FALSE) +
 
     # Plot facets
     facet_wrap(~Scenario) +
@@ -189,7 +189,7 @@ ind_plot
 diff_plot <- ggplot() +
   geom_sf(data = df_dif, aes(fill = !!sym(dif_fill)),
           color = "gray25", linewidth = 0.05) +
-  scale_fill_manual(values = diff_pal, name = DIFF_LEGEND_NAME, drop = FALSE) +
+  scale_fill_manual(values = diff_pal, name = diff_legend_name, drop = FALSE) +
   guides(fill = guide_legend(ncol = 1, reverse = TRUE,
                              override.aes = list(color = NA))) +
   
