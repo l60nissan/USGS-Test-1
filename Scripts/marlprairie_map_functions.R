@@ -14,13 +14,6 @@ library(ggsn)
 #install.packages("shadowtext", dependencies=TRUE, repos='http://cran.rstudio.com/')
 library(shadowtext)
 
-# Define map extent - use set extent instead of extent used for full aoi
-# since marl extent is always the same
-map_extent <- c(xmin = 485489.89,
-                xmax = 554055.08,
-                ymin = 2791119.88,
-                ymax = 2850143.30) 
-
 ## -----------------------------------------------------------------------------
 # Function to build marl prairie map 
 ## -----------------------------------------------------------------------------
