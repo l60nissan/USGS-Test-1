@@ -110,7 +110,6 @@ FishMap <- function(
     aoi_shp <- st_make_valid(aoi_shp)}  
   
   # Crop to map extent
-  fl_crop  <- st_crop(fl_shp, map_extent)
   wca_crop <- st_crop(wcas_shp, map_extent)
   mpr_crop <- st_crop(mpr_shp, map_extent)
   aoi_crop <- st_crop(aoi_shp, map_extent)
@@ -157,7 +156,7 @@ FishMap <- function(
 
     # Plot facets
     facet_grid(as.formula(paste(SCENARIO_COL,"~", YEAR_COL)),
-               labeller = labeller(YEAR = name.labs))+
+               labeller = labeller(YEAR = name.labs)) +
 
     # Plot shapefiles for Main Park Road, WCAS, and area of interest
     geom_sf(data = mpr_crop, colour = "black",
