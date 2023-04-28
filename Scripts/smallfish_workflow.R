@@ -21,7 +21,7 @@ source("../restoration_runs/Scripts/smalfish_map_functions.R")
 ## -----------------------------------------------------------------------------
 ## 1. SUBSET FISH PSU TO AOI
 ## -----------------------------------------------------------------------------
-# Read in CSV with all fish data
+# Read in CSV with all fish data - large file so may take a few minutes
 fish_all <- read.csv(fish_path, header = TRUE) 
 # read in AOI shapefile
 aoi <- st_read(dsn = aoi_path) 
@@ -52,16 +52,18 @@ head(fish)
 # Calculate cumulative fish density over the period of record
 
 # Calculate mean daily TOT_FISH_CUM  -- combined PSUs
-# I tried to factor the string but was haaving trouble getting dplyr to use the strings in the pipe - this is a point
-# of future improvement
+
+# Name scenarios and columns to sumamrise base on alternative and base names
+scenario_names <- c(alt_names, base_names)
+scenario_cols <- paste0("depth_", scenario_names, "_TOTFISH_CUM")
+scenario_cols
+
 cum_fish_by_date <- fish %>%
-  group_by(DATE)%>%
-  summarise(PA22 = mean(depth_PA22_TOTFISH_CUM),
-            PA25 = mean(depth_PA25_TOTFISH_CUM),
-            ECB19 = mean(depth_ECB19_TOTFISH_CUM),
-            NA22f = mean(depth_NA22f_TOTFISH_CUM),
-            NA25f = mean(depth_NA25f_TOTFISH_CUM))
+  group_by(DATE) %>%
+  summarise_at(vars(all_of(scenario_cols)),
+               list(mean = mean))
 head(cum_fish_by_date)
+names(cum_fish_by_date) <- c("DATE", scenario_names)
 
 # Pivot longer for plotting
 cum_fish_by_date <- pivot_longer(cum_fish_by_date, cols = c(2:ncol(cum_fish_by_date)), names_to = "Scenario", values_to = "totfish_cum")
