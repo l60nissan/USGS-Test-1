@@ -18,42 +18,37 @@ library(raster)
 
 source("../restoration_runs/Scripts/smalfish_map_functions.R")
 
-#############################
-# 1. SUBSET FISH PSU TO AOI 
-#############################
-fish_all <- read.csv(fish_path, header = TRUE) # Read in CSV with all fish data
-AOI <- st_read(dsn = AOI_PATH) # read in AOI shapefile
+## -----------------------------------------------------------------------------
+## 1. SUBSET FISH PSU TO AOI
+## -----------------------------------------------------------------------------
+# Read in CSV with all fish data
+fish_all <- read.csv(fish_path, header = TRUE) 
+# read in AOI shapefile
+aoi <- st_read(dsn = aoi_path) 
 
 # Get Unique PSUs and make spatial
-PSU_coords_all <- unique(dplyr::select(fish_all, c("PSU", "EASTING", "NORTHING")))
-coordinates(PSU_coords_all) <- ~ EASTING + NORTHING
-PSU_coords_all <- st_as_sf(PSU_coords_all)
-PSU_coords_all <- PSU_coords_all %>% st_set_crs(st_crs(AOI))
+psu_coords_all <- unique(dplyr::select(fish_all,
+                                       c("PSU", "EASTING", "NORTHING")))
+coordinates(psu_coords_all) <- ~ EASTING + NORTHING
+psu_coords_all <- st_as_sf(psu_coords_all)
+psu_coords_all <- psu_coords_all %>% st_set_crs(st_crs(aoi))
 
 # Subset PSU locations to those within the AOI
-PSU_coords_AOI <- PSU_coords_all[AOI,]
+psu_coords_aoi <- psu_coords_all[aoi,]
 
 # filter fish to only psus within the AOI
-PSU_AOI_names <- PSU_coords_AOI$PSU # names of PSUS within AOI
-fish <- fish_all[fish_all$PSU %in% PSU_AOI_names,] 
+psu_aoi_names <- psu_coords_aoi$PSU # names of PSUS within AOI
+fish <- fish_all[fish_all$PSU %in% psu_aoi_names,] 
 head(fish)
 
 # Add column for year so annual mean can be calcualted for each PSU
 fish$DATE <- as.Date(fish$DATE)
-fish$YEAR <- format(fish$DATE, format="%Y")
+fish$YEAR <- format(fish$DATE, format = "%Y")
 head(fish)
 
-############################
-# LOSOM Round 3 ONLY
-# - Rename NA22F and NA25F with NA22f and NA25f
-############################
-colnames(fish) <- sub("NA22F", "NA22f", colnames(fish))
-colnames(fish) <- sub("NA25F", "NA25f", colnames(fish))
-head(fish)
-
-############################
-# 2. CUMULATIVE DENSITY
-############################
+## -----------------------------------------------------------------------------
+## 2. CUMULATIVE DENSITY
+## -----------------------------------------------------------------------------
 # Calculate cumulative fish density over the period of record
 
 # Calculate mean daily TOT_FISH_CUM  -- combined PSUs
