@@ -18,13 +18,6 @@ library(raster)
 
 source("../restoration_runs/Scripts/smalfish_map_functions.R")
 
-# Set alternate and base names
-alt_names <- c("PA22", "PA25")
-base_names <- c("ECB19", "NA22f", "NA25f")
-alt_names
-base_names
-
-
 #############################
 # 1. SUBSET FISH PSU TO AOI 
 #############################
