@@ -48,16 +48,16 @@ head(fish)
 
 ## -----------------------------------------------------------------------------
 ## 2. CUMULATIVE DENSITY
+##    Calculate cumulative fish density over the period of record
 ## -----------------------------------------------------------------------------
-# Calculate cumulative fish density over the period of record
-
 # Calculate mean daily TOT_FISH_CUM  -- combined PSUs
-
 # Name scenarios and columns to sumamrise base on alternative and base names
 scenario_names <- c(alt_names, base_names)
 scenario_cols <- paste0("depth_", scenario_names, "_TOTFISH_CUM")
 scenario_cols
 
+# Group data by date, and calculate daily mean for combined PSUs using colummns
+# defined in the scenario_cols vector
 cum_fish_by_date <- fish %>%
   group_by(DATE) %>%
   summarise_at(vars(all_of(scenario_cols)),
@@ -66,79 +66,117 @@ head(cum_fish_by_date)
 names(cum_fish_by_date) <- c("DATE", scenario_names)
 
 # Pivot longer for plotting
-cum_fish_by_date <- pivot_longer(cum_fish_by_date, cols = c(2:ncol(cum_fish_by_date)), names_to = "Scenario", values_to = "totfish_cum")
+cum_fish_by_date <- pivot_longer(cum_fish_by_date,
+                                 cols = c(2:ncol(cum_fish_by_date)),
+                                 names_to = "Scenario",
+                                 values_to = "totfish_cum")
 head(cum_fish_by_date)
 
 # Set variable orders
-cum_fish_by_date$Scenario <- factor(cum_fish_by_date$Scenario, levels = c(alt_names, base_names))
+cum_fish_by_date$Scenario <- factor(cum_fish_by_date$Scenario,
+                                    levels = c(alt_names, base_names))
 cum_fish_by_date$DATE <- as.Date(cum_fish_by_date$DATE)
 
-# Add breaks so x-axis has date not just year
-dbreaks <- as.Date(c("1965-01-01","1970-01-01", "1975-01-01","1980-01-01","1985-01-01","1990-01-01","1995-01-01","2000-01-01","2005-01-01",
-                     "2010-01-01", "2016-12-31"))
+# Set breaks for dates that will be displayed on x-axis of plot
+# create vector of all years that have output
+fishyears <- unique(fish$YEAR)
+fishyears 
+
+# Create breaks for every other year
+yearbreaks <- seq(fishyears[1],fishyears[length(fishyears)], 2)
+yearbreaks
+ylength <- length(yearbreaks) #length of vector containing every other year
+
+# Add day-month values to years to format axis labels
+# Last year of axis labels should be 12-31-"last year of data".
+if (last(yearbreaks) == last(fishyears)) {
+  datebreaks <- paste0(yearbreaks[1:(ylength - 1)], "-01-01")
+  dbreaks <- as.Date(c(datebreaks, paste0(yearbreaks[ylength], "-12-31")))
+} else {
+  datebreaks <- paste0(yearbreaks[1:ylength], "-01-01")
+  dbreaks <- as.Date(c(datebreaks, paste0((yearbreaks[ylength] + 1), "-12-31")))
+  }
+dbreaks
 
 # Set palette
 # palette source:" https://clauswilke.com/dataviz/color-pitfalls.html
-#line_pal <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#000000")
-line_pal <- c("#E69F00", "#000000", "#009E73", "#0072B2", "#F0E442")
 
-## For LOSOM round 3 only!
+# Number of colors needed
+ncolor <- length(scenario_cols)
+ncolor
+
+full_pal <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2",
+              "#D55E00", "#CC79A7", "#000000")
+line_pal <- full_pal[1:ncolor]
+
+
+# If line overlap, this will change line width. - leaving as example but should
+# not be necessary for most processing
 # - Make column that marks linetype befcause PA22 and NA22f do not show up on
 # graph because values are very close to PA25 and NA25f
-cum_fish_by_date$line_type <- 0
-cum_fish_by_date[cum_fish_by_date$Scenario == "PA22", 4] <- 1
-cum_fish_by_date[cum_fish_by_date$Scenario == "NA22f", 4] <- 1
-cum_fish_by_date$line_type <- as.factor(cum_fish_by_date$line_type)
+#cum_fish_by_date$line_type <- 0
+#cum_fish_by_date[cum_fish_by_date$Scenario == "PA22", 4] <- 1
+#cum_fish_by_date[cum_fish_by_date$Scenario == "NA22f", 4] <- 1
+#cum_fish_by_date$line_type <- as.factor(cum_fish_by_date$line_type)
 
+#-----------------
+# Make plot
 
-# Make the plot
-#cum_fish_plot <- ggplot(cum_fish_by_date) + 
-#  geom_line(aes(x=DATE, y=totfish_cum, colour=Scenario, linetype =  size = 1), stat="identity")+ 
-#  #geom_line(data = filter(cum_fish_by_date, Scenario != "PA22" & Scenario != "NA22F"), aes(x=DATE, y=totfish_cum, colour=Scenario), stat="identity", size = 0.5)+ 
-#  scale_color_manual(values = line_pal)+
-#  #scale_linetype_manual(values = c(1,2,1,2,1))+
-#  #scale_color_viridis_d()+
-#  ylab(label="Average Daily Cumulative Density (fish/m2)") + xlab(label="Date") +
-#  ggtitle("Cumulative Small Fish Density") +
-#  scale_x_date(breaks=dbreaks, limits=as.Date(c("1965-01-01", "2016-12-31"))) +
-#  theme(axis.title.x=element_text(size=15), axis.title.y=element_text(size=15), plot.title=element_text(size=20),
-#        axis.text.x=element_text(size=12, angle=70, hjust=1), axis.text.y=element_text(size=12), legend.text=element_text(size=12),
-#        legend.title=element_text(size=15), plot.margin = margin(1,1,1,1, "cm"))
-#cum_fish_plot
-
-cum_fish_plot <- ggplot(cum_fish_by_date, aes(x=DATE, y=totfish_cum))+ 
-  geom_line(aes(colour = Scenario:line_type, size = Scenario:line_type))+ 
-  #geom_line(data = filter(cum_fish_by_date, Scenario != "PA22" & Scenario != "NA22F"), aes(x=DATE, y=totfish_cum, colour=Scenario), stat="identity", size = 0.5)+ 
-  scale_color_manual(name = "Scenario", values = line_pal, labels = c("PA22", "PA25", "ECB19", "NA22f", "NA25f"))+
-  scale_size_manual(name = "Scenario", values = c(1.5,0.5, 0.5, 1.5, 0.5), labels = c("PA22", "PA25", "ECB19", "NA22f", "NA25f"))+
-  #scale_color_viridis_d()+
-  ylab(label="Average Daily Cumulative Density (fish/m2)") + xlab(label="Date") +
+cum_fish_plot <- ggplot(cum_fish_by_date) + 
+  
+  # Set the line geometry
+  geom_line(aes(x = DATE, y = totfish_cum, color = Scenario), 
+            linewidth = 1.5) +
+                # This can be added within aes() if linetype needs to be defined
+                # to visualize overlapping lines - not necessary for most runs
+                # colour = Scenario:line_type, linewidth = Scenario:line_type)) + 
+  
+  # Set line colors
+  scale_color_manual(name = "Scenario", values = line_pal,
+                     labels = c(scenario_names)) +
+  
+  # Set x and y axis labels and title
+  ylab(label = "Average Daily Cumulative Density (fish/m2)") +
+  xlab(label = "Date") +
   ggtitle("Cumulative Small Fish Density") +
-  scale_x_date(breaks=dbreaks, limits=as.Date(c("1965-01-01", "2016-12-31"))) +
-  theme(axis.title.x=element_text(size=15), axis.title.y=element_text(size=15), plot.title=element_text(size=20),
-        axis.text.x=element_text(size=12, angle=70, hjust=1), axis.text.y=element_text(size=12), legend.text=element_text(size=12),
-        legend.title=element_text(size=15), plot.margin = margin(1,1,1,1, "cm"))
+  scale_x_date(breaks = dbreaks) +
+  
+  # Set theme elements
+  theme(axis.title.x = element_text(size = 15),
+        axis.title.y = element_text(size = 15),
+        plot.title = element_text(size = 20),
+        axis.text.x = element_text(size = 12, angle = 70, hjust = 1),
+        axis.text.y = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 15),
+        plot.margin = margin(1, 1, 1, 1, "cm"))
 cum_fish_plot
 
 #save plot
-ggsave(paste0(output_path, "/fish_cumulative.pdf"), width=11, height=8.5, units="in", dpi=300)
+ggsave(paste0(output_path, "/fish_cumulative.pdf"), width = 11,
+       height = 8.5, units = "in", dpi = 300)
 
 # Save data
 cum_fish_by_date <- cum_fish_by_date[, -4]
-write.table(cum_fish_by_date, file=paste0(output_path, "/fish_cumulative.txt"), sep=",")
+write.table(cum_fish_by_date,
+            file = paste0(output_path, "/fish_cumulative.txt"), sep = ",")
 
-##########################################
-# 3. Daily percent difference
-##########################################
+
+## -----------------------------------------------------------------------------
+## 3. Daily percent difference
+## -----------------------------------------------------------------------------
 
 # Subset to "TOTFISH" columns to calculate daily percent differnces
-fish_daily <- dplyr::select(fish ,c(DATE, YEAR, PSU, grep("TOTFISH$", names(fish))))
+fish_daily <- dplyr::select(fish , c(DATE, YEAR, PSU,
+                                     grep("TOTFISH$", names(fish))))
 
-# Calculate daily percent difference for each PSU (all years) _ kind of slow might be a better way with lapply?
+# Calculate daily percent difference for each PSU (all years)
+# - takes a few minutes to process
 per_diff_daily <- data.frame()
-for(b in 1:length(base_names)){
+
+for (b in 1:length(base_names)) {
   base_col <- grep(base_names[b], names(fish_daily), value = TRUE)
-  for(a in 1:length(alt_names)){
+  for (a in 1:length(alt_names)) {
     alt_col <- grep(alt_names[a], names(fish_daily), value = TRUE)
     
     b_name <- str_extract_all(base_col, base_names[b])[[1]]
@@ -148,30 +186,33 @@ for(b in 1:length(base_names)){
     print(paste0("Processing Daily Percent Difference :: ", diff_name))
     
     alt_base <- fish_daily[,c(alt_col, base_col)]
-    per_diff <- ((alt_base[alt_col]-alt_base[base_col])/alt_base[base_col])* 100
+    per_diff <- ((alt_base[alt_col] - alt_base[base_col])/alt_base[base_col])*100
     names(per_diff) <- "percent_diff"
     per_diff <- cbind(fish_daily[,c("DATE", "YEAR", "PSU")], per_diff)
     per_diff$Scenario <- diff_name
     per_diff_daily <- rbind(per_diff_daily, per_diff)
-    }}
+  }
+}
 
-###########################################
-# 4. Summarize daily percent difference 
-###########################################
+## -----------------------------------------------------------------------------
+## 4. Summarize daily percent difference 
+## -----------------------------------------------------------------------------
 
-####
+#-----------------
 # Summarize to YEAR - BAR PLOT
-###
+
 # calculate average daily percent difference for all days and PSUs (Barplot) for each sceanrio
-daily_diff_bar <- per_diff_daily%>%
-  group_by(YEAR, Scenario)%>%
+daily_diff_bar <- per_diff_daily %>%
+  group_by(YEAR, Scenario) %>%
   summarise(mean_perdiff = mean(percent_diff))
 # write percent differnce table to text
-write.table(daily_diff_bar, file=paste0(output_path, "/fish_annual_mean_pchange.txt"), sep=",")
+write.table(daily_diff_bar,
+            file = paste0(output_path, "/fish_annual_mean_pchange.txt"),
+            sep = ",")
 
-####
+#-----------------
 # Summarise to YEAR & PSU - MAPS
-####
+
 # calculate average daily percent difference for each PSU for each year
 # Caclulate mean of daily percent change - to year, PSU, Scenario
 daily_diff_map <- per_diff_daily%>%
