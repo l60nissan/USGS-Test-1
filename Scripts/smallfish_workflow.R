@@ -201,7 +201,8 @@ for (b in 1:length(base_names)) {
 #-----------------
 # Summarize to YEAR - BAR PLOT
 
-# calculate average daily percent difference for all days and PSUs (Barplot) for each sceanrio
+# calculate average daily percent difference for all days and PSUs (Barplot)
+# for each sceanrio
 daily_diff_bar <- per_diff_daily %>%
   group_by(YEAR, Scenario) %>%
   summarise(mean_perdiff = mean(percent_diff))
@@ -215,55 +216,13 @@ write.table(daily_diff_bar,
 
 # calculate average daily percent difference for each PSU for each year
 # Caclulate mean of daily percent change - to year, PSU, Scenario
-daily_diff_map <- per_diff_daily%>%
-  group_by(YEAR, PSU, Scenario)%>%
+daily_diff_map <- per_diff_daily %>%
+  group_by(YEAR, PSU, Scenario) %>%
   summarise(mean_daily_diff = mean(percent_diff))
 
-###########################################
-# 5. Make Bar plots
-###########################################
-
-## FUNCTION FOR BAR PLOTS
-# Make percent diff Bar plot - 1 alt and baselines
-PER_DIFF_PLOT <- function(DF, X_VAR, Y_VAR, FILL_VAR, TITLE, Y_LAB, X_LAB, MIN_LIMIT, MAX_LIMIT){
-  DIFF_PLOT <- ggplot(data = DF, aes_string(x=X_VAR, y=Y_VAR, fill = FILL_VAR))+ 
-    geom_bar(stat="identity", position="dodge", width=0.7, colour="black") + 
-    labs(y = Y_LAB, x = X_LAB, title = TITLE, fill = "percent change \nfrom baseline:")+
-    scale_y_continuous(limits=c(MIN_LIMIT,MAX_LIMIT)) +
-    theme(axis.title.x=element_text(size=15),
-          axis.title.y=element_text(size=15),
-          plot.title=element_text(size=20),
-          axis.text.x=element_text(size=12, angle=70, hjust=1), 
-          axis.text.y=element_text(size=12), 
-          legend.text=element_text(size=12),
-          legend.title=element_text(size=15), 
-          legend.title.align = 0.5,
-          plot.margin = margin(1,.5,1,.5, unit = "in")) # Set margins for plot - wider on right side to make space fore legend
-  
-  return(DIFF_PLOT)
-}
-
-#plot for all alts with 1 baseline
-PER_DIFF_PLOT_ALTS <- function(DF, X_VAR, Y_VAR, FILL_VAR, TITLE, Y_LAB, X_LAB, MIN_LIMIT, MAX_LIMIT){
-  bar_pal <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00")
-  DIFF_PLOT <- ggplot(data = DF, aes_string(x=X_VAR, y=Y_VAR, fill = FILL_VAR))+ 
-    geom_bar(stat="identity", position = "dodge", width=0.7, colour="black") + 
-    scale_fill_manual(values = bar_pal )+
-    labs(y = Y_LAB, x = X_LAB, title = TITLE, fill = "percent change \nfrom baseline:")+
-    scale_y_continuous(limits=c(MIN_LIMIT,MAX_LIMIT)) +
-    theme(axis.title.x=element_text(size=15),
-          axis.title.y=element_text(size=15),
-          plot.title=element_text(size=20),
-          axis.text.x=element_text(size=12, angle=70, hjust=1), 
-          axis.text.y=element_text(size=12), 
-          legend.text=element_text(size=12),
-          legend.title=element_text(size=15), 
-          legend.title.align = 0.5,
-          plot.margin = margin(1,.5,1,.5, unit = "in")) # Set margins for plot - wider on right side to make space fore legend
-  
-  return(DIFF_PLOT)
-}
-#######
+## -----------------------------------------------------------------------------
+## 5. Make Bar plots
+## -----------------------------------------------------------------------------
 
 # Make Percent diffrence bar plot
 x_var <- "YEAR"
@@ -272,12 +231,12 @@ fill_var <- "Scenario"
 title <- "Total Fish Density"
 #y_lab <- paste0("Percent Change in ", title, "\nfrom baseline to ", map_dfs$alt_name)
 x_lab <- "Year"
-min_limit <-plyr::round_any(min(daily_diff_bar[y_var]), 5, f = floor)
+min_limit <- plyr::round_any(min(daily_diff_bar[y_var]), 5, f = floor)
 max_limit <- plyr::round_any(max(daily_diff_bar[y_var]), 5, f = ceiling)
 
 # Make bar plot for alt vs both baselines
 #a <- 1
-for(a in 1:length(alt_names)){
+for (a in 1:length(alt_names)) {
   print(paste0("Making Differnce Bar Plot :: ", alt_names[a]))
   per_diff_alt <- daily_diff_bar[grep(alt_names[a], daily_diff_bar$Scenario),]
   TEST <- PER_DIFF_PLOT(
@@ -292,12 +251,12 @@ for(a in 1:length(alt_names)){
     MAX_LIMIT = max_limit
   )
   diff_plot_filename <- paste0(output_path, "/PercentDiff_BarPlot_", gsub(" ", "_", title),"_", alt_names[a], ".pdf")
-  ggsave(diff_plot_filename, TEST, width=11, height=8.5, units="in", dpi=300)
+  ggsave(diff_plot_filename, TEST, width = 11, height = 8.5, units = "in", dpi = 300)
 }
 
 # Make bar plot for all alts against each baseline
 #a <- 1
-for(b in 1:length(base_names)){
+for (b in 1:length(base_names)) {
   print(paste0("Making Differnce Bar Plot :: ", base_names[b]))
   per_diff_alt <- daily_diff_bar[grep(base_names[b], daily_diff_bar$Scenario),]
   TEST <- PER_DIFF_PLOT_ALTS(
@@ -312,8 +271,8 @@ for(b in 1:length(base_names)){
     MAX_LIMIT = max_limit
   )
   diff_plot_filename <- paste0(output_path, "/PercentDiff_BarPlot_", gsub(" ", "_", title),"_", base_names[b], ".png")
-  ggsave(diff_plot_filename, TEST, width=15, height=8.5, units="in", dpi=300, scale = 1)
-}
+  ggsave(diff_plot_filename, TEST, width = 15, height = 8.5, units = "in", dpi = 300, scale = 1)
+} 
 
 #########################################
 # 6. Make Maps
