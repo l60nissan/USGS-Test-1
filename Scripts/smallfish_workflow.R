@@ -16,7 +16,8 @@ library(sf)
 library(raster)
 # raster might cause issues with select() in dplyr so be sure to usee dplyr::select() if using the function
 
-source("../restoration_runs/Scripts/smalfish_map_functions.R")
+source("../restoration_runs/Scripts/smallfish_map_functions.R")
+source("../restoration_runs/Scripts/smallfish_barplot_functions.R")
 
 ## -----------------------------------------------------------------------------
 ## 1. SUBSET FISH PSU TO AOI
@@ -239,19 +240,21 @@ max_limit <- plyr::round_any(max(daily_diff_bar[y_var]), 5, f = ceiling)
 for (a in 1:length(alt_names)) {
   print(paste0("Making Differnce Bar Plot :: ", alt_names[a]))
   per_diff_alt <- daily_diff_bar[grep(alt_names[a], daily_diff_bar$Scenario),]
-  TEST <- PER_DIFF_PLOT(
-    DF = per_diff_alt,
-    X_VAR = x_var,
-    Y_VAR = y_var,
-    FILL_VAR = fill_var,
-    TITLE = title,
-    Y_LAB = paste0("Percent Change in ", title, "\nfrom Baseline to ", alt_names[a]),
-    X_LAB = x_lab,
-    MIN_LIMIT = min_limit,
-    MAX_LIMIT = max_limit
+  diff_plot <- PerDiffPlot(
+    df = per_diff_alt,
+    x_var = x_var,
+    y_var = y_var,
+    fill_var = fill_var,
+    title = title,
+    y_lab = paste0("Percent Change in ", title, "\nfrom Baseline to ", alt_names[a]),
+    x_lab = x_lab,
+    min_limit = min_limit,
+    max_limit = max_limit
   )
-  diff_plot_filename <- paste0(output_path, "/PercentDiff_BarPlot_", gsub(" ", "_", title),"_", alt_names[a], ".pdf")
-  ggsave(diff_plot_filename, TEST, width = 11, height = 8.5, units = "in", dpi = 300)
+  diff_plot_filename <- paste0(output_path, "/PercentDiff_BarPlot_",
+                               gsub(" ", "_", title),"_", alt_names[a], ".pdf")
+  ggsave(diff_plot_filename, diff_plot, width = 11,
+         height = 8.5, units = "in", dpi = 300)
 }
 
 # Make bar plot for all alts against each baseline
@@ -259,19 +262,21 @@ for (a in 1:length(alt_names)) {
 for (b in 1:length(base_names)) {
   print(paste0("Making Differnce Bar Plot :: ", base_names[b]))
   per_diff_alt <- daily_diff_bar[grep(base_names[b], daily_diff_bar$Scenario),]
-  TEST <- PER_DIFF_PLOT_ALTS(
-    DF = per_diff_alt,
-    X_VAR = x_var,
-    Y_VAR = y_var,
-    FILL_VAR = fill_var,
-    TITLE = title,
-    Y_LAB = paste0("Percent Change in ", title, "\nfrom Baseline ", base_names[b]),
-    X_LAB = x_lab,
-    MIN_LIMIT = min_limit,
-    MAX_LIMIT = max_limit
+  diff_plot_alt <- PerDiffPlotAlts(
+    df = per_diff_alt,
+    x_var = x_var,
+    y_var = y_var,
+    fill_var = fill_var,
+    title = title,
+    y_lab = paste0("Percent Change in ", title, "\nfrom Baseline ", base_names[b]),
+    x_lab = x_lab,
+    min_limit = min_limit,
+    max_limit = max_limit
   )
-  diff_plot_filename <- paste0(output_path, "/PercentDiff_BarPlot_", gsub(" ", "_", title),"_", base_names[b], ".png")
-  ggsave(diff_plot_filename, TEST, width = 15, height = 8.5, units = "in", dpi = 300, scale = 1)
+  diff_plot_filename <- paste0(output_path, "/PercentDiff_BarPlot_",
+                               gsub(" ", "_", title),"_", base_names[b], ".png")
+  ggsave(diff_plot_filename, diff_plot_alt, width = 15,
+         height = 8.5, units = "in", dpi = 300, scale = 1)
 } 
 
 #########################################
