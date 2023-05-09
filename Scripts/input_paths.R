@@ -1,14 +1,20 @@
 ## -----------------------------------------------------------------------------
 # Restoration Run Process
-# Shapefile Locations
+# Shapefile Locations and Area of Interest (AOI) extent
 ## -----------------------------------------------------------------------------
 
-# Area of Interest 
+# Area of Interest (AOI)
 aoi_path <- "../../GIS_Library/rest_run_boundary/rest_run_boundary.shp"
   
-  # Set Extent to match AOI
-  # source extents scripts to see possible options in console
-  source("./Scripts/extent_options.R") 
+  # - Set Extent to match AOI for all output EXCEPT Marl Praire since
+  #   Marl prairie extent does not change when project AOI changes
+  # - Source extents scripts to see possible options in console
+  #   OR you may opt to manually set map_extent using the following format:
+  #   map_extent <- c(xmin = minimum x extent value,
+  #                 xmax = maximum x extent value,
+  #                 ymin = minimum y extent value,
+  #                 ymax = maximum y extent value)
+  source("./Scripts/extent_options.R") # CHECK CONSOLE FOR OPTIONS 
   map_extent <- werp23_extent
 
 # Main Park Road
@@ -29,28 +35,3 @@ subpop_path <- "../../GIS_Library/CSSS_subpopulations_wAX/CSSS_subpopulations_wA
 # Marl Prairie Shapefile
 # This can be any MP_scores.shp file from the target restoration run output
 mp_shp <- "../LOSOM/Data/LOSOM_Round1_2021_05/Model Output/MarlPrairie/MarlPrairie_Data/MarlPrairie_Data/depth_AA/MP_Scores.shp"
-
-## -----------------------------------------------------------------------------
-# Map Extent should match AOI listed above
-## -----------------------------------------------------------------------------
-# Map extent - Will be used to crop shapefiles to desired map extent
-
-# Fits COP + EVER areas extent (includes LOX)
-cop_ever_extent <- c(xmin = 459839,
-                xmax = 578905,
-                ymin = 2952364,
-                ymax = 2777166) 
-
-# Fits WERP 2023 AOI
-werp23_extent <- c(459384,
-                 559882,
-                 2914164,
-                 2817477)
-
-# Marl prairie Map extent - Will be used to crop shapefiles to desired map extent - 
-# can be changed manually to fit different extenxt 
-# focuses on Cape Sable Seaside Sparrow Subpopulations in Everglades National Park 
-marl_map_extent <- c(xmin = 485489.89,
-                xmax = 554055.08,
-                ymin = 2791119.88,
-                ymax = 2850143.30)
