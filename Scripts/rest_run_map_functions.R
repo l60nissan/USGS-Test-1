@@ -4,7 +4,7 @@
 # Caitlin Hackett chackett@usgs.gov
 ## -----------------------------------------------------------------------------
 #Load Packages
-packages <- c("tidyverse", "cowplot", "RcolorBrewer",
+packages <- c("tidyverse", "cowplot", "RColorBrewer",
                   "ggnewscale", "sf", "ggsn")
 not_installed <- packages[!(packages %in% installed.packages()[,"Package"])]
 if (length(not_installed)) install.packages(not_installed)
