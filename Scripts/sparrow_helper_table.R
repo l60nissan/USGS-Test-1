@@ -13,26 +13,6 @@ library(tidyverse)
 # where the difference is the number of days in the tentatively selected plan
 # minus the number of days in the baseline."
 ## ------------------------------------------------------------------------------
-# set alternate and baseline names
-#alt_names <- c("AA", "BB", "CC", "DD", "EE1", "EE2")
-#alt_names
-
-# Set Baseline scenario names
-#base_names <- c("ECBr", "NA25")
-#base_names <- c("ALTHR")
-#base_names
-
-# Scenario Name strings
-#ALT_NAMES <- paste0(alt_names, collapse = "|")
-#ALT_NAMES
-
-# Base Name strings
-#BASE_NAMES <- paste0(base_names, collapse = "|")
-#BASE_NAMES
-
-# Alt and Base Names
-#if(length(BASE_NAMES) == 1){BASE_NAMES <- paste0(BASE_NAMES, "|")}
-#BASE_NAMES_join <- paste0(BASE_NAMES, "|")
 
 # Vector of all scenario names - scenario names set in workflow_inputs.R
 scenario_names <- c(alt_names, base_names)
@@ -41,10 +21,6 @@ scenario_names
 # Make vector with "|" between each scenario 
 all_scenario_names <- paste0(scenario_names, collapse = "|")
 all_scenario_names
-
-#PARENT_PATH <- "../LOSOM/Data/LOSOM_Round1_2021_05/Model Output/CSSSHelper/JEM_Sparrow_Helper_Data/JEM_Sparrow_Helper_Data/"
-
-#OUTPUT_PATH <- "../LOSOM/Output/LOSOM_Round1_2021_05/CSSS/"
 
 all_files <- list.files(path = parent_path,
                         pattern = "depth_average_\\(-50.0 to -25.0).csv",
