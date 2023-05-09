@@ -1,9 +1,14 @@
 # ------------------------------------------------------------------------------
 # Inputs for workflow
 # -Set by user
+# 1) Scenarios
+# 2) Paths to species input/ouput locations & TRUE/FALSE if those data are cropped
+# 3) Path to area of interest & desired extent for output maps
 # ------------------------------------------------------------------------------
 
-# Scenarios
+# ------------------------------------------------------------------------------
+# 1) Scenarios
+# ------------------------------------------------------------------------------
 # Set Alternate scenario names
 alt_names <- c("AA", "BB")
 alt_names
@@ -12,7 +17,9 @@ alt_names
 base_names <- c("NA25")
 base_names
 
-# Input path, output, path, and cropped info for each species
+# ------------------------------------------------------------------------------
+# 2 ) Input path, output, path, and cropped info for each species
+# ------------------------------------------------------------------------------
 
 ## ----------
 # Alligator
@@ -60,4 +67,22 @@ marl_output_path <- "../data_release_develop/Marl_Prairie/"
 
 fish_path <- "../LOSOM/Data/LOSOM_Round1_2021_05/Model Output/Fish/JEM_Small_Fish_Density_Model_Data_SA/JEM_Small_Fish_Density_Model_Data_SA/FISH_TIMESERIES_PSU.csv"
 fish_output_path <- "../data_release_develop/smallfish/"
+
+# ------------------------------------------------------------------------------
+# 3) Area of interest and desired extent for maps
+# ------------------------------------------------------------------------------
+# Area of Interest (AOI)
+aoi_path <- "../../GIS_Library/rest_run_boundary/rest_run_boundary.shp"
+
+# - Set Extent to match AOI for all output EXCEPT Marl Praire since
+#   Marl prairie extent does not change when project AOI changes
+# - Source extents scripts to see possible options in console
+#   OR you may opt to manually set map_extent using the following format:
+#   map_extent <- c(xmin = minimum x extent value,
+#                 xmax = maximum x extent value,
+#                 ymin = minimum y extent value,
+#                 ymax = maximum y extent value)
+source("./Scripts/extent_options.R") # CHECK CONSOLE FOR OPTIONS 
+map_extent <- werp23_extent
+
 
