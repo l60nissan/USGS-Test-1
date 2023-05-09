@@ -68,6 +68,11 @@ marl_output_path <- "../data_release_develop/Marl_Prairie/"
 fish_path <- "../LOSOM/Data/LOSOM_Round1_2021_05/Model Output/Fish/JEM_Small_Fish_Density_Model_Data_SA/JEM_Small_Fish_Density_Model_Data_SA/FISH_TIMESERIES_PSU.csv"
 fish_output_path <- "../data_release_develop/smallfish/"
 
+## ----------
+# Sparrow Helper
+sparrow_parent_path <- "../LOSOM/Data/LOSOM_Round1_2021_05/Model Output/CSSSHelper/JEM_Sparrow_Helper_Data/JEM_Sparrow_Helper_Data/"
+sparrow_output_path <- "../data_release_develop/CSSS"
+
 # ------------------------------------------------------------------------------
 # 3) Area of interest and desired extent for maps
 # ------------------------------------------------------------------------------
