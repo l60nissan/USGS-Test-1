@@ -1,21 +1,7 @@
 ## -----------------------------------------------------------------------------
 # Restoration Run Process
-# Shapefile Locations and Area of Interest (AOI) extent
+# Shapefile Locations
 ## -----------------------------------------------------------------------------
-
-# Area of Interest (AOI)
-aoi_path <- "../../GIS_Library/rest_run_boundary/rest_run_boundary.shp"
-  
-  # - Set Extent to match AOI for all output EXCEPT Marl Praire since
-  #   Marl prairie extent does not change when project AOI changes
-  # - Source extents scripts to see possible options in console
-  #   OR you may opt to manually set map_extent using the following format:
-  #   map_extent <- c(xmin = minimum x extent value,
-  #                 xmax = maximum x extent value,
-  #                 ymin = minimum y extent value,
-  #                 ymax = maximum y extent value)
-  source("./Scripts/extent_options.R") # CHECK CONSOLE FOR OPTIONS 
-  map_extent <- werp23_extent
 
 # Main Park Road
 mpr_path <- "../../GIS_Library/ENP_main_road/ENP_main_road.shp" 
