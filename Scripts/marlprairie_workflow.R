@@ -1,8 +1,8 @@
-######################################
+## -----------------------------------------------------------------------------
 # Workflow for Restoration Run Marl Praire Output
 #
 # Caitlin Hackett chackett@usgs.gov
-######################################
+## -----------------------------------------------------------------------------
 
 # Load packages
 library(tidyverse)
@@ -14,7 +14,7 @@ library(raster)
 source("./Scripts/marlprairie_process_function.R")
 
 # Function to generate maps
-source("./Scripts/marlprairie_map_function.R")
+source("./Scripts/marlprairie_map_functions.R")
 
 # Defined file paths for shapefiles
 source("./Scripts/input_paths.R")
@@ -25,7 +25,7 @@ source("./Scripts/species_string_definitions.R")
 # Define strings to avoid hard coding
 mp_file_pattern <- "\\MP_Scores.csv"
 
-#########################################################
+## -----------------------------------------------------------------------------
 # Scenario Name strings
 alt_names <- paste0(alt_names, collapse = "|")
 alt_names
@@ -41,7 +41,7 @@ all_scenario_names <- paste0(base_names_join, alt_names, collapse = "|")
 all_scenario_names
 
 # All Files
-all_files <- list.files(paren_path, pattern = mp_file_pattern,
+all_files <- list.files(parent_path, pattern = "\\MP_Scores.csv",
                         full.names = TRUE, recursive = TRUE)
 all_files
 
@@ -66,7 +66,10 @@ acreage_diff_df <- data.frame()
     for (a in 1:length(alt_list)) {
       a_name <- str_extract_all(alt_list[a], all_scenario_names)[[1]]
       print(paste0("Processing :: ALT_", a_name, " minus BASE_", b_name))
-      marl_process <- MarlProcess(base_list[b], alt_list[a], mp_shp)
+      marl_process <- MarlProcess(base_file = base_list[b],
+                                  alt_file = alt_list[a],
+                                  mp_file = mp_shp,
+                                  subpop_file = subpop_path)
     
       marl_process_list[[b]][[a]] <- marl_process
       names(marl_process_list[[b]])[[a]] <- marl_process$diff_name
@@ -82,29 +85,29 @@ acreage_diff_df <- data.frame()
       ind_fill <- 'labs'
       dif_fill <- 'labs'
       map_title <- marl_process$Map_title
-      out_path <- OUTPUT_PATH
+      out_path <- output_path
       out_file <- paste0(out_path,"Marl_HSI_", marl_process$diff_name, ".tiff")
     
-      MARL_MAP(DF_IND = marl_process$ind_df,
-             IND_FILL = ind_fill,
-             DF_DIF = marl_process$diff_df,
-             DIF_FILL = dif_fill,
-             SCENARIO_COL = names(marl_process$ind_df),
-             SPOP_PATH = SUBPOP_PATH,
-             MPR_PATH = MPR_PATH,
-             WCAS_PATH = WCAS_PATH,
-             MAP_EXTENT = MAP_EXTENT,
-             MAP_TITLE = marl_process$Map_title,
-             OUTPUT_FILE_NAME = out_file)
+      MarlMap(df_ind = marl_process$ind_df,
+             ind_fill = ind_fill,
+             df_dif = marl_process$diff_df,
+             dif_fill = dif_fill,
+             scenario_col = names(marl_process$ind_df),
+             spop_path = subpop_path,
+             mpr_path = mpr_path,
+             wcas_path = wcas_path,
+             map_extent = marl_map_extent,
+             map_title = marl_process$Map_title,
+             output_file_name = out_file)
       }
   }
 
 # Save acreage Table
 write.csv(acreage_diff_df,
-          file = paste0(OUTPUT_PATH,"Acreage_", marl_process$sp_string, ".csv"),
+          file = paste0(output_path,"Acreage_", marl_process$sp_string, ".csv"),
           row.names = FALSE)
 
 # Save Marl RDATA of processed files
 save(marl_process_list, all_files,
-     file = paste0(OUTPUT_PATH, marl_process$sp_string,
+     file = paste0(output_path, marl_process$sp_string,
                    "_processed_data.RData"))
