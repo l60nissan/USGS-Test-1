@@ -122,6 +122,14 @@ RestorationRunMap <- function(
   } else {
     aoi.shp <- st_make_valid(aoi.shp)}  
   
+  # Set map extent from AOI file
+  aoi_extent <- extent(aoi.shp)
+  aoi_extent <- c(aoi_extent@xmin - 1000,
+                  aoi_extent@xmax + 1000,
+                  aoi_extent@ymin - 1000,
+                  aoi_extent@ymax + 1000)
+  map_extent <- aoi_extent
+  
   # Crop to map extent
   fl.crop  <- st_crop(fl.shp, map_extent)
   wca.crop <- st_crop(wcas.shp, map_extent)
