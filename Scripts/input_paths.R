@@ -3,8 +3,13 @@
 # Shapefile Locations
 ## -----------------------------------------------------------------------------
 
-# Area of Interest
+# Area of Interest 
 aoi_path <- "../../GIS_Library/rest_run_boundary/rest_run_boundary.shp"
+  
+  # Set Extent to match AOI
+  # source extents scripts to see possible options in console
+  source("./Scripts/extent_options.R") 
+  map_extent <- werp23_extent
 
 # Main Park Road
 mpr_path <- "../../GIS_Library/ENP_main_road/ENP_main_road.shp" 
@@ -25,12 +30,22 @@ subpop_path <- "../../GIS_Library/CSSS_subpopulations_wAX/CSSS_subpopulations_wA
 # This can be any MP_scores.shp file from the target restoration run output
 mp_shp <- "../LOSOM/Data/LOSOM_Round1_2021_05/Model Output/MarlPrairie/MarlPrairie_Data/MarlPrairie_Data/depth_AA/MP_Scores.shp"
 
-# Map extent - Will be used to crop shapefiles to desired map extent - 
-# can be changed manually to fit different extenxt 
-map_extent <- c(xmin = 459839,
+## -----------------------------------------------------------------------------
+# Map Extent should match AOI listed above
+## -----------------------------------------------------------------------------
+# Map extent - Will be used to crop shapefiles to desired map extent
+
+# Fits COP + EVER areas extent (includes LOX)
+cop_ever_extent <- c(xmin = 459839,
                 xmax = 578905,
                 ymin = 2952364,
-                ymax = 2777166) # Fits COP + EVER areas extent
+                ymax = 2777166) 
+
+# Fits WERP 2023 AOI
+werp23_extent <- c(459384,
+                 559882,
+                 2914164,
+                 2817477)
 
 # Marl prairie Map extent - Will be used to crop shapefiles to desired map extent - 
 # can be changed manually to fit different extenxt 
