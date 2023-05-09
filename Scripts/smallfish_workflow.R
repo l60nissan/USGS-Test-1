@@ -1,21 +1,27 @@
-###############################################################################################################
-#This script uses the output from the JEM Small Fish Density model (SA) and performs the following:
+# ------------------------------------------------------------------------------
+# This script uses the output from the JEM Small Fish Density model (SA)
+# and performs the following:
 # 1.) removes PSUs not within the AOI mask
 # 2.) Calculates cumulative fish density, and generates line plot
 # 3.) calculate daily percent differnce for every PSU
-# 4.) Summarize dily percent differnce to A) YEAR - for Bar plot and B)YEAR & PSU for map
-# 5.) Generate percent differnce bar plot (using means of daily percent differnce)
-# 6.) Generate maps (using means of daily percent difference - for difference map, and mean TOTFISH for individual score maps)
+# 4.) Summarize dily percent differnce to:
+#    A) YEAR - for Bar plot
+#    B) YEAR & PSU for map
+# 5.) Generate percent differnce bar plot
+#     (using means of daily percent differnce)
+# 6.) Generate maps (using means of daily percent difference
+#     for difference map, and mean TOTFISH for individual score maps)
 #
 # Caitlin Hackett chackett@usgs.gov
-#############################################################################################################
-
-#Load packages
+# ------------------------------------------------------------------------------
+# Load packages
 library(tidyverse)
 library(sf)
 library(raster)
-# raster might cause issues with select() in dplyr so be sure to usee dplyr::select() if using the function
+# raster might cause issues with select() in dplyr so
+# be sure to usee dplyr::select() if using the function
 
+# Source dependency scripts
 source("../restoration_runs/Scripts/smallfish_map_functions.R")
 source("../restoration_runs/Scripts/smallfish_barplot_functions.R")
 source("../restoration_runs/Scripts/process_definitions.R")
@@ -280,9 +286,9 @@ for (b in 1:length(base_names)) {
          height = 8.5, units = "in", dpi = 300, scale = 1)
 } 
 
-#########################################
-# 6. Make Maps
-#########################################
+## -----------------------------------------------------------------------------
+## 6. Make Maps
+## -----------------------------------------------------------------------------
 
 # Make vector of desired column names
 scenario_cols_psu <- paste0("depth_", scenario_names, "_TOTFISH")
