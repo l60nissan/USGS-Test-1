@@ -18,6 +18,7 @@ library(raster)
 
 source("../restoration_runs/Scripts/smallfish_map_functions.R")
 source("../restoration_runs/Scripts/smallfish_barplot_functions.R")
+source("../restoration_runs/Scripts/process_definitions.R")
 
 ## -----------------------------------------------------------------------------
 ## 1. SUBSET FISH PSU TO AOI
@@ -282,69 +283,74 @@ for (b in 1:length(base_names)) {
 #########################################
 # 6. Make Maps
 #########################################
-TARGET_YEARS <- c(1978, 1989, 1995)
-TARGET_YEAR_LABELS <- c("1978 - Average Year", "1989 - Dry Year", "1995 - Wet Year")
 
-# Calculates mean TOTFISH by year for each PSU - for individual score plotting on map
-fish_psu_year <- fish%>%
-  group_by(YEAR, PSU)%>%
-  summarise(PA22 = mean(depth_PA22_TOTFISH),
-            PA25 = mean(depth_PA25_TOTFISH),
-            ECB19 = mean(depth_ECB19_TOTFISH),
-            NA22f = mean(depth_NA22f_TOTFISH),
-            NA25f = mean(depth_NA25f_TOTFISH))
+# Make vector of desired column names
+scenario_cols_psu <- paste0("depth_", scenario_names, "_TOTFISH")
+scenario_cols_psu
+
+# Calculate mean TOTFISH by year for each PSU - for individual score plotting on map
+fish_psu_year <- fish %>%
+  group_by(YEAR, PSU) %>%
+  summarise_at(vars(all_of(scenario_cols_psu)),
+               list(mean = mean))
+head(fish_psu_year)
+names(fish_psu_year) <- c("YEAR", "PSU", scenario_names)
 head(fish_psu_year)
 
 # needs to pivot long for plotting
-ind_fish_plot <- pivot_longer(fish_psu_year, cols = c(3:ncol(fish_psu_year)), values_to = "annual_mean", names_to = "Scenario")
+ind_fish_plot <- pivot_longer(fish_psu_year, cols = c(3:ncol(fish_psu_year)),
+                              values_to = "annual_mean", names_to = "Scenario")
 
 # add PSU coordinates to individual and diff data
 PSU_coords <- unique(dplyr::select(fish, c("PSU", "EASTING", "NORTHING")))
 ind_fish_plot <- left_join(ind_fish_plot, PSU_coords, by = "PSU")      
 diff_fish_plot <- left_join(daily_diff_map, PSU_coords, by = "PSU")
 
-# Subset to correct plotting years (1978, 1989, 1995) - diff is already subset to correct years so only needs to be applied to individual plot data
-ind_fish_plot <- filter(ind_fish_plot, YEAR == 1978 | YEAR == 1989 | YEAR == 1995)
-diff_fish_plot <- filter(diff_fish_plot, YEAR == 1978 | YEAR == 1989 | YEAR == 1995)
+# Subset to correct plotting years 
+ind_fish_plot <- filter(ind_fish_plot, YEAR %in% fish_years)
+diff_fish_plot <- filter(diff_fish_plot, YEAR %in% fish_years)
 
-# Round value prior to bin - bins were dropping values if not rounded first
+# Round value prior to binning - binning drops values if not rounded first
 ind_fish_plot$annual_mean_round <- round(ind_fish_plot$annual_mean, 2)
 diff_fish_plot$mean_daily_diff_round <- round(diff_fish_plot$mean_daily_diff, 2)
 
-# Create Breaks for plotting
-fish_ind_cuts <- c(0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 17.19)
-fish_ind_labels <- c("0.0 - 2.0", "2.1 - 4.0", "4.1 - 6.0", "6.1 - 8.0", "8.1 - 10.0", "10.1 - 12.0", "12.1 - 14.0", "14.1 - 16.0", "16.1 - 17.19")
-
-fish_diff_cuts <- c(-Inf, -77.5, -55.1, -32.6, -10, 10.1, 32.7, 55.2, 77.6, Inf)
-fish_diff_labels <- c("-77.6 to -100+", "-55.2 to -77.5", "-32.7 to -55.1", "-10.1 to -32.6", "-10.0 to 10.0", "10.1 to 32.6",
-                      "32.7 to 55.1", "55.2 to 77.5", "77.6 to 100+")
-
 # Add breaks and labels to the dataframes - for plotting maps
-ind_fish_plot$breaks <- cut(ind_fish_plot$annual_mean_round, fish_ind_cuts, right = TRUE, include.lowest = TRUE)
-ind_fish_plot$labs   <- cut(ind_fish_plot$annual_mean_round, fish_ind_cuts, fish_ind_labels, right = TRUE, include.lowest = TRUE)
-ind_fish_plot$labs <- factor(ind_fish_plot$labs, levels = fish_ind_labels, ordered = TRUE) # order the bins so bin can correspond to point size on map
+# Break and labels for individual fish scores
+ind_fish_plot$breaks <- cut(ind_fish_plot$annual_mean_round,
+                            fish_ind_cuts, right = TRUE, include.lowest = TRUE)
+ind_fish_plot$labs   <- cut(ind_fish_plot$annual_mean_round,
+                            fish_ind_cuts, fish_ind_labels, right = TRUE,
+                            include.lowest = TRUE)
+# order the bins so bin can correspond to point size on map
+ind_fish_plot$labs <- factor(ind_fish_plot$labs, levels = fish_ind_labels,
+                             ordered = TRUE) 
 
-diff_fish_plot$breaks <- cut(diff_fish_plot$mean_daily_diff_round, fish_diff_cuts, right = FALSE, include.lowest = TRUE)
-diff_fish_plot$labs <- cut(diff_fish_plot$mean_daily_diff_round, fish_diff_cuts, fish_diff_labels, right = FALSE, include.lowest = TRUE)
+# Break and labels for difference in fish scores
+diff_fish_plot$breaks <- cut(diff_fish_plot$mean_daily_diff_round,
+                             fish_diff_cuts, right = FALSE,
+                             include.lowest = TRUE)
+diff_fish_plot$labs <- cut(diff_fish_plot$mean_daily_diff_round,
+                           fish_diff_cuts, fish_diff_labels, right = FALSE,
+                           include.lowest = TRUE)
 
-# set levels so all get plotted
+# Set levels so all get plotted
 ind_fish_plot$labs <- factor(ind_fish_plot$labs, levels = fish_ind_labels)
 diff_fish_plot$labs <- factor(diff_fish_plot$labs, levels = fish_diff_labels)
 
-ind_fish_plot$YEAR <- factor(ind_fish_plot$YEAR, levels = c(1978, 1989, 1995))
-diff_fish_plot$YEAR <- factor(diff_fish_plot$YEAR, levels = c(1978, 1989, 1995))
+ind_fish_plot$YEAR <- factor(ind_fish_plot$YEAR, levels = fish_years)
+diff_fish_plot$YEAR <- factor(diff_fish_plot$YEAR, levels = fish_years)
 
 #Name the Target Years to display on figure facet labels
-name.labs <- TARGET_YEAR_LABELS
-names(name.labs) <- TARGET_YEARS
+name.labs <- fish_year_labels
+names(name.labs) <- fish_years
 name.labs
 
 # Make maps
 map_data_list <- list()
 index <- 0
-for(b in 1:length(base_names)){
+for (b in 1:length(base_names)) {
   base_scenario <- base_names[b] # get base name
-  for(a in 1:length(alt_names)){
+  for (a in 1:length(alt_names)) {
     alt_scenario <- alt_names[a] # get alt name
     
     diff_scenario <- paste0(alt_scenario, "-", base_scenario) # make diff name
