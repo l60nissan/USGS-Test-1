@@ -122,7 +122,7 @@ FishMap <- function(
   
   # Get location for Scalebar
   scale_y <- levels(df_dif$Scenario)[3]
-  scale_x <- levels(df_dif$year)[length(levels(df_dif$year))]
+  scale_x <- levels(df_dif$YEAR)[length(levels(df_dif$YEAR))]
   
   #-----------------
   # Set Theme and Scale Factor
@@ -156,7 +156,7 @@ FishMap <- function(
 
     # Plot facets
     facet_grid(as.formula(paste(scenario_col,"~", year_col)),
-               labeller = labeller(year = name.labs)) +
+               labeller = labeller(YEAR = name.labs)) +
 
     # Plot shapefiles for Main Park Road, WCAS, and area of interest
     geom_sf(data = mpr_crop, colour = "black",
