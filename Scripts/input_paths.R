@@ -23,7 +23,7 @@ subpop_path <- "../../GIS_Library/CSSS_subpopulations_wAX/CSSS_subpopulations_wA
 
 # Marl Prairie Shapefile
 # This can be any MP_scores.shp file from the target restoration run output
-mp_shp <- "./Data/LOSOM_Round1_2021_05/Model Output/MarlPrairie/MarlPrairie_Data/MarlPrairie_Data/depth_AA/MP_Scores.shp"
+mp_shp <- "../LOSOM/Data/LOSOM_Round1_2021_05/Model Output/MarlPrairie/MarlPrairie_Data/MarlPrairie_Data/depth_AA/MP_Scores.shp"
 
 # Map extent - Will be used to crop shapefiles to desired map extent - 
 # can be changed manually to fit different extenxt 
@@ -31,3 +31,11 @@ map_extent <- c(xmin = 459839,
                 xmax = 578905,
                 ymin = 2952364,
                 ymax = 2777166) # Fits COP + EVER areas extent
+
+# Marl prairie Map extent - Will be used to crop shapefiles to desired map extent - 
+# can be changed manually to fit different extenxt 
+# focuses on Cape Sable Seaside Sparrow Subpopulations in Everglades National Park 
+marl_map_extent <- c(xmin = 485489.89,
+                xmax = 554055.08,
+                ymin = 2791119.88,
+                ymax = 2850143.30)
