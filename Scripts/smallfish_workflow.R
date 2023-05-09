@@ -345,7 +345,7 @@ name.labs <- fish_year_labels
 names(name.labs) <- fish_years
 name.labs
 
-# Make maps
+# Make Maps
 map_data_list <- list()
 index <- 0
 for (b in 1:length(base_names)) {
@@ -358,33 +358,43 @@ for (b in 1:length(base_names)) {
     print(paste0("Pulling Data to Map :: ", diff_scenario))
     
     # Subset for plotting
-    ind_plot <- filter(ind_fish_plot, (Scenario == alt_scenario | Scenario == base_scenario)) 
+    ind_plot <- filter(ind_fish_plot,
+                       (Scenario == alt_scenario | Scenario == base_scenario)) 
     diff_plot <- filter(diff_fish_plot, (Scenario == diff_scenario))
     
     # Set levels
-    ind_plot$Scenario <- factor(ind_plot$Scenario, levels = c(base_scenario, alt_scenario, diff_scenario))
-    diff_plot$Scenario <- factor(diff_plot$Scenario, levels = c(base_scenario, alt_scenario, diff_scenario))
+    ind_plot$Scenario <- factor(ind_plot$Scenario,
+                                levels = c(base_scenario,
+                                           alt_scenario, diff_scenario))
+    diff_plot$Scenario <- factor(diff_plot$Scenario, 
+                                 levels = c(base_scenario,
+                                           alt_scenario, diff_scenario))
     
     # Make map
     print(paste0("Making Map :: ", diff_scenario))
     
-    FISH_MAP(IND_FILL = "labs",
-             DIF_FILL = "labs",
-             SCENARIO_COL = "Scenario",
-             YEAR_COL = "YEAR",
-             AOI_PATH = AOI_PATH,
-             MPR_PATH = MPR_PATH,
-             WCAS_PATH = WCAS_PATH,
-             FL_PATH = FL_PATH,
-             MAP_EXTENT = MAP_EXTENT,
-             MAP_TITLE = "Mean Total Fish Density",
-             DF_IND = ind_plot,
-             DF_DIF = diff_plot,
-             OUTPUT_FILE_NAME = paste0(output_path, "/fish_map_", alt_scenario, "_", base_scenario, ".pdf"))
+    FishMap(ind_fill = "labs",
+             dif_fill = "labs",
+             scenario_col = "Scenario",
+             year_col = "YEAR",
+             aoi_path = aoi_path,
+             mpr_path = mpr_path,
+             wcas_path = wcas_path,
+             fl_path = fl_path,
+             map_extent = map_extent,
+             map_title = "Mean Total Fish Density",
+             df_ind = ind_plot,
+             df_dif = diff_plot,
+             output_file_name = paste0(output_path, "/fish_map_",
+                                       alt_scenario, "_", base_scenario, ".pdf"))
     
     #Save data used to plot map to list to reproduce if needed
-    plot_list <- list("alt_scenario" = alt_scenario, "base_scenario" = base_scenario, "diff_scenario" = diff_scenario, "ind_plot" = ind_plot, "diff_plot" = diff_plot)
-    index <- index +1
+    plot_list <- list("alt_scenario" = alt_scenario,
+                      "base_scenario" = base_scenario,
+                      "diff_scenario" = diff_scenario,
+                      "ind_plot" = ind_plot,
+                      "diff_plot" = diff_plot)
+    index <- index + 1
     map_data_list[[index]] <- plot_list
     names(map_data_list)[[index]] <- diff_scenario
   }
