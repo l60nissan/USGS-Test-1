@@ -5,7 +5,9 @@
 # * titles for maps and figures
 # ------------------------------------------------------------------------------
 
-# Alligator
+## -----------------------------------------------------------------------------
+## Alligator
+## -----------------------------------------------------------------------------
 gator_varname <- "Habitat_Suitability"
 gator_years <- paste0("X", c("1978", "1989", "1995"))
 gator_year_labels <- c("Average Year (1978)",
@@ -24,8 +26,9 @@ gator_diff_labels <- c("-0.776 to -1", "-0.551 to -0.775", "-0.326 to -0.550",
                        "0.325 to 0.549", "0.550 to 0.774", "0.775 to 1") 
 gator_title <- "Alligator Habitat Suitability Index"
 
-
-# Snail Kite
+## -----------------------------------------------------------------------------
+## Snail Kite
+## -----------------------------------------------------------------------------
 snki_varname <- "SNKI_HSI"
 snki_years <- paste0("X", c("1989.04.20" , "1995.04.20"))
 snki_year_labels <- c("Dry Year (April 20, 1989)", "Wet Year (April 20, 1995)")
@@ -41,8 +44,9 @@ snki_diff_labels <- c("-0.776 to -1", "-0.551 to -0.775", "-0.326 to -0.550",
                       "0.325 to 0.549", "0.550 to 0.774", "0.775 to 1") 
 snki_title <- "Snail Kite Nesting Relative Selection"
 
-
-# Days Since Dry
+## -----------------------------------------------------------------------------
+## Days Since Dry
+## -----------------------------------------------------------------------------
 dsd_varname <- "dsd"
 dsd_years <- paste0("X", c("1978.06.01", "1989.06.01", "1995.06.01"))
 dsd_year_labels <- c("Average Year (June 1, 1978)", "Dry Year (June 1, 1989)",
@@ -60,8 +64,9 @@ dsd_diff_labels <- c("-853 to -1,095+", "-609 to -852", "-366 to -608",
                      "608 to 851", "852 to 1,095+") 
 dsd_title <- "Days Since Drydown"
 
-
-# Apple Snail
+## -----------------------------------------------------------------------------
+## Apple Snail
+## -----------------------------------------------------------------------------
 apsn_varname <- "snailPopulationAdults"
 apsn_years <- paste0("X", c("1989.04.20" , "1995.04.20"))
 apsn_year_labels <- c("Dry Year (April 20, 1989)", "Wet Year (April 20, 1995)")
@@ -82,8 +87,9 @@ apsn_diff_labels <- c("-107,501 to -140,000", "-75,001 to -107,500",
                       "107,501 to 140,000")
 apsn_title <- "Adult Apple Snail Population"
 
-
-# EverWaders
+## -----------------------------------------------------------------------------
+## EverWaders
+## -----------------------------------------------------------------------------
 waders_varname <- "_Occupancy"
 waders_years <- paste0("X", c("1978", "1989", "1995"))
 waders_year_labels <- c("Average Year (1978)", "Dry Year (1989)",
@@ -106,7 +112,9 @@ waders_sp_name <- c("Great Blue Heron", "Glossy Ibis", "Great Egret",
                     "White Ibis", "Wood Stork")
 names(waders_sp_abr) <- waders_sp_name
 
-# Marl Prairie
+## -----------------------------------------------------------------------------
+## Marl Prairie
+## -----------------------------------------------------------------------------
 marl_ind_cuts <- seq(from = 0, to = 100, by = 10)
 marl_ind_labels <- c("0 - 10%", "11 - 20%", "21 - 30%",
                      "31 - 40%", "41 - 50%", "51 - 60%",
@@ -117,4 +125,21 @@ marl_diff_labels <- c("-79 to -100", "-56 to -78", "-34 to -55",
                       "-11 to -33", "10 to -10", "11 to 33",
                       "34 to 55", "56 to 78", "79 to 100") 
 marl_title <- "Marl Prairie Score: Percent to Target"
+
+## -----------------------------------------------------------------------------
+## SmallFish
+## -----------------------------------------------------------------------------
+fish_years <- c(1978, 1989, 1995)
+fish_year_labels <- c("1978 - Average Year", "1989 - Dry Year", "1995 - Wet Year")
+# Create Breaks for plotting
+fish_ind_cuts <- c(0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 17.19)
+fish_ind_labels <- c("0.0 - 2.0", "2.1 - 4.0", "4.1 - 6.0", "6.1 - 8.0",
+                     "8.1 - 10.0", "10.1 - 12.0", "12.1 - 14.0", "14.1 - 16.0",
+                     "16.1 - 17.19")
+
+fish_diff_cuts <- c(-Inf, -77.5, -55.1, -32.6, -10, 10.1, 32.7, 55.2, 77.6, Inf)
+fish_diff_labels <- c("-77.6 to -100+", "-55.2 to -77.5", "-32.7 to -55.1",
+                      "-10.1 to -32.6", "-10.0 to 10.0", "10.1 to 32.6",
+                      "32.7 to 55.1", "55.2 to 77.5", "77.6 to 100+")
+
 
