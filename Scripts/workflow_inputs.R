@@ -4,6 +4,9 @@
 # 1) Scenarios
 # 2) Paths to species input/ouput locations & TRUE/FALSE if those data are cropped
 # 3) Path to area of interest & desired extent for output maps
+# 4) choose if output should belandscape or portrait (portrait is best for long
+#    AOIs (ex.LOSOM, COP,COP + EVER areas) and Landscape best for square or wide 
+#    AOIs (ex. WERP))
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -79,15 +82,9 @@ sparrow_output_path <- "../data_release_develop/CSSS"
 # Area of Interest (AOI)
 aoi_path <- "../../GIS_Library/WERP_AOI_2023_utm/WERP_AOI_2023_utm.shp"
 
-# - Set Extent to match AOI for all output EXCEPT Marl Praire since
-#   Marl prairie extent does not change when project AOI changes
-# - Source extents scripts to see possible options in console
-#   OR you may opt to manually set map_extent using the following format:
-#   map_extent <- c(xmin = minimum x extent value,
-#                 xmax = maximum x extent value,
-#                 ymin = minimum y extent value,
-#                 ymax = maximum y extent value)
-#source("./Scripts/extent_options.R") # CHECK CONSOLE FOR OPTIONS 
-#map_extent <- werp23_extent
-
-
+# ------------------------------------------------------------------------------
+# 4) Set output as Landscape or portrait
+#     Landscape: landscape <- TRUE
+#     Portrait:  landscape <- FALSE
+# ------------------------------------------------------------------------------
+landscape <- TRUE
