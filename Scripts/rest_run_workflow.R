@@ -205,7 +205,7 @@ for (n in 1:length(sp_string)) { # This is to accomodate multiple
                        mpr_path = mpr_path,
                        wcas_path = wcas_path,
                        fl_path = fl_path,
-                       map_extent = map_extent,
+                       landscape = landscape,
                        map_title = map_title,
                        output_file_name = out_file)
 
