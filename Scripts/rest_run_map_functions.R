@@ -294,7 +294,7 @@ RestorationRunMap <- function(
       
       combined_plot <- ggdraw(map_plot) +
         draw_plot(full_legend, x = 0.31, y = 0.0, vjust = 0.02) +
-        draw_label(map_title, x = 0.5, y = .97, vjust = 0, hjust = 0.5,
+        draw_label(map_title, x = 0.5, y = .95, vjust = 0, hjust = 0.5,
                    fontfamily = "serif", size = 30) +
         draw_plot(arrow, scale = 0.025, x = -0.05, y = -0.44)
         draw_plot(arrow, scale = 0.025, x = 0.085, y = -0.45)
@@ -308,7 +308,7 @@ RestorationRunMap <- function(
       
       combined_plot <- ggdraw(map_plot) +
         draw_plot(full_legend, x = 0.33, y = 0.0, vjust = 0.02) +
-        draw_label(map_title, x = 0.5, y = .97, vjust = 0, hjust = 0.5,
+        draw_label(map_title, x = 0.5, y = .95, vjust = 0, hjust = 0.5,
                    fontfamily = "serif", size = 30) +
         draw_plot(arrow, scale = 0.025, x = 0.085, y = -0.45)
     }
@@ -319,7 +319,7 @@ RestorationRunMap <- function(
       
       combined_plot <- ggdraw(map_plot) +
         draw_plot(full_legend, x = 0.405, y = 0.0, vjust = 0.02) +
-        draw_label(map_title, x = 0.5, y = .97, vjust = 0,
+        draw_label(map_title, x = 0.5, y = .95, vjust = 0,
                    fontfamily = "serif", size = 30) +
         draw_plot(arrow, scale = 0.025, x = 0.085, y = -0.45)
     }
@@ -330,7 +330,7 @@ RestorationRunMap <- function(
         
         combined_plot <- ggdraw(map_plot) +
           draw_plot(full_legend, x = 0.405, y = 0.0, vjust = 0.02) +
-          draw_label(map_title, x = 0.27, y = .97, vjust = 0,
+          draw_label(map_title, x = 0.27, y = .95, vjust = 0,
                      fontfamily = "serif", size = 30) +
           draw_plot(arrow, scale = 0.025, x = 0.085, y = -0.45)
         
@@ -358,7 +358,7 @@ RestorationRunMap <- function(
         
         combined_plot <- ggdraw(map_plot) +
           draw_plot(full_legend, x = 0.405, y = 0.0, vjust = 0.02) +
-          draw_label(map_title, x = 0.5, y = .97, vjust = 0, hjust = 0.5,
+          draw_label(map_title, x = 0.5, y = .95, vjust = 0, hjust = 0.5,
                      fontfamily = "serif", size = 30) +
           draw_plot(arrow, scale = 0.025, x = 0.085, y = -0.45)
       } else {
@@ -368,7 +368,7 @@ RestorationRunMap <- function(
         
         combined_plot <- ggdraw(map_plot) +
           draw_plot(full_legend, x = 0.405, y = 0.0, vjust = 0.02) +
-          draw_label(map_title, x = 0.5, y = .97, vjust = 0, hjust = 0.5,
+          draw_label(map_title, x = 0.5, y = .95, vjust = 0, hjust = 0.5,
                      fontfamily = "serif", size = 30) +
           draw_plot(arrow, scale = 0.025, x = 0.085, y = -0.45)
       }}
@@ -385,7 +385,7 @@ RestorationRunMap <- function(
     
     combined_plot <- ggdraw(map_plot) +
       draw_plot(full_legend, x = 0.31, y = 0.0, vjust = 0.02) +
-      draw_label(map_title, x = 0.5, y = .97, vjust = 0, hjust = 0.5,
+      draw_label(map_title, x = 0.5, y = .95, vjust = 0, hjust = 0.5,
                  fontfamily = "serif", size = 30) +
       draw_plot(arrow, scale = 0.025, x = -0.05, y = -0.44)
   }
@@ -397,7 +397,7 @@ RestorationRunMap <- function(
     
     combined_plot <- ggdraw(map_plot) +
       draw_plot(full_legend, x = 0.33, y = 0.0, vjust = 0.02) +
-      draw_label(map_title, x = 0.5, y = .97, vjust = 0, hjust = 0.5,
+      draw_label(map_title, x = 0.5, y = .95, vjust = 0, hjust = 0.5,
                  fontfamily = "serif", size = 30) +
       draw_plot(arrow, scale = 0.025, x = -0.05, y = -0.44)
   }
@@ -408,7 +408,7 @@ RestorationRunMap <- function(
     
     combined_plot <- ggdraw(map_plot) +
       draw_plot(full_legend, x = 0.405, y = 0.0, vjust = 0.02) +
-      draw_label(map_title, x = 0.5, y = .97, vjust = 0, hjust = 0.5,
+      draw_label(map_title, x = 0.5, y = .95, vjust = 0, hjust = 0.5,
                  fontfamily = "serif", size = 30) +
       draw_plot(arrow, scale = 0.025, x = 0.064, y = -0.399)
   }
@@ -419,7 +419,7 @@ RestorationRunMap <- function(
     
       combined_plot <- ggdraw(map_plot) +
     draw_plot(full_legend, x = 0.405, y = 0.0, vjust = 0.02) +
-    draw_label(map_title, x = 0.5, y = .97, vjust = 0, hjust = 0.5,
+    draw_label(map_title, x = 0.5, y = .95, vjust = 0, hjust = 0.5,
                    fontfamily = "serif", size = 30) +
     draw_plot(arrow, scale = 0.025, x = 0.064, y = -0.399)
     }
@@ -446,7 +446,7 @@ RestorationRunMap <- function(
       
       combined_plot <- ggdraw(map_plot) +
         draw_plot(full_legend, x = 0.405, y = 0.0, vjust = 0.02) +
-        draw_label(map_title, x = 0.5, y = .97, vjust = 0, hjust = 0.5,
+        draw_label(map_title, x = 0.5, y = .95, vjust = 0, hjust = 0.5,
                    fontfamily = "serif", size = 30) +
         draw_plot(arrow, scale = 0.025, x = 0.064, y = -0.399)
     } else {
@@ -456,7 +456,7 @@ RestorationRunMap <- function(
     
     combined_plot <- ggdraw(map_plot) +
       draw_plot(full_legend, x = 0.405, y = 0.0, vjust = 0.02) +
-      draw_label(map_title, x = 0.5, y = .97, vjust = 0, hjust = 0.5,
+      draw_label(map_title, x = 0.5, y = .95, vjust = 0, hjust = 0.5,
                  fontfamily = "serif", size = 30) +
       draw_plot(arrow, scale = 0.025, x = 0.064, y = -0.399)
   }}
