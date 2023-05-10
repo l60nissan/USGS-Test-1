@@ -47,7 +47,7 @@ FishMap <- function(
     mpr_path,     # File path to shapefile of Main Park Road
     wcas_path,    # File path to shapefile of water conservation areas boundaries
     fl_path,      # File path to shapefile of Florida boundary
-    map_extent,   # Extent of map, format: c(xmin, xmax, ymin, ymax)
+    landscape,      # TRUE/FALSE should output be landscape?
     map_title,    # Title to be printed at top of map, (ex. "Alligator HSI")
     output_file_name) { # Name of Output File
   
@@ -108,6 +108,14 @@ FishMap <- function(
     aoi_shp <- aoi_shp
   } else {
     aoi_shp <- st_make_valid(aoi_shp)}  
+  
+  # Set map extent from AOI file
+  aoi_extent <- extent(aoi.shp)
+  aoi_extent <- c(aoi_extent@xmin - 1000,
+                  aoi_extent@xmax + 1000,
+                  aoi_extent@ymin - 1000,
+                  aoi_extent@ymax + 1000)
+  map_extent <- aoi_extent
   
   # Crop to map extent
   wca_crop <- st_crop(wcas_shp, map_extent)
@@ -223,9 +231,22 @@ FishMap <- function(
   #-----------------
   # Format Final Plot
   
+  if (landscape) {
+      combined_plot <- ggdraw(fish_plot) +
+        draw_plot(full_legend, x = 0.31, y = 0.0, vjust = 0.02) +
+        draw_label(map_title, x = 0.5, y = .95, vjust = 0, hjust = 0.5,
+                   fontfamily = "serif", size = 30) +
+        draw_plot(arrow, scale = 0.025, x = -0.05, y = -0.44)
+      draw_plot(arrow, scale = 0.025, x = 0.064, y = -0.397)
+      
+      ggsave(output_file_name, combined_plot, height = 8.5,
+             width = 11, units = "in", dpi = 300, scale = 2)
+      
+  } else {
+
   # combine main plot with arrow and add title
   combined_plot <- ggdraw(fish_plot) +
-    draw_label(map_title, x = 0.17, y = .93, vjust = 0,
+    draw_label(map_title, x = 0.5, y = .95, vjust = 0, hjust = 0.5,
                fontfamily = "serif", size = 30) +
     draw_plot(arrow, scale = 0.025, x = 0.064, y = -0.397)
   
@@ -234,7 +255,8 @@ FishMap <- function(
   
   ggsave(output_file_name, combined_plot, height = 11,
          width = 8.5, units = "in", dpi = 300, scale = 2)
-}  
+  }
+}
   
 
 
