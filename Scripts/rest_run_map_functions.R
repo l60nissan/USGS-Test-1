@@ -49,7 +49,8 @@ RestorationRunMap <- function(
     mpr_path,       # File path to shapefile of Main Park Road
     wcas_path,      # File path to shapefile of water conservation areas boundaries
     fl_path,        # File path to shapefile of Florida boundary
-    map_extent,     # Extent of map, format: c(xmin, xmax, ymin, ymax)
+    #map_extent,     # Extent of map, format: c(xmin, xmax, ymin, ymax)
+    landscape,      # TRUE/FALSE should output be landscape?
     map_title,      # Title to be printed at top of map, (ex. "Alligator HSI")
     output_file_name) { # Name of Output File
   
@@ -199,7 +200,7 @@ RestorationRunMap <- function(
   # Join legend together
   full_legend <- plot_grid(ind_legend, dif_legend, align = "v",
                            rel_widths = c(1, 1), ncol = 1)
-
+  
   #-----------------
   # Create Main Map Plot
   
@@ -239,7 +240,10 @@ RestorationRunMap <- function(
     ggsn::scalebar(data = df_scale, transform = F, dist = 20, dist_unit = "km",
                    st.dist =  0.015, st.size = scale_factor*2.3,
                    st.bottom = TRUE, height = 0.014, border.size = 1,
-                   anchor = c(x = 561000 , y = 2778500), family = "sans",
+                   #location = "bottomright",
+                   anchor = c(x = as.numeric(aoi_extent[2] - 4000),
+                              y = as.numeric(aoi_extent[3] + 3000)),
+                   family = "sans",
                    facet.var = c(scenario_col, year_col),
                    facet.lev = c(scale_y, scale_x)) +
 
@@ -272,16 +276,109 @@ RestorationRunMap <- function(
       # Remove axis title
       axis.title = element_blank())
       
-      #Set margins for plot - wider on right side to make space for legend
-      #plot.margin = margin(0,7.9,0,1, unit = "cm"))
-  
   # GET NORTH ARROW FOR MAP
   arrow <- North2GetArrow(symbol = 12)
+  #arrow <- North2GetArrow(symbol = 1)
   arrow
   
   ## FORMAT FINAL PLOT##
   # combines main plot with legends and adds title
   # saves file
+  
+  # ----------
+  # Format for Landscape layout
+  if (landscape) {
+    if (grepl("Snail Kite", map_title)) {
+      # add margin to PLOT
+      map_plot <- map_plot +
+        theme(plot.margin = margin(4,5,1,1, unit = "cm"))
+      
+      combined_plot <- ggdraw(map_plot) +
+        draw_plot(full_legend, x = 0.31, y = 0.0, vjust = 0.02) +
+        draw_label(map_title, x = 0.5, y = .97, vjust = 0, hjust = 0.5,
+                   fontfamily = "serif", size = 30) +
+        draw_plot(arrow, scale = 0.025, x = -0.05, y = -0.44)
+        draw_plot(arrow, scale = 0.025, x = 0.085, y = -0.45)
+      
+    }
+    
+    if (grepl("Apple Snail", map_title)) {
+      # add margin to map_plot
+      map_plot <- map_plot +
+        theme(plot.margin = margin(4,5,1,1, unit = "cm"))
+      
+      combined_plot <- ggdraw(map_plot) +
+        draw_plot(full_legend, x = 0.33, y = 0.0, vjust = 0.02) +
+        draw_label(map_title, x = 0.5, y = .97, vjust = 0, hjust = 0.5,
+                   fontfamily = "serif", size = 30) +
+        draw_plot(arrow, scale = 0.025, x = 0.085, y = -0.45)
+    }
+    
+    if (grepl("Days Since Drydown", map_title)) {
+      map_plot <- map_plot +
+        theme(plot.margin = margin(4,5,1,1, unit = "cm"))
+      
+      combined_plot <- ggdraw(map_plot) +
+        draw_plot(full_legend, x = 0.405, y = 0.0, vjust = 0.02) +
+        draw_label(map_title, x = 0.5, y = .97, vjust = 0,
+                   fontfamily = "serif", size = 30) +
+        draw_plot(arrow, scale = 0.025, x = 0.085, y = -0.45)
+    }
+    
+    if (grepl("Alligator", map_title)) {
+        map_plot <- map_plot +
+          theme(plot.margin = margin(4,5,1,1, unit = "cm"))
+        
+        combined_plot <- ggdraw(map_plot) +
+          draw_plot(full_legend, x = 0.405, y = 0.0, vjust = 0.02) +
+          draw_label(map_title, x = 0.27, y = .97, vjust = 0,
+                     fontfamily = "serif", size = 30) +
+          draw_plot(arrow, scale = 0.025, x = 0.085, y = -0.45)
+        
+    }
+    
+    if (grepl("Occupancy", map_title)) {
+      
+      if (grepl("Wood Stork", map_title)) {
+        wost_shp <- st_read(dsn = wost_path) %>%
+          st_transform(crs = 26917)
+        wost_st_valid <- st_is_valid(wost_shp)
+        if (all(wost_st_valid, TRUE)) {
+          wost_shp <- wost_shp
+        } else {
+          wost_shp <- st_make_valid(wost_shp)}
+        
+        # crop wost colonies
+        wost.crop  <- st_crop(wost_shp, aoi.shp)
+        
+        map_plot <- map_plot +
+          geom_sf(data = wost.crop, color = "black", lwd = 4) +
+          geom_sf(data = wost.crop, colour = "orange", lwd = 2) +
+          coord_sf(expand = F) +
+          theme(plot.margin = margin(4,5,1,1, unit = "cm"))
+        
+        combined_plot <- ggdraw(map_plot) +
+          draw_plot(full_legend, x = 0.405, y = 0.0, vjust = 0.02) +
+          draw_label(map_title, x = 0.5, y = .97, vjust = 0, hjust = 0.5,
+                     fontfamily = "serif", size = 30) +
+          draw_plot(arrow, scale = 0.025, x = 0.085, y = -0.45)
+      } else {
+        
+        map_plot <- map_plot +
+          theme(plot.margin = margin(4,5,1,1, unit = "cm"))
+        
+        combined_plot <- ggdraw(map_plot) +
+          draw_plot(full_legend, x = 0.405, y = 0.0, vjust = 0.02) +
+          draw_label(map_title, x = 0.5, y = .97, vjust = 0, hjust = 0.5,
+                     fontfamily = "serif", size = 30) +
+          draw_plot(arrow, scale = 0.025, x = 0.085, y = -0.45)
+      }}
+    ggsave(output_file_name, combined_plot, height = 8.5, width = 11,
+           units = "in", dpi = 300, scale = 2)
+  } else {
+  
+  # ----------
+  # Format for Portrait layout
   if (grepl("Snail Kite", map_title)) {
     # add margin to PLOT
     map_plot <- map_plot +
@@ -289,7 +386,7 @@ RestorationRunMap <- function(
     
     combined_plot <- ggdraw(map_plot) +
       draw_plot(full_legend, x = 0.31, y = 0.0, vjust = 0.02) +
-      draw_label(map_title, x = 0.35, y = .94, vjust = 0,
+      draw_label(map_title, x = 0.5, y = .97, vjust = 0, hjust = 0.5,
                  fontfamily = "serif", size = 30) +
       draw_plot(arrow, scale = 0.025, x = -0.05, y = -0.44)
   }
@@ -301,35 +398,37 @@ RestorationRunMap <- function(
     
     combined_plot <- ggdraw(map_plot) +
       draw_plot(full_legend, x = 0.33, y = 0.0, vjust = 0.02) +
-      draw_label(map_title, x = 0.32, y = .94, vjust = 0,
+      draw_label(map_title, x = 0.5, y = .97, vjust = 0, hjust = 0.5,
                  fontfamily = "serif", size = 30) +
       draw_plot(arrow, scale = 0.025, x = -0.05, y = -0.44)
   }
+  
   if (grepl("Days Since Drydown", map_title)) {
     map_plot <- map_plot +
       theme(plot.margin = margin(0,7.9,0,1, unit = "cm"))
     
     combined_plot <- ggdraw(map_plot) +
       draw_plot(full_legend, x = 0.405, y = 0.0, vjust = 0.02) +
-      draw_label(map_title, x = 0.16, y = .93, vjust = 0,
+      draw_label(map_title, x = 0.5, y = .97, vjust = 0, hjust = 0.5,
                  fontfamily = "serif", size = 30) +
       draw_plot(arrow, scale = 0.025, x = 0.064, y = -0.399)
   }
   
   if (grepl("Alligator", map_title)) {
-    map_plot <- map_plot +
-      theme(plot.margin = margin(0,7.9,0,1, unit = "cm"))
+      map_plot <- map_plot +
+        theme(plot.margin = margin(0,7.9,0,1, unit = "cm"))
     
-    combined_plot <- ggdraw(map_plot) +
+      combined_plot <- ggdraw(map_plot) +
     draw_plot(full_legend, x = 0.405, y = 0.0, vjust = 0.02) +
-    draw_label(map_title, x = 0.21, y = .93, vjust = 0,
-               fontfamily = "serif", size = 30) +
+    draw_label(map_title, x = 0.5, y = .97, vjust = 0, hjust = 0.5,
+                   fontfamily = "serif", size = 30) +
     draw_plot(arrow, scale = 0.025, x = 0.064, y = -0.399)
-  }
+    }
+  
   if (grepl("Occupancy", map_title)) {
     
     if (grepl("Wood Stork", map_title)) {
-      wost_shp <- st_read(dsn = WOST_PATH) %>%
+      wost_shp <- st_read(dsn = wost_path) %>%
         st_transform(crs = 26917)
       wost_st_valid <- st_is_valid(wost_shp)
       if (all(wost_st_valid, TRUE)) {
@@ -348,7 +447,7 @@ RestorationRunMap <- function(
       
       combined_plot <- ggdraw(map_plot) +
         draw_plot(full_legend, x = 0.405, y = 0.0, vjust = 0.02) +
-        draw_label(map_title, x = 0.17, y = .93, vjust = 0,
+        draw_label(map_title, x = 0.5, y = .97, vjust = 0, hjust = 0.5,
                    fontfamily = "serif", size = 30) +
         draw_plot(arrow, scale = 0.025, x = 0.064, y = -0.399)
     } else {
@@ -358,14 +457,14 @@ RestorationRunMap <- function(
     
     combined_plot <- ggdraw(map_plot) +
       draw_plot(full_legend, x = 0.405, y = 0.0, vjust = 0.02) +
-      draw_label(map_title, x = 0.17, y = .93, vjust = 0,
+      draw_label(map_title, x = 0.5, y = .97, vjust = 0, hjust = 0.5,
                  fontfamily = "serif", size = 30) +
       draw_plot(arrow, scale = 0.025, x = 0.064, y = -0.399)
   }}
   
 ## SAVE FINAL PLOT ##  
   ggsave(output_file_name, combined_plot, height = 11, width = 8.5,
-         units = "in", dpi = 300, scale = 2)
+      units = "in", dpi = 300, scale = 2)
   }
-
+}
 
