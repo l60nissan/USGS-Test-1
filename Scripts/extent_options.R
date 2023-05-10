@@ -11,10 +11,10 @@ cop_ever_extent <- c(xmin = 459839,
                      ymax = 2777166) 
 
 # Fits WERP 2023 AOI
-werp23_extent <- c(459384,
-                   559882,
-                   2914164,
-                   2817477)
+werp23_extent <- c(xmin = 459384,
+                   xmax = 559882,
+                   ymin = 2914164,
+                   ymax = 2817477)
 
 message("Use one of the following to set map extent
       (see extent_options.R for more detailed descriptions of options):
