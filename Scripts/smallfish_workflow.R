@@ -387,7 +387,7 @@ for (b in 1:length(base_names)) {
              mpr_path = mpr_path,
              wcas_path = wcas_path,
              fl_path = fl_path,
-             map_extent = map_extent,
+             landscape = landscape,
              map_title = "Mean Total Fish Density",
              df_ind = ind_plot,
              df_dif = diff_plot,
