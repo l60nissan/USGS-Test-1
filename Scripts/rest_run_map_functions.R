@@ -49,7 +49,6 @@ RestorationRunMap <- function(
     mpr_path,       # File path to shapefile of Main Park Road
     wcas_path,      # File path to shapefile of water conservation areas boundaries
     fl_path,        # File path to shapefile of Florida boundary
-    #map_extent,     # Extent of map, format: c(xmin, xmax, ymin, ymax)
     landscape,      # TRUE/FALSE should output be landscape?
     map_title,      # Title to be printed at top of map, (ex. "Alligator HSI")
     output_file_name) { # Name of Output File

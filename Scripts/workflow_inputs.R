@@ -10,11 +10,11 @@
 # 1) Scenarios
 # ------------------------------------------------------------------------------
 # Set Alternate scenario names
-alt_names <- c("AA", "BB")
+alt_names <- c("PA22", "PA25")
 alt_names
 
 # Set Baseline scenario names
-base_names <- c("NA25")
+base_names <- c("ECB19")
 base_names
 
 # ------------------------------------------------------------------------------
@@ -24,15 +24,15 @@ base_names
 ## ----------
 # Alligator
 
-gator_parent_path <- "../LOSOM/Data/LOSOM_Round3_2021_12/Model Output/Alligator/JEM_Alligator_Production_Probability_Model_Data/"
+gator_parent_path <- "../WERP/JEM_Alligator_Production_Probability_Model_Data/JEM_Alligator_Production_Probability_Model_Data/"
 gator_output_path <- "../data_release_develop/Alligator/"
 gator_cropped <- FALSE
 
 ## ----------
 # EverWaders
 
-waders_parent_path <- NULL
-waders_output_path <- "../data_release_develop/"
+waders_parent_path <- "../LOSOM/Data/LOSOM_Round3_2021_12/Model Output/EverWaders/JEM_EverWaders_Data/JEM_EverWaders_Data/"
+waders_output_path <- "../data_release_develop/waders/"
 waders_cropped <- FALSE
 
 ## ----------
@@ -77,7 +77,7 @@ sparrow_output_path <- "../data_release_develop/CSSS"
 # 3) Area of interest and desired extent for maps
 # ------------------------------------------------------------------------------
 # Area of Interest (AOI)
-aoi_path <- "../../GIS_Library/rest_run_boundary/rest_run_boundary.shp"
+aoi_path <- "../../GIS_Library/WERP_AOI_2023_utm/WERP_AOI_2023_utm.shp"
 
 # - Set Extent to match AOI for all output EXCEPT Marl Praire since
 #   Marl prairie extent does not change when project AOI changes
@@ -87,7 +87,7 @@ aoi_path <- "../../GIS_Library/rest_run_boundary/rest_run_boundary.shp"
 #                 xmax = maximum x extent value,
 #                 ymin = minimum y extent value,
 #                 ymax = maximum y extent value)
-source("./Scripts/extent_options.R") # CHECK CONSOLE FOR OPTIONS 
-map_extent <- werp23_extent
+#source("./Scripts/extent_options.R") # CHECK CONSOLE FOR OPTIONS 
+#map_extent <- werp23_extent
 
 
