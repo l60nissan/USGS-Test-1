@@ -1,7 +1,8 @@
 ## ------------------------------------------------------------------------------
 ## Generate Tables for Sparrow Helper
 ## ------------------------------------------------------------------------------
-
+print(paste0("INFO [", Sys.time(), "] Generating Sparrow Helper Table"))
+      
 # Load packages
 library(tidyverse)
 
