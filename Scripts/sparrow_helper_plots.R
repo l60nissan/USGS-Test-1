@@ -2,6 +2,7 @@
 # Generate Sparrow Helper Plots
 # Create Annual summary of 4-yr hydroperiod data
 # ------------------------------------------------------------------------------
+print(paste0("INFO [", Sys.time(), "] Generating Sparrow Helper Plots"))
 
 # Load packages
 library(tidyverse)
@@ -21,6 +22,7 @@ all_files <- list.files(path = parent_path,
 all_files
 
 # Read in Target data and combine to one dataframe
+print(paste0("INFO [", Sys.time(), "] Reading Sparrow Helper Data"))
 hydro_percent <- data.frame()
 for (f in 1:length(all_files)) {
   
@@ -54,6 +56,7 @@ bar_pal <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442",
 
 # Generate barplot for each subpopulation
 for (p in 1:length(pops)) {
+  print(paste0("INFO [", Sys.time(), "] Generating Plot for Subpop ", pops[p]))
   plot_data <- hydro_percent[hydro_percent$name == pops[p],]
   
   scale <- 3
@@ -89,6 +92,7 @@ ggsave(filename, csss_plot, width = 15, height = 8.5,
 # Save data that generated the barplot
 names(hydro_percent) <- c("Year", "Scenario", "Subpopulation", "Cell_Percent")
 
+print(paste0("INFO [", Sys.time(), "] Saving Data"))
 write.csv(hydro_percent, file = paste0(output_path,
                                        "Sparrow_Helper_Hydroperiod.csv"),
           row.names = FALSE)
