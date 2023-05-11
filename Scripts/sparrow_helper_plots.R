@@ -1,12 +1,12 @@
 # ------------------------------------------------------------------------------
 # Generate Sparrow Helper Plots
-# Create Annual summary of 4-yr hydroperiod data: sparrow_tsp.xlsx
+# Create Annual summary of 4-yr hydroperiod data
 # ------------------------------------------------------------------------------
 
 # Load packages
 library(tidyverse)
-library(writexl)
 
+# Vector of all scenario names. scenario names set in workflow_inputs.R
 scenario_names <- c(alt_names, base_names)
 scenario_names
 
@@ -20,22 +20,28 @@ all_files <- list.files(path = parent_path,
                         recursive = TRUE, full.names = TRUE)
 all_files
 
+# Read in Target data and combine to one dataframe
 hydro_percent <- data.frame()
 for (f in 1:length(all_files)) {
+  
+  # Extract scenario name from file
   name <- str_extract_all(all_files[f], all_scenario_names)[[1]]
 
+  # Read csv
   hypd_per <- read.csv(all_files[[f]])
   
+  # Add column with scenario name
   hypd_per$Scenario <- name
   
+  # Bind rows together to generate one dataframe with all data
   hydro_percent <- bind_rows(hydro_percent, hypd_per)
 }
 
-# Make long for easier plotting
+# Make data long for easier plotting
 hydro_percent <- pivot_longer(hydro_percent, cols = c(2:7))
 
 
-##rename and relevel popa scenarios
+# rename and relevel subpopulation names
 hydro_percent$Scenario <- factor(hydro_percent$Scenario,
                                  levels = c(alt_names, base_names))
 hydro_percent$name <- factor(hydro_percent$name,
@@ -46,6 +52,7 @@ pops <- levels(hydro_percent$name)
 bar_pal <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442",
              "#0072B2", "#D55E00", "#CC79A7", "#000000")
 
+# Generate barplot for each subpopulation
 for (p in 1:length(pops)) {
   plot_data <- hydro_percent[hydro_percent$name == pops[p],]
   
@@ -70,13 +77,16 @@ csss_plot <- ggplot(data = plot_data,
         legend.key.width = unit(scale*4, "mm"),
         plot.margin = margin(2,2,2,2, unit = "cm"))
 
-filename <- paste0(OUTPUT_PATH, "CSSS_hydroperiod_90_210_", pops[p], ".png")
+filename <- paste0(output_path, "CSSS_hydroperiod_90_210_", pops[p], ".png")
 filename
+
+# Save plot
 ggsave(filename, csss_plot, width = 15, height = 8.5,
        units = "in", dpi = 300, scale = 3)
 
 }
 
+# Save data that generated the barplot
 names(hydro_percent) <- c("Year", "Scenario", "Subpopulation", "Cell_Percent")
 
 write.csv(hydro_percent, file = paste0(OUTPUT_PATH,
