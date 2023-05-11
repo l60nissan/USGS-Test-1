@@ -1,7 +1,10 @@
 ## -----------------------------------------------------------------------------
 # Run Sparrow Helper workflow
 ## -----------------------------------------------------------------------------
-print(paste0("Sparrow Helper :: START -- ", Sys.time()))
+print(paste0("INFO [", Sys.time(), "] Sparrow Helper :: START"))
+
+# Install any necessary packages that are not yet installed
+source("./Scripts/workflow_packages.R")
 
 # Source inputs/definitions
 source("./Scripts/workflow_inputs.R") # workflow inputs
@@ -16,4 +19,4 @@ source("./Scripts/sparrow_helper_table.R")
 # source/run script to make plots
 source("./Scripts/sparrow_helper_plots.R")
 
-print(paste0("Sparrow Helper :: END -- ", Sys.time()))
+print(paste0("INFO [", Sys.time(), "] Sparrow Helper :: END"))
