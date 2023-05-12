@@ -6,6 +6,12 @@ print(paste0("INFO [", Sys.time(), "] Generating Sparrow Helper Table"))
 # Load packages
 library(tidyverse)
 
+# Message regarding inputs
+message("INFO [", Sys.time(), "] USER INPUTS SET TO: \n*parent path: ", print(parent_path),
+        "\n*output path: ", print(output_path),
+        "\n*alternative scenarios: ", paste(alt_names, collapse = " "),
+        "\n*basline scenarios: ", paste(base_names, collapse = " "))
+
 ## ------------------------------------------------------------------------------
 # Calculations for table
 # 
@@ -24,8 +30,11 @@ all_scenario_names <- paste0(scenario_names, collapse = "|")
 all_scenario_names
 
 # List all csv files that contain the target pattern
+file_pattern_tb <- "depth_average_\\(-50.0 to -25.0).csv"
+print(paste0("INFO [", Sys.time(), "] File pattern for tables: ",
+             file_pattern_tb))
 all_files <- list.files(path = parent_path,
-                        pattern = "depth_average_\\(-50.0 to -25.0).csv",
+                        pattern = file_pattern_tb,
                         recursive = TRUE, full.names = TRUE)
 all_files
 
