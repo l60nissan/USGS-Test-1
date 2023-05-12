@@ -4,6 +4,8 @@
 #
 # Caitlin Hackett chackett@usgs.gov
 ## -----------------------------------------------------------------------------
+print(paste0("INFO [", Sys.time(), "] Running Workflow"))
+
 
 #Load packages
 library(tidyverse)
@@ -13,24 +15,28 @@ library(sf)
 library(cowplot)
 
 # Source dependancy scripts
+print(paste0("INFO [", Sys.time(), "] Sourcing Dependency Scripts"))
 # Functions to process data nd make bar plots
+print(paste0("INFO [", Sys.time(), "] Loading Process Functions"))
 source("./Scripts/rest_run_process_functions.R")
 
 # Function to generate maps
+print(paste0("INFO [", Sys.time(), "] Loading Map Functions"))
 source("./Scripts/rest_run_map_functions.R")
 
 # Defined file paths for shapefiles
+print(paste0("INFO [", Sys.time(), "] Loading Shapefile Input Paths"))
 source("./Scripts/input_paths.R")
 
 # Defined species strings - for consistency across coordinated scripts
+print(paste0("INFO [", Sys.time(), "] Loading Species String Definitions"))
 source("./Scripts/species_string_definitions.R")
 
 # Message regarding inputs
-message("INFO [", Sys.time(), "]USER INPUTS SET TO: \n*parent path: ",
-        parent_path,
+message("INFO [", Sys.time(), "] USER INPUTS SET TO: \n*parent path: ", parent_path,
         "\n*output path: ", output_path,
         "\n*species: ", paste(sp_string, collapse = " "),
-        "\n*croppped(T/F): ", print(cropped),
+        "\n*croppped(T/F): ", cropped,
         "\n*alternative scenarios: ", paste(alt_names, collapse = " "),
         "\n*basline scenarios: ", paste(base_names, collapse = " "))
 
@@ -97,14 +103,18 @@ for (n in 1:length(sp_string)) { # This is to accomodate multiple
   ## Extract species name
   species <- sp_string[n]
   
+  print(paste0("INFO [", Sys.time(), "] Running Workflow for: ", species))
+
   ## List All files, Alternate scenario files, and Baseline files
+  print(paste0("INFO [", Sys.time(), "] Pulling Files"))
   files <- SpScenarioFiles(alt_string, base_string, parent_path, sp_string[n])
-  files
-  alt_list <- files$alt_list
-  alt_list
-  base_list <- files$base_list
-  base_list
+  print(paste0("INFO [", Sys.time(), "] All Files: "))
+  print(files)
   
+  alt_list <- files$alt_list
+
+  base_list <- files$base_list
+
   #-----------------
   # Loop to process data and make maps, acreage table and barplot 
   
@@ -132,27 +142,34 @@ for (n in 1:length(sp_string)) { # This is to accomodate multiple
       
       # Get alternate scenario name
       a_name <- str_extract_all(alt_list[i], all_scenario_names)[[1]]
-      print(paste0("Processing :: ALT_", a_name, " minus BASE_",
-                   b_name, " -- ", Sys.time()))
+      print(paste0("INFO [", Sys.time(), "] Processing :: ALT_", a_name,
+                   " minus BASE_", b_name))
+      
+      #print(paste0("Processing :: ALT_", a_name, " minus BASE_",
+      #             b_name, " -- ", Sys.time()))
       
       #-----------------
       # Process data needed to build maps and calculate acreage
-
+      print(paste0("INFO [", Sys.time(), "] Processing map data and calculating acreage"))
       map_dfs <- ProcessOutput(base_list[b], alt_list[i],
                                aoi_path, all_scenario_names)
+      print(paste0("INFO [", Sys.time(), "] Files for processing"))
+      print(paste0("Baseline file: ", base_list[b]))
+      print(paste0("Alternative file: ", alt_list[i]))
       
       #-----------------
       # Add data to list of processed data
-
+      
       process_list[[b]][[i]] <- map_dfs
       names(process_list[[b]])[[i]] <- paste0(map_dfs$alt_name, "-",
                                               map_dfs$base_name)
       
       #-----------------
       # Make maps
-
-      print(paste0("Making Map :: ALT_", a_name, " minus BASE_", b_name))
       
+      print(paste0("INFO [", Sys.time(), "] Making Map :: ALT_", a_name,
+                   " minus BASE_", b_name))
+    
       # Define inputs for function that makes maps (RestorationRunMap())
       ind_fill <- sym(labs_str)
       dif_fill <- sym(labs_str)
@@ -160,9 +177,12 @@ for (n in 1:length(sp_string)) { # This is to accomodate multiple
       out_path <- output_path
       out_file <- paste0(out_path, gsub(" ", sep_str, map_title), sep_str,
                          map_dfs$alt_name, sep_str, map_dfs$base_name, ".pdf")
-      out_file
-  
-      print(paste0("Making map for ", gsub(" ", sep_str, map_title), sep_str,
+      print(paste0("INFO [", Sys.time(), "] Map output file: "))
+      print(out_file)
+      
+      
+      print(paste0("INFO [", Sys.time(), "] Making map for ",
+                   gsub(" ", sep_str, map_title), sep_str,
                    map_dfs$alt_name, sep_str, map_dfs$base_name))
   
       name.labs <- map_dfs$name.labs
@@ -184,7 +204,8 @@ for (n in 1:length(sp_string)) { # This is to accomodate multiple
       #-----------------
       # Add data to Acreage dataframe
       
-      print(paste0("Adding Acreage :: ALT_", a_name, " minus BASE_", b_name))
+      print(paste0("INFO [", Sys.time(), "] Adding Acreage :: ALT_",
+                   a_name, " minus BASE_", b_name))
       acreage_diff_df <- bind_rows(acreage_diff_df, map_dfs$acreage_df)
     } #close i
   } #close b
@@ -203,7 +224,7 @@ for (n in 1:length(sp_string)) { # This is to accomodate multiple
   for (b in 1:length(base_list)) {
     b_name <- str_extract_all(base_list[b], all_scenario_names)[[1]]
       
-    print(paste0("Stacking Base :: ", b_name))
+    print(paste0("INFO [", Sys.time(), "] Stacking Base :: ", b_name))
 
     # Stack the NetCDf - mask applied within StackNcOutput()
     masked <- StackNcOutput(nc_file = base_list[b],
@@ -211,7 +232,7 @@ for (n in 1:length(sp_string)) { # This is to accomodate multiple
                             aoi = aoi_path,
                             all_scenario_names = all_scenario_names)
 
-    print(paste0("Calculating Landscape Mean Base :: ",
+    print(paste0("INFO [", Sys.time(), "] Calculating Landscape Mean Base :: ",
                    b_name, " -- ", Sys.time()))
       
     # Calculate mean of landscape for each day
@@ -229,7 +250,7 @@ for (n in 1:length(sp_string)) { # This is to accomodate multiple
   for (i in 1:length(alt_list)) {
     a_name <- str_extract_all(alt_list[i], all_scenario_names)[[1]]
         
-    print(paste0("Stacking Alt :: ", a_name))
+    print(paste0("INFO [", Sys.time(), "] Stacking Alt :: ", a_name))
         
     # Stack the NetCDf - mask applied within StackNcOutput()
     masked <- StackNcOutput(alt_list[i],
@@ -237,7 +258,7 @@ for (n in 1:length(sp_string)) { # This is to accomodate multiple
                             aoi = aoi_path,
                             all_scenario_names = all_scenario_names)
         
-    print(paste0("Calculating Landscape Mean Alt :: ",
+    print(paste0("INFO [", Sys.time(), "] Calculating Landscape Mean Alt :: ",
                    a_name, " -- ", Sys.time()))
         
     # Calculate mean of landscape for each day
@@ -297,7 +318,7 @@ for (n in 1:length(sp_string)) { # This is to accomodate multiple
       # Calculate percent change of landscale means
       # For daily output, calculate percent change of landscape means,
       # and then averages the daily percent change values for each year
-      print(paste0("Calculating Percent Change :: ",
+      print(paste0("INFO [", Sys.time(), "] Calculating Percent Change :: ",
                    a_name, "-", b_name, " -- ", Sys.time()))
       pchange <- DiffChangeCalc(pchange_sp_string,
                                   base_list_masked[[b]]$nc_masked,
@@ -307,7 +328,7 @@ for (n in 1:length(sp_string)) { # This is to accomodate multiple
       # Add data to percent diff dataframe - 
       # if percent diff was calculated during data processing,
       # bind rows to one dataframe
-      print(paste0("Adding Percent Difference :: ALT_",
+      print(paste0("INFO [", Sys.time(), "] Adding Percent Difference :: ALT_",
                    a_name, " minus BASE_", b_name))
       if (!is.null(pchange)) {
         percent_diff <- bind_rows(percent_diff, pchange)
@@ -325,7 +346,7 @@ for (n in 1:length(sp_string)) { # This is to accomodate multiple
   
   #-----------------
   # Export acreage Data
-  print(paste0("Export Acreage Data CSV"))
+  print(paste0("INFO [", Sys.time(), "] Export Acreage Data CSV"))
   
   # Tidy scenario_year column to individual columns
   acreage_diff_df <- separate(acreage_diff_df, Scenario_year,
@@ -335,7 +356,7 @@ for (n in 1:length(sp_string)) { # This is to accomodate multiple
   # Generate file name and export acreage table
   output_filename <- paste0(out_path, acreage_str,
                             gsub(" ", sep_str, map_title), csv_str)
-  output_filename
+  print(paste0("INFO [", Sys.time(), "] Writing acreage table to: ", output_filename))
   write.csv(acreage_diff_df, output_filename, row.names = FALSE)
   
   # Crop out first 3 years for Apple snail due to ramp up of model
@@ -351,10 +372,12 @@ for (n in 1:length(sp_string)) { # This is to accomodate multiple
 
   # Export dataframe with all percent differences
   # If percent diffrence data frame exists, create a bar plot
-  print(paste0("Export Percent Difference Data CSV"))
+  print(paste0("INFO [", Sys.time(), "] Export Percent Difference Data CSV"))
   if (!is.null(percent_diff)) {
     diff_output_filename <- paste0(out_path, perdiff_name_str,
                                    gsub(" ", sep_str, map_title), csv_str)
+    print(paste0("INFO [", Sys.time(), "] Percent Difference Data CSV filename: ",
+                 diff_output_filename))
     write.csv(percent_diff, diff_output_filename, row.names = FALSE)
   
     # Make Percent diffrence bar plot
@@ -371,7 +394,8 @@ for (n in 1:length(sp_string)) { # This is to accomodate multiple
   
     # make bar plots: 1 plot for each alternate shown against all baselines
     for (a in 1:length(alt_names)) {
-      print(paste0("Making Differnce Bar Plot :: ", alt_names[a]))
+      print(paste0("INFO [", Sys.time(), "] Making Differnce Bar Plot :: ",
+                   alt_names[a]))
     
       per_diff_alt <- percent_diff[grep(alt_names[a], percent_diff$Scenarios),]
       diff_plot <- PerDiffPlot(
@@ -395,7 +419,8 @@ for (n in 1:length(sp_string)) { # This is to accomodate multiple
   
     # Make bar plots: 1 bar plot for each baseline shown against all alternates
     for (l in 1:length(base_names)) {
-      print(paste0("Making Differnce Bar Plot :: ", base_names[l]))
+      print(paste0("INFO [", Sys.time(), "] Making Differnce Bar Plot :: ",
+                   base_names[l]))
     
       per_diff_base <- percent_diff[grep(base_names[l], percent_diff$Scenarios),]
       diff_plot_a <- PerDiffPlotAlt(
@@ -426,5 +451,7 @@ for (n in 1:length(sp_string)) { # This is to accomodate multiple
   } else {
   save_string <- sp_string}
 
+r_data_file <- paste0(out_path, save_string, rdata_str)
+print(paste0("INFO [", Sys.time(), "] Saving RData to: ", r_data_file))
 save(process_list_all, files, base_list_masked, alt_list_masked,
-     file = paste0(out_path, save_string, rdata_str))
+     file = r_data_file)
