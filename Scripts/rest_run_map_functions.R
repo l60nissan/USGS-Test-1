@@ -4,11 +4,6 @@
 # Caitlin Hackett chackett@usgs.gov
 ## -----------------------------------------------------------------------------
 #Load Packages
-packages <- c("tidyverse", "cowplot", "RColorBrewer",
-                  "ggnewscale", "sf", "ggsn")
-not_installed <- packages[!(packages %in% installed.packages()[,"Package"])]
-if (length(not_installed)) install.packages(not_installed)
-
 library(tidyverse)
 library(cowplot)
 library(RColorBrewer)
@@ -24,14 +19,14 @@ library(ggsn)
 # This allows the arrow to be added on top of a plot and saved using ggplot
 # Original north2 function source code:
 # https://github.com/oswaldosantos/ggsn/blob/master/R/north2.R
-North2GetArrow <- function(symbol = 1) {
+North2GetArrow <- function(symbol = 1, scale) {
   symbol <- sprintf("%02.f", symbol)
   symbol <- png::readPNG(paste0(system.file('symbols', package = 'ggsn'),
                                 '/', symbol, '.png'))
   symbol <- grid::rasterGrob(symbol, interpolate = TRUE)
-  ins <- qplot(0:1, 0:1, geom = "blank") + blank() +
-    ggmap::inset(symbol, xmin = 0, xmax = 1, ymin = 0, ymax = 1)
-  #vp <- grid::viewport(x, y, scale, scale)
+  ins <- ggplot() +
+    theme_void() +
+    draw_plot(symbol, scale = scale) 
   return(ins)
 }
 
@@ -254,6 +249,8 @@ RestorationRunMap <- function(
     scale_x_continuous(breaks = c(-80.5, -81, -81.5)) +
     scale_y_continuous(breaks = c(25.5, 26.0)) +
     
+    labs(title = map_title) + 
+    
     # Set theme elements
     theme(
       panel.grid.major = element_blank(), # remove grid lines
@@ -273,12 +270,28 @@ RestorationRunMap <- function(
       strip.text = element_text(size = legend_scale_factor*18), 
       
       # Remove axis title
-      axis.title = element_blank())
+      axis.title = element_blank(),
       
+      # Format title 
+      plot.title = element_text(family = "serif", size = 30))
+  
   # GET NORTH ARROW FOR MAP
-  arrow <- North2GetArrow(symbol = 12)
-  #arrow <- North2GetArrow(symbol = 1)
-  arrow
+  arrow <- North2GetArrow(symbol = 12, scale = 0.25)
+
+  # Make arrow grob
+  arrow_grob <- cowplot::as_grob(arrow)
+
+  # Create tibble to plot North arrow on map using coordinates
+  arrow_coord <- tibble(x = as.numeric(aoi_extent[1] + 4000),
+                        y = as.numeric(aoi_extent[3] + 3000),
+                        grob = list(arrow_grob),
+                        !!scenario_col := scale_y,
+                        !!year_col := scale_x)
+  
+  # Plot arrow on map
+  map_plot <- map_plot +
+    geom_grob(data = arrow_coord,
+              aes(x, y, label = grob))
   
   ## FORMAT FINAL PLOT##
   # combines main plot with legends and adds title
@@ -358,8 +371,8 @@ RestorationRunMap <- function(
         combined_plot <- ggdraw(map_plot) +
           draw_plot(full_legend, x = 0.405, y = 0.0, vjust = 0.02) +
           draw_label(map_title, x = 0.5, y = .95, vjust = 0, hjust = 0.5,
-                     fontfamily = "serif", size = 30) +
-          draw_plot(arrow, scale = 0.025, x = 0.085, y = -0.45)
+                     fontfamily = "serif", size = 30)# +
+          #draw_plot(arrow, scale = 0.025, x = 0.085, y = -0.45)
       } else {
         
         map_plot <- map_plot +
@@ -368,8 +381,8 @@ RestorationRunMap <- function(
         combined_plot <- ggdraw(map_plot) +
           draw_plot(full_legend, x = 0.405, y = 0.0, vjust = 0.02) +
           draw_label(map_title, x = 0.5, y = .95, vjust = 0, hjust = 0.5,
-                     fontfamily = "serif", size = 30) +
-          draw_plot(arrow, scale = 0.025, x = 0.085, y = -0.45)
+                     fontfamily = "serif", size = 30) #+
+          #draw_plot(arrow, scale = 0.025, x = 0.085, y = -0.45)
       }}
     ggsave(output_file_name, combined_plot, height = 8.5, width = 11,
            units = "in", dpi = 300, scale = 2)
