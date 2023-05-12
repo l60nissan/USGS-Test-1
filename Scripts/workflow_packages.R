@@ -14,8 +14,8 @@ packages <- c("tidyverse",
 not_installed <- packages[!(packages %in% installed.packages()[,"Package"])]
 not_installed
 if (length(not_installed)) {
-  print(paste0("installing packages: ", not_installed))
+  message("INFO [", Sys.time(), "] installing packages: ", not_installed)
   install.packages(not_installed)
 } else {
-  print(paste0("All necessary packages are already installed"))
+  message("INFO [", Sys.time(), "] All necessary packages are already installed")
 }
