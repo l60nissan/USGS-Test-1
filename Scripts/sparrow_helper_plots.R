@@ -7,6 +7,12 @@ print(paste0("INFO [", Sys.time(), "] Generating Sparrow Helper Plots"))
 # Load packages
 library(tidyverse)
 
+# Message regarding inputs
+message("INFO [", Sys.time(), "] USER INPUTS SET TO: \n*parent path: ", print(parent_path),
+        "\n*output path: ", print(output_path),
+        "\n*alternative scenarios: ", paste(alt_names, collapse = " "),
+        "\n*basline scenarios: ", paste(base_names, collapse = " "))
+
 # Vector of all scenario names. scenario names set in workflow_inputs.R
 scenario_names <- c(alt_names, base_names)
 scenario_names
@@ -16,8 +22,11 @@ all_scenario_names <- paste0(scenario_names, collapse = "|")
 all_scenario_names
 
 # List Files
+file_pattern_plot <- "hydroperiod_cell_percent_\\(90.0-210.0).csv"
+print(paste0("INFO [", Sys.time(), "] File pattern for Plots: ",
+             file_pattern_plot))
 all_files <- list.files(path = parent_path,
-                        pattern = "hydroperiod_cell_percent_\\(90.0-210.0).csv",
+                        pattern = file_pattern_plot,
                         recursive = TRUE, full.names = TRUE)
 all_files
 
