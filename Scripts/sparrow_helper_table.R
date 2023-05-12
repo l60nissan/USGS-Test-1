@@ -102,9 +102,11 @@ num_day_diff <- pivot_wider(num_day_diff, id_cols = "Scenario",
                             names_from = "name", values_from = "Difference")
 
 #export to document calculations
-output_filename <- paste0(output_path, "SparrowHelper_table.csv")
+table_data_name <- "SparrowHelper_table.csv"
+output_filename <- paste0(output_path, table_data_name)
 output_filename
-write.csv(num_day_diff, output_filename, row.names = F)
+print(paste0("INFO [", Sys.time(), "] Saving Data to ", output_filename))
+write.csv(num_day_diff, file = output_filename, row.names = F)
 
 
 

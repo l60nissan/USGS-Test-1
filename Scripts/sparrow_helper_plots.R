@@ -102,9 +102,10 @@ ggsave(filename, csss_plot, width = 15, height = 8.5,
 # Save data that generated the barplot
 names(hydro_percent) <- c("Year", "Scenario", "Subpopulation", "Cell_Percent")
 
-print(paste0("INFO [", Sys.time(), "] Saving Data"))
-write.csv(hydro_percent, file = paste0(output_path,
-                                       "Sparrow_Helper_Hydroperiod.csv"),
-          row.names = FALSE)
+plot_data_name <- "Sparrow_Helper_Hydroperiod.csv"
+output_filename <- paste0(output_path, plot_data_name)
+output_filename
+print(paste0("INFO [", Sys.time(), "] Saving Data to ", plot_data_name))
+write.csv(hydro_percent, file = output_filename, row.names = FALSE)
 
 
