@@ -25,42 +25,14 @@ source("./Scripts/input_paths.R")
 # Defined species strings - for consistency across coordinated scripts
 source("./Scripts/species_string_definitions.R")
 
-## -----------------------------------------------------------------------------
-# User set factors
-# Folder containing species output
-#parent_path <- "../LOSOM/Data/LOSOM_Round3_2021_12/Model Output/Alligator/JEM_Alligator_Production_Probability_Model_Data/"
-
-# Folder to output CSV and figures - 
-# include "/" after path to get file names correct when saving 
-#output_path <- "../data_release_develop/"
-#output_path
-
-# set target species from species string options at top of script
-#sp_string <- gator_string
-#sp_string
-
-# Is Species output already cropped to AOI? (TRUE/FALSE)
-#cropped <- TRUE
-#cropped
-
-# Set Alternate scenario names
-#alt_names <- c("PA22", "PA25")
-#
-
-# Set Baseline scenario names
-#base_names <- c("ECB19", "NA22F", "NA25F")
-#base_names
-
-message("USER INPUTS SET TO: \n*parent path: ", print(parent_path),
-        "\n*output path: ", print(output_path),
+# Message regarding inputs
+message("INFO [", Sys.time(), "]USER INPUTS SET TO: \n*parent path: ",
+        parent_path,
+        "\n*output path: ", output_path,
         "\n*species: ", paste(sp_string, collapse = " "),
         "\n*croppped(T/F): ", print(cropped),
         "\n*alternative scenarios: ", paste(alt_names, collapse = " "),
         "\n*basline scenarios: ", paste(base_names, collapse = " "))
-
-# END: USER SET FACTORS
-## -----------------------------------------------------------------------------
-## -----------------------------------------------------------------------------
 
 #-----------------
 # Define strings to avoid hard coding thorughout script
