@@ -7,8 +7,8 @@ print(paste0("INFO [", Sys.time(), "] Generating Sparrow Helper Table"))
 library(tidyverse)
 
 # Message regarding inputs
-message("INFO [", Sys.time(), "] USER INPUTS SET TO: \n*parent path: ", print(parent_path),
-        "\n*output path: ", print(output_path),
+message("INFO [", Sys.time(), "] USER INPUTS SET TO: \n*parent path: ", parent_path,
+        "\n*output path: ", output_path,
         "\n*alternative scenarios: ", paste(alt_names, collapse = " "),
         "\n*basline scenarios: ", paste(base_names, collapse = " "))
 
