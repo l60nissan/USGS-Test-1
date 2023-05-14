@@ -227,9 +227,24 @@ FishMap <- function(
       plot.margin = margin(1.5, 0, 1.5, 1.5, unit = "cm"))
   
   #-----------------
-  # Get North Arrow for Map
-  arrow <- north2_get_arrow(symbol = 12)
-  arrow
+  # Get North arrow and plot on map using coordinates
+  
+  arrow <- North2GetArrow(symbol = 12, scale = 0.25)
+  
+  # Make arrow grob
+  arrow_grob <- cowplot::as_grob(arrow)
+  
+  # Create tibble to plot North arrow on map using coordinates
+  arrow_coord <- tibble(x = as.numeric(aoi_extent[1] + 4000),
+                        y = as.numeric(aoi_extent[3] + 3000),
+                        grob = list(arrow_grob),
+                        !!scenario_col := scale_y,
+                        !!year_col := scale_x)
+  
+  # Plot arrow on map
+  fish_plot <- fish_plot +
+    geom_grob(data = arrow_coord,
+              aes(x, y, label = grob))
   
   #-----------------
   # Format Final Plot
