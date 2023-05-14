@@ -21,14 +21,14 @@ library(raster)
 # This allows the arrow to be added on top of a plot and saved using ggplot
 # Original north2 function source code:
 # https://github.com/oswaldosantos/ggsn/blob/master/R/north2.R
-north2_get_arrow <- function(symbol = 1) {
+north2_get_arrow <- function(symbol = 1, scale) {
   symbol <- sprintf("%02.f", symbol)
   symbol <- png::readPNG(paste0(system.file('symbols', package = 'ggsn'),
                                 '/', symbol, '.png'))
   symbol <- grid::rasterGrob(symbol, interpolate = TRUE)
-  ins <- qplot(0:1, 0:1, geom = "blank") + blank() +
-    ggmap::inset(symbol, xmin = 0, xmax = 1, ymin = 0, ymax = 1)
-  #vp <- grid::viewport(x, y, scale, scale)
+  ins <- ggplot() +
+    theme_void() +
+    draw_plot(symbol, scale = scale) 
   return(ins)
 }
 
