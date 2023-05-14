@@ -21,7 +21,7 @@ library(raster)
 # This allows the arrow to be added on top of a plot and saved using ggplot
 # Original north2 function source code:
 # https://github.com/oswaldosantos/ggsn/blob/master/R/north2.R
-north2_get_arrow <- function(symbol = 1, scale) {
+North2GetArrow <- function(symbol = 1, scale) {
   symbol <- sprintf("%02.f", symbol)
   symbol <- png::readPNG(paste0(system.file('symbols', package = 'ggsn'),
                                 '/', symbol, '.png'))
@@ -110,7 +110,7 @@ FishMap <- function(
     aoi_shp <- st_make_valid(aoi_shp)}  
   
   # Set map extent from AOI file
-  aoi_extent <- extent(aoi.shp)
+  aoi_extent <- extent(aoi_shp)
   aoi_extent <- c(aoi_extent@xmin - 1000,
                   aoi_extent@xmax + 1000,
                   aoi_extent@ymin - 1000,
@@ -146,17 +146,18 @@ FishMap <- function(
     
     # Plot Individual score 
     geom_sf(data = wca_crop, fill = "gray91", colour = NA) +
-    geom_point(data = df_ind, aes_string(x = "EASTING", y = "NORTHING",
-                                         size = ind_fill),fill = "dodgerblue",
+    geom_point(data = df_ind, aes(x = EASTING, y = NORTHING,
+                                         size = !!sym(ind_fill)),
+               fill = "dodgerblue",
                color = "black", shape = 21, stroke = 1.5, show.legend = TRUE) +
     guides(size = guide_legend(reverse = TRUE, order = 1,
                                title = score_legend_name)) +
 
     # new scale fill not needed here because using fill and size not 2 fills
-  
-    #Plot Difference 
-    geom_point(data = df_dif, aes_string(x = "EASTING", y = "NORTHING",
-                                         fill = dif_fill), size = 3.5,
+
+    #Plot Difference
+    geom_point(data = df_dif, aes(x = EASTING, y = NORTHING,
+                                         fill = !!sym(dif_fill)), size = 3.5,
                shape = 21, stroke = 1.5) +
     scale_fill_manual(values = diff_pal, name = diff_legend_name,
                       drop = FALSE) +
@@ -164,7 +165,7 @@ FishMap <- function(
 
     # Plot facets
     facet_grid(as.formula(paste(scenario_col,"~", year_col)),
-               labeller = labeller(YEAR = name.labs)) +
+               labeller = labeller(!!year_col := name.labs)) +
 
     # Plot shapefiles for Main Park Road, WCAS, and area of interest
     geom_sf(data = mpr_crop, colour = "black",
@@ -173,16 +174,18 @@ FishMap <- function(
             lwd = scale_factor*0.3, show.legend = FALSE) +
     geom_sf(data = aoi_crop, colour = "Brown", alpha = 0,
             lwd = scale_factor*1, show.legend = FALSE) +
-    
+
     # Add scalebar
     ggsn::scalebar(data = df_scale, transform = F, dist = 20, dist_unit = "km",
-                   st.dist = 0.016, st.size = scale_factor*2.3,
-                   st.bottom = TRUE,
-                 height = 0.014, border.size = 1,
-                 anchor = c(x = 561000 , y = 2778500), family = "sans",
-                 facet.var = c(scenario_col, year_col),
-                 facet.lev = c(scale_y, scale_x)) +
-
+                   st.dist =  0.015, st.size = scale_factor*2.3,
+                   st.bottom = TRUE, height = 0.014, border.size = 1,
+                   #location = "bottomright",
+                   anchor = c(x = as.numeric(aoi_extent[2] - 4000),
+                              y = as.numeric(aoi_extent[3] + 3000)),
+                   family = "sans",
+                   facet.var = c(scenario_col, year_col),
+                   facet.lev = c(scale_y, scale_x)) +
+    
     # Can use this to set crs or crop the map output if needed,
     # Expand = FALSE does not add extra buffer around plotted extent
     coord_sf(expand = F) + 
@@ -190,6 +193,8 @@ FishMap <- function(
     # Set which graticule displayed on x and y axis
     scale_x_continuous(breaks = c(-80.5, -81, -81.5)) +
     scale_y_continuous(breaks = c(25.5, 26.0)) +
+    
+    labs(title = map_title) + 
     
     # Set theme elements
     theme(
@@ -199,7 +204,6 @@ FishMap <- function(
       legend.title.align = 0.0,
       legend.text = element_text(family = "sans", size = legend_scale_factor*16),
       legend.title = element_text(family = "sans", size = legend_scale_factor*19),
-      legend.spacing = unit(20, "cm"), # increase space between legends
       
       # Format panels
       panel.grid.major = element_blank(), # remove grid lines
@@ -224,8 +228,20 @@ FishMap <- function(
       plot.title = element_text(family = "sans", size = 30),
       
       # Format plot margins
-      plot.margin = margin(1.5, 0, 1.5, 1.5, unit = "cm"))
+      plot.margin = margin(1.5, 1.5, 1.5, 1.5, unit = "cm")) +
   
+  # Set legend margins based on landscape or portrait
+  if (landscape) {
+    theme(
+      legend.spacing = unit(10, "cm"), # increase space between legends
+      legend.box.margin = margin(3, 0, 0, 0, unit = "cm"))
+  } else {
+      theme(
+      legend.spacing = unit(20, "cm")) # increase space between legends
+  }
+  
+  
+  fish_plot
   #-----------------
   # Get North arrow and plot on map using coordinates
   
@@ -238,13 +254,15 @@ FishMap <- function(
   arrow_coord <- tibble(x = as.numeric(aoi_extent[1] + 4000),
                         y = as.numeric(aoi_extent[3] + 3000),
                         grob = list(arrow_grob),
-                        !!scenario_col := scale_y,
+                        !!scenario_col := factor(scale_y, levels = levels(df_ind[[scenario_col]])),
                         !!year_col := scale_x)
-  
+
   # Plot arrow on map
   fish_plot <- fish_plot +
     geom_grob(data = arrow_coord,
               aes(x, y, label = grob))
+
+  fish_plot  
   
   #-----------------
   # Format Final Plot
@@ -252,24 +270,14 @@ FishMap <- function(
   # If landscape = TRUE
   if (landscape) {
     
-    # combine plot and legend: the NULL plot allows control of the distance
-    # between the plot and legend by setting rel_widths()
-    combined_plot <- plot_grid(map_plot, NULL, full_legend,
-                               rel_widths = c(4, -.4, 1), ncol = 3)
-    
     # Save as full page landscape PDF 
-    ggsave(output_file_name, combined_plot, height = 8.5, width = 11,
+    ggsave(output_file_name, fish_plot, height = 8.5, width = 11,
            units = "in", dpi = 300, scale = 2)
     
   } else { # If portrait (landscape = FALSE)
     
-    # combine plot and legend: the NULL plot allows control of the distance
-    # between the plot and legend by setting rel_widths()
-    combined_plot <- plot_grid(map_plot, NULL, full_legend,
-                               rel_widths = c(4, 0, 1), ncol = 3)
-    
     # Save as full page portrait PDF 
-    ggsave(output_file_name, combined_plot, height = 11, width = 8.5,
+    ggsave(output_file_name, fish_plot, height = 11, width = 8.5,
            units = "in", dpi = 300, scale = 2)
   }
 }
