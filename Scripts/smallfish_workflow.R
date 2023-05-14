@@ -26,10 +26,15 @@ source("../restoration_runs/Scripts/smallfish_map_functions.R")
 source("../restoration_runs/Scripts/smallfish_barplot_functions.R")
 source("../restoration_runs/Scripts/process_definitions.R")
 
+# Defined file paths for shapefiles
+print(paste0("INFO [", Sys.time(), "] Loading Shapefile Input Paths"))
+source("./Scripts/input_paths.R")
+
 ## -----------------------------------------------------------------------------
 ## 1. SUBSET FISH PSU TO AOI
 ## -----------------------------------------------------------------------------
 # Read in CSV with all fish data - large file so may take a few minutes
+print(paste0("INFO [", Sys.time(), "] Reading fish csv. This takes several minutes."))
 fish_all <- read.csv(fish_path, header = TRUE) 
 # read in AOI shapefile
 aoi <- st_read(dsn = aoi_path) 
@@ -42,6 +47,7 @@ psu_coords_all <- st_as_sf(psu_coords_all)
 psu_coords_all <- psu_coords_all %>% st_set_crs(st_crs(aoi))
 
 # Subset PSU locations to those within the AOI
+print(paste0("INFO [", Sys.time(), "] Subsetting PSUs to AOI"))
 psu_coords_aoi <- psu_coords_all[aoi,]
 
 # filter fish to only psus within the AOI
@@ -66,6 +72,7 @@ scenario_cols
 
 # Group data by date, and calculate daily mean for combined PSUs using colummns
 # defined in the scenario_cols vector
+print(paste0("INFO [", Sys.time(), "] Calculating mean daily TOT_FISH_CUM"))
 cum_fish_by_date <- fish %>%
   group_by(DATE) %>%
   summarise_at(vars(all_of(scenario_cols)),
@@ -129,7 +136,7 @@ line_pal <- full_pal[1:ncolor]
 
 #-----------------
 # Make plot
-
+print(paste0("INFO [", Sys.time(), "] Making fish line graph"))
 cum_fish_plot <- ggplot(cum_fish_by_date) + 
   
   # Set the line geometry
@@ -165,7 +172,6 @@ ggsave(paste0(output_path, "/fish_cumulative.pdf"), width = 11,
        height = 8.5, units = "in", dpi = 300)
 
 # Save data
-cum_fish_by_date <- cum_fish_by_date[, -4]
 write.table(cum_fish_by_date,
             file = paste0(output_path, "/fish_cumulative.txt"), sep = ",")
 
@@ -180,6 +186,8 @@ fish_daily <- dplyr::select(fish , c(DATE, YEAR, PSU,
 
 # Calculate daily percent difference for each PSU (all years)
 # - takes a few minutes to process
+print(paste0("INFO [", Sys.time(), "] Calculating daily percent difference fore ach PSU (all years)"))
+print("This may take several minutes")
 per_diff_daily <- data.frame()
 
 for (b in 1:length(base_names)) {
@@ -205,6 +213,7 @@ for (b in 1:length(base_names)) {
 ## -----------------------------------------------------------------------------
 ## 4. Summarize daily percent difference 
 ## -----------------------------------------------------------------------------
+print(paste0("INFO [", Sys.time(), "] Summarizing daily percent differences"))
 
 #-----------------
 # Summarize to YEAR - BAR PLOT
@@ -231,6 +240,7 @@ daily_diff_map <- per_diff_daily %>%
 ## -----------------------------------------------------------------------------
 ## 5. Make Bar plots
 ## -----------------------------------------------------------------------------
+print(paste0("INFO [", Sys.time(), "] Making Barplots"))
 
 # Make Percent diffrence bar plot
 x_var <- "YEAR"
@@ -289,6 +299,7 @@ for (b in 1:length(base_names)) {
 ## -----------------------------------------------------------------------------
 ## 6. Make Maps
 ## -----------------------------------------------------------------------------
+print(paste0("INFO [", Sys.time(), "] Making Maps"))
 
 # Make vector of desired column names
 scenario_cols_psu <- paste0("depth_", scenario_names, "_TOTFISH")
@@ -343,6 +354,7 @@ diff_fish_plot$labs <- cut(diff_fish_plot$mean_daily_diff_round,
 ind_fish_plot$labs <- factor(ind_fish_plot$labs, levels = fish_ind_labels)
 diff_fish_plot$labs <- factor(diff_fish_plot$labs, levels = fish_diff_labels)
 
+# years
 ind_fish_plot$YEAR <- factor(ind_fish_plot$YEAR, levels = fish_years)
 diff_fish_plot$YEAR <- factor(diff_fish_plot$YEAR, levels = fish_years)
 
@@ -406,4 +418,5 @@ for (b in 1:length(base_names)) {
   }
 }
 
+print(paste0("INFO [", Sys.time(), "] Saving processed fish data"))
 save(map_data_list, file = paste0(output_path, "/fish_processed_data.RData"))
