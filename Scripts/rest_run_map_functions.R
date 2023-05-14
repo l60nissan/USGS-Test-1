@@ -273,7 +273,10 @@ RestorationRunMap <- function(
       axis.title = element_blank(),
       
       # Format title 
-      plot.title = element_text(family = "serif", size = 30))
+      plot.title = element_text(family = "sans", size = 30),
+      
+      # Format plot margins
+      plot.margin = margin(1.5, 0, 1.5, 1.5, unit = "cm"))
   
   # GET NORTH ARROW FOR MAP
   arrow <- North2GetArrow(symbol = 12, scale = 0.25)
@@ -293,189 +296,49 @@ RestorationRunMap <- function(
     geom_grob(data = arrow_coord,
               aes(x, y, label = grob))
   
-  ## FORMAT FINAL PLOT##
-  # combines main plot with legends and adds title
-  # saves file
-  
-  # ----------
-  # Format for Landscape layout
-  if (landscape) {
-    if (grepl("Snail Kite", map_title)) {
-      # add margin to PLOT
-      map_plot <- map_plot +
-        theme(plot.margin = margin(4,5,1,1, unit = "cm"))
-      
-      combined_plot <- ggdraw(map_plot) +
-        draw_plot(full_legend, x = 0.31, y = 0.0, vjust = 0.02) +
-        draw_label(map_title, x = 0.5, y = .95, vjust = 0, hjust = 0.5,
-                   fontfamily = "serif", size = 30) +
-        draw_plot(arrow, scale = 0.025, x = 0.085, y = -0.45)
-      
-    }
-    
-    if (grepl("Apple Snail", map_title)) {
-      # add margin to map_plot
-      map_plot <- map_plot +
-        theme(plot.margin = margin(4,5,1,1, unit = "cm"))
-      
-      combined_plot <- ggdraw(map_plot) +
-        draw_plot(full_legend, x = 0.33, y = 0.0, vjust = 0.02) +
-        draw_label(map_title, x = 0.5, y = .95, vjust = 0, hjust = 0.5,
-                   fontfamily = "serif", size = 30) +
-        draw_plot(arrow, scale = 0.025, x = 0.085, y = -0.45)
-    }
-    
-    if (grepl("Days Since Drydown", map_title)) {
-      map_plot <- map_plot +
-        theme(plot.margin = margin(4,5,1,1, unit = "cm"))
-      
-      combined_plot <- ggdraw(map_plot) +
-        draw_plot(full_legend, x = 0.405, y = 0.0, vjust = 0.02) +
-        draw_label(map_title, x = 0.5, y = .95, vjust = 0,
-                   fontfamily = "serif", size = 30) +
-        draw_plot(arrow, scale = 0.025, x = 0.085, y = -0.45)
-    }
-    
-    if (grepl("Alligator", map_title)) {
-        map_plot <- map_plot +
-          theme(plot.margin = margin(4,5,1,1, unit = "cm"))
-        
-        combined_plot <- ggdraw(map_plot) +
-          draw_plot(full_legend, x = 0.405, y = 0.0, vjust = 0.02) +
-          draw_label(map_title, x = 0.27, y = .95, vjust = 0,
-                     fontfamily = "serif", size = 30) +
-          draw_plot(arrow, scale = 0.025, x = 0.085, y = -0.45)
-        
-    }
-    
-    if (grepl("Occupancy", map_title)) {
-      
-      if (grepl("Wood Stork", map_title)) {
-        wost_shp <- st_read(dsn = wost_path) %>%
-          st_transform(crs = 26917)
-        wost_st_valid <- st_is_valid(wost_shp)
-        if (all(wost_st_valid, TRUE)) {
-          wost_shp <- wost_shp
-        } else {
-          wost_shp <- st_make_valid(wost_shp)}
-        
-        # crop wost colonies
-        wost.crop  <- st_crop(wost_shp, aoi.shp)
-        
-        map_plot <- map_plot +
-          geom_sf(data = wost.crop, color = "black", lwd = 4) +
-          geom_sf(data = wost.crop, colour = "orange", lwd = 2) +
-          coord_sf(expand = F) +
-          theme(plot.margin = margin(4,5,1,1, unit = "cm"))
-        
-        combined_plot <- ggdraw(map_plot) +
-          draw_plot(full_legend, x = 0.405, y = 0.0, vjust = 0.02) +
-          draw_label(map_title, x = 0.5, y = .95, vjust = 0, hjust = 0.5,
-                     fontfamily = "serif", size = 30)# +
-          #draw_plot(arrow, scale = 0.025, x = 0.085, y = -0.45)
-      } else {
-        
-        map_plot <- map_plot +
-          theme(plot.margin = margin(4,5,1,1, unit = "cm"))
-        
-        combined_plot <- ggdraw(map_plot) +
-          draw_plot(full_legend, x = 0.405, y = 0.0, vjust = 0.02) +
-          draw_label(map_title, x = 0.5, y = .95, vjust = 0, hjust = 0.5,
-                     fontfamily = "serif", size = 30) #+
-          #draw_plot(arrow, scale = 0.025, x = 0.085, y = -0.45)
-      }}
-    ggsave(output_file_name, combined_plot, height = 8.5, width = 11,
-           units = "in", dpi = 300, scale = 2)
-  } else {
-  
-  # ----------
-  # Format for Portrait layout
-  if (grepl("Snail Kite", map_title)) {
-    # add margin to PLOT
-    map_plot <- map_plot +
-      theme(plot.margin = margin(4, 7.9, 2, 2, unit = "cm"))
-    
-    combined_plot <- ggdraw(map_plot) +
-      draw_plot(full_legend, x = 0.31, y = 0.0, vjust = 0.02) +
-      draw_label(map_title, x = 0.5, y = .95, vjust = 0, hjust = 0.5,
-                 fontfamily = "serif", size = 30) +
-      draw_plot(arrow, scale = 0.025, x = -0.05, y = -0.44)
-  }
-  
-  if (grepl("Apple Snail", map_title)) {
-    # add margin to map_plot
-    map_plot <- map_plot +
-      theme(plot.margin = margin(4, 7.9, 2, 2, unit = "cm"))
-    
-    combined_plot <- ggdraw(map_plot) +
-      draw_plot(full_legend, x = 0.33, y = 0.0, vjust = 0.02) +
-      draw_label(map_title, x = 0.5, y = .95, vjust = 0, hjust = 0.5,
-                 fontfamily = "serif", size = 30) +
-      draw_plot(arrow, scale = 0.025, x = -0.05, y = -0.44)
-  }
-  
-  if (grepl("Days Since Drydown", map_title)) {
-    map_plot <- map_plot +
-      theme(plot.margin = margin(0,7.9,0,1, unit = "cm"))
-    
-    combined_plot <- ggdraw(map_plot) +
-      draw_plot(full_legend, x = 0.405, y = 0.0, vjust = 0.02) +
-      draw_label(map_title, x = 0.5, y = .95, vjust = 0, hjust = 0.5,
-                 fontfamily = "serif", size = 30) +
-      draw_plot(arrow, scale = 0.025, x = 0.064, y = -0.399)
-  }
-  
-  if (grepl("Alligator", map_title)) {
-      map_plot <- map_plot +
-        theme(plot.margin = margin(0,7.9,0,1, unit = "cm"))
-    
-      combined_plot <- ggdraw(map_plot) +
-    draw_plot(full_legend, x = 0.405, y = 0.0, vjust = 0.02) +
-    draw_label(map_title, x = 0.5, y = .95, vjust = 0, hjust = 0.5,
-                   fontfamily = "serif", size = 30) +
-    draw_plot(arrow, scale = 0.025, x = 0.064, y = -0.399)
-    }
-  
-  if (grepl("Occupancy", map_title)) {
-    
-    if (grepl("Wood Stork", map_title)) {
-      wost_shp <- st_read(dsn = wost_path) %>%
-        st_transform(crs = 26917)
-      wost_st_valid <- st_is_valid(wost_shp)
-      if (all(wost_st_valid, TRUE)) {
-        wost_shp <- wost_shp
-      } else {
-        wost_shp <- st_make_valid(wost_shp)}
-      
-      # crop wost colonies
-      wost.crop  <- st_crop(wost_shp, aoi.shp)
-      
-      map_plot <- map_plot +
-        geom_sf(data = wost.crop, color = "black", lwd = 4) +
-        geom_sf(data = wost.crop, colour = "orange", lwd = 2) +
-        coord_sf(expand = F) +
-        theme(plot.margin = margin(0,7.9,0,1, unit = "cm"))
-      
-      combined_plot <- ggdraw(map_plot) +
-        draw_plot(full_legend, x = 0.405, y = 0.0, vjust = 0.02) +
-        draw_label(map_title, x = 0.5, y = .95, vjust = 0, hjust = 0.5,
-                   fontfamily = "serif", size = 30) +
-        draw_plot(arrow, scale = 0.025, x = 0.064, y = -0.399)
+  #Add Woodstork colonies if species if Wood Stork in map title
+  if (grepl("Wood Stork", map_title)) {
+    wost_shp <- st_read(dsn = wost_path) %>%
+      st_transform(crs = 26917)
+    wost_st_valid <- st_is_valid(wost_shp)
+    if (all(wost_st_valid, TRUE)) {
+      wost_shp <- wost_shp
     } else {
-    
-    map_plot <- map_plot +
-      theme(plot.margin = margin(0,7.9,0,1, unit = "cm"))
-    
-    combined_plot <- ggdraw(map_plot) +
-      draw_plot(full_legend, x = 0.405, y = 0.0, vjust = 0.02) +
-      draw_label(map_title, x = 0.5, y = .95, vjust = 0, hjust = 0.5,
-                 fontfamily = "serif", size = 30) +
-      draw_plot(arrow, scale = 0.025, x = 0.064, y = -0.399)
-  }}
-  
-## SAVE FINAL PLOT ##  
-  ggsave(output_file_name, combined_plot, height = 11, width = 8.5,
-      units = "in", dpi = 300, scale = 2)
-  }
-}
+      wost_shp <- st_make_valid(wost_shp)}
 
+    # crop wost colonies
+    wost.crop  <- st_crop(wost_shp, aoi.shp)
+
+    map_plot <- map_plot +
+      geom_sf(data = wost.crop, color = "black", lwd = 4) +
+      geom_sf(data = wost.crop, colour = "orange", lwd = 2) +
+      coord_sf(expand = F)
+  }
+  
+  ## FORMAT FINAL PLOT##
+  # combines main plot with legends and saves
+  
+  # If landscape = TRUE
+  if (landscape) {
+  
+    # combine plot and legend: the NULL plot allows control of the distance
+    # between the plot and legend by setting rel_widths()
+    combined_plot <- plot_grid(map_plot, NULL, full_legend,
+                        rel_widths = c(4, -.4, 1), ncol = 3)
+    
+    # Save as full page landscape PDF 
+    ggsave(output_file_name, combined_plot, height = 8.5, width = 11,
+         units = "in", dpi = 300, scale = 2)
+  
+    } else { # If portrait (landscape = FALSE)
+    
+      # combine plot and legend: the NULL plot allows control of the distance
+      # between the plot and legend by setting rel_widths()
+      combined_plot <- plot_grid(map_plot, NULL, full_legend,
+                                 rel_widths = c(4, 0, 1), ncol = 3)
+      
+      # Save as full page portrait PDF 
+      ggsave(output_file_name, combined_plot, height = 11, width = 8.5,
+             units = "in", dpi = 300, scale = 2)
+    }
+}
