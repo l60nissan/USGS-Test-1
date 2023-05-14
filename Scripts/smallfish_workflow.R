@@ -14,6 +14,8 @@
 #
 # Caitlin Hackett chackett@usgs.gov
 # ------------------------------------------------------------------------------
+print(paste0("INFO [", Sys.time(), "] Running Workflow"))
+
 # Load packages
 library(tidyverse)
 library(sf)
