@@ -8,7 +8,6 @@
 #    AOIs (ex.LOSOM, COP,COP + EVER areas) and Landscape best for square or wide 
 #    AOIs (ex. WERP))
 # ------------------------------------------------------------------------------
-print(paste0("INFO [", Sys.time(), "] Loading Workflow inputs"))
 
 # ------------------------------------------------------------------------------
 # 1) Scenarios
@@ -88,9 +87,11 @@ sparrow_output_path <- "../data_release_develop/CSSS/"
 # ------------------------------------------------------------------------------
 # Area of Interest (AOI)
 aoi_path <- "../../GIS_Library/WERP_AOI_2023_utm/WERP_AOI_2023_utm.shp"
-
+#aoi_path <- "../../GIS_Library/rest_run_boundary/rest_run_boundary.shp"
 # ------------------------------------------------------------------------------
 # 4) Set output as Landscape or portrait
+# portrait is best for long AOIs (ex.LOSOM, COP,COP + EVER areas)
+# Landscape best for square or wide AOIs (ex. WERP))
 #     Landscape: landscape <- TRUE
 #     Portrait:  landscape <- FALSE
 # ------------------------------------------------------------------------------
