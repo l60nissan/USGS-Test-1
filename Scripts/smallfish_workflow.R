@@ -22,12 +22,19 @@ library(raster)
 # be sure to usee dplyr::select() if using the function
 
 # Source dependency scripts
+print(paste0("INFO [", Sys.time(), "] Sourcing Dependency Scripts"))
+
+print(paste0("INFO [", Sys.time(), "] Sourcing map functions"))
 source("../restoration_runs/Scripts/smallfish_map_functions.R")
+
+print(paste0("INFO [", Sys.time(), "] Sourcing barplot functions"))
 source("../restoration_runs/Scripts/smallfish_barplot_functions.R")
+
+print(paste0("INFO [", Sys.time(), "] Sourcing process definitions"))
 source("../restoration_runs/Scripts/process_definitions.R")
 
 # Defined file paths for shapefiles
-print(paste0("INFO [", Sys.time(), "] Loading Shapefile Input Paths"))
+print(paste0("INFO [", Sys.time(), "] Sourcing shapefile input paths"))
 source("./Scripts/input_paths.R")
 
 ## -----------------------------------------------------------------------------
