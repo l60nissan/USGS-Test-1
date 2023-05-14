@@ -3,6 +3,9 @@
 ## -----------------------------------------------------------------------------
 print(paste0("INFO [", Sys.time(), "] Small Fish :: START"))
 
+# Install any necessary packages that are not yet installed
+source("./Scripts/workflow_packages.R")
+
 # Source inputs/definitions
 print(paste0("INFO [", Sys.time(), "] Loading Workflow inputs"))
 source("./Scripts/workflow_inputs.R") # workflow inputs
