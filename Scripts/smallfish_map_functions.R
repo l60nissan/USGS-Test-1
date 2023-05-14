@@ -220,9 +220,12 @@ FishMap <- function(
       # Format axis titles
       axis.title = element_blank(), # Remove axis titles
       
-      # Set margins for plot - wider on right side to make space fore legend
-      plot.margin = margin(0,1,0,1, unit = "cm"))
-
+      # Format title 
+      plot.title = element_text(family = "sans", size = 30),
+      
+      # Format plot margins
+      plot.margin = margin(1.5, 0, 1.5, 1.5, unit = "cm"))
+  
   #-----------------
   # Get North Arrow for Map
   arrow <- north2_get_arrow(symbol = 12)
