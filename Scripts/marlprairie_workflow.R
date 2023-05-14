@@ -3,6 +3,7 @@
 #
 # Caitlin Hackett chackett@usgs.gov
 ## -----------------------------------------------------------------------------
+print(paste0("INFO [", Sys.time(), "] Running Workflow"))
 
 # Load packages
 library(tidyverse)
@@ -10,6 +11,8 @@ library(sf)
 library(raster)
 
 # Source dependancy scripts
+print(paste0("INFO [", Sys.time(), "] Sourcing Dependency Scripts"))
+
 # Functions to process data nd make bar plots
 source("./Scripts/marlprairie_process_function.R")
 
