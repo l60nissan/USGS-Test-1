@@ -249,29 +249,28 @@ FishMap <- function(
   #-----------------
   # Format Final Plot
   
+  # If landscape = TRUE
   if (landscape) {
-      combined_plot <- ggdraw(fish_plot) +
-        draw_plot(full_legend, x = 0.31, y = 0.0, vjust = 0.02) +
-        draw_label(map_title, x = 0.5, y = .95, vjust = 0, hjust = 0.5,
-                   fontfamily = "serif", size = 30) +
-        draw_plot(arrow, scale = 0.025, x = 0.085, y = -0.45)
-
-      ggsave(output_file_name, combined_plot, height = 8.5,
-             width = 11, units = "in", dpi = 300, scale = 2)
-      
-  } else {
-
-  # combine main plot with arrow and add title
-  combined_plot <- ggdraw(fish_plot) +
-    draw_label(map_title, x = 0.5, y = .95, vjust = 0, hjust = 0.5,
-               fontfamily = "serif", size = 30) +
-    draw_plot(arrow, scale = 0.025, x = 0.064, y = -0.397)
-  
-  #-----------------
-  # Save Final Plot
-  
-  ggsave(output_file_name, combined_plot, height = 11,
-         width = 8.5, units = "in", dpi = 300, scale = 2)
+    
+    # combine plot and legend: the NULL plot allows control of the distance
+    # between the plot and legend by setting rel_widths()
+    combined_plot <- plot_grid(map_plot, NULL, full_legend,
+                               rel_widths = c(4, -.4, 1), ncol = 3)
+    
+    # Save as full page landscape PDF 
+    ggsave(output_file_name, combined_plot, height = 8.5, width = 11,
+           units = "in", dpi = 300, scale = 2)
+    
+  } else { # If portrait (landscape = FALSE)
+    
+    # combine plot and legend: the NULL plot allows control of the distance
+    # between the plot and legend by setting rel_widths()
+    combined_plot <- plot_grid(map_plot, NULL, full_legend,
+                               rel_widths = c(4, 0, 1), ncol = 3)
+    
+    # Save as full page portrait PDF 
+    ggsave(output_file_name, combined_plot, height = 11, width = 8.5,
+           units = "in", dpi = 300, scale = 2)
   }
 }
   
