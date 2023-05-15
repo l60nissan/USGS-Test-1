@@ -69,6 +69,9 @@ dsd_cropped <- FALSE
 
 marl_parent_path <- "../LOSOM/Data/LOSOM_Round1_2021_05/Model Output/MarlPrairie/MarlPrairie_Data/MarlPrairie_Data/"
 marl_output_path <- "../data_release_develop/Marl_Prairie/"
+# Marl Prairie Shapefile
+# This can be any MP_scores.shp file from the target restoration run output
+mp_shp <- "../LOSOM/Data/LOSOM_Round1_2021_05/Model Output/MarlPrairie/MarlPrairie_Data/MarlPrairie_Data/depth_AA/MP_Scores.shp"
 
 ## ----------
 # Small Fish 
