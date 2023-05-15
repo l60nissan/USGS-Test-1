@@ -10,7 +10,8 @@ packages <- c("tidyverse",
               "sf",
               "ggsn",
               "ncdf4", 
-              "raster")
+              "raster",
+              "ggpp")
 not_installed <- packages[!(packages %in% installed.packages()[,"Package"])]
 not_installed
 if (length(not_installed)) {
