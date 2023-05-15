@@ -10,6 +10,7 @@ library(RColorBrewer)
 library(ggnewscale)
 library(sf)
 library(ggsn)
+library(ggpp)
 
 ## -----------------------------------------------------------------------------
 ## Function for map North arrow
@@ -166,7 +167,7 @@ RestorationRunMap <- function(
       legend.key.height = unit(legend_scale_factor*8, "mm"),
       legend.key.width = unit(legend_scale_factor*8, "mm"),
       legend.key = element_rect(colour = "black",
-                                size = legend_scale_factor*0.8),
+                                linewidth = legend_scale_factor*0.8),
       legend.title.align = 0.0,
       legend.margin = margin(0,0,0,0, unit = "mm"),
       text = element_text(family = "sans", size = legend_scale_factor*19),
@@ -184,7 +185,7 @@ RestorationRunMap <- function(
       legend.key.height = unit(legend_scale_factor*8, "mm"),
       legend.key.width = unit(legend_scale_factor*8, "mm"),
       legend.key = element_rect(colour = "black",
-                                size = legend_scale_factor*0.8),
+                                linewidth = legend_scale_factor*0.8),
       legend.title.align = 0.0,
       legend.margin = margin(15,0,0,0, unit = "mm"),
       
