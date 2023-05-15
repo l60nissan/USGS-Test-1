@@ -289,7 +289,8 @@ RestorationRunMap <- function(
   arrow_coord <- tibble(x = as.numeric(aoi_extent[1] + 4000),
                         y = as.numeric(aoi_extent[3] + 3000),
                         grob = list(arrow_grob),
-                        !!scenario_col := scale_y,
+                        !!scenario_col := factor(scale_y,
+                                                 levels = levels(df_ind[[scenario_col]])),
                         !!year_col := scale_x)
   
   # Plot arrow on map
