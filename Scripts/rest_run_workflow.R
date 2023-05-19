@@ -364,7 +364,7 @@ for (n in 1:length(sp_string)) { # This is to accomodate multiple
     minyear <- as.numeric(min(percent_diff$Year))
     startyr <- minyear + apsn_yr_trim
     exclude_yrs <- seq(minyear, startyr - 1, 1)
-    percent_diff <- percent_diff[percent_diff$Year != exclude_yrs,]
+    percent_diff <- subset(percent_diff, !(Year %in% exclude_yrs))
   }
   
   #-----------------
