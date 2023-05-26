@@ -324,8 +324,11 @@ RestorationRunMap <- function(
   if (landscape) {
     
     if (grepl("Apple Snail", map_title)) {
-      combined_plot <- plot_grid(map_plot, NULL, full_legend,
-                                 rel_widths = c(4,-1, 1), ncol = 3)
+
+      # This is the one sent to Allison
+      combined_plot <- cowplot::plot_grid(map_plot, NULL, full_legend,
+                           rel_widths = c(1, -.35, 0.5), ncol = 3)
+
       } else {
   
         # combine plot and legend: the NULL plot allows control of the distance
