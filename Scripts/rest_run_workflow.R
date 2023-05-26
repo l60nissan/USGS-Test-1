@@ -379,7 +379,16 @@ for (n in 1:length(sp_string)) { # This is to accomodate multiple
     print(paste0("INFO [", Sys.time(), "] Percent Difference Data CSV filename: ",
                  diff_output_filename))
     write.csv(percent_diff, diff_output_filename, row.names = FALSE)
-  
+    
+    # Set levels of percent_diff to match alt_names and base_names order that
+    # is set in workflow_inputs.R
+    # Create vector of levels
+    diff_levels <- apply(expand.grid(alt_names, base_names),
+                                        1, paste, collapse = "-")
+    # Set factor levels
+    percent_diff$Scenarios <- factor(percent_diff$Scenarios,
+                                     levels = c(diff_levels))
+
     # Make Percent diffrence bar plot
     # Define inputs for function PerDiffPlot()
     x_var <- year_str
