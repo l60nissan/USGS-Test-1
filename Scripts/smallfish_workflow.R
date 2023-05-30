@@ -27,13 +27,13 @@ library(raster)
 print(paste0("INFO [", Sys.time(), "] Sourcing Dependency Scripts"))
 
 print(paste0("INFO [", Sys.time(), "] Sourcing map functions"))
-source("../restoration_runs/Scripts/smallfish_map_functions.R")
+source("./Scripts/smallfish_map_functions.R")
 
 print(paste0("INFO [", Sys.time(), "] Sourcing barplot functions"))
-source("../restoration_runs/Scripts/smallfish_barplot_functions.R")
+source("./Scripts/smallfish_barplot_functions.R")
 
 print(paste0("INFO [", Sys.time(), "] Sourcing process definitions"))
-source("../restoration_runs/Scripts/process_definitions.R")
+source("./Scripts/process_definitions.R")
 
 # Defined file paths for shapefiles
 print(paste0("INFO [", Sys.time(), "] Sourcing shapefile input paths"))
@@ -260,6 +260,15 @@ title <- "Total Fish Density"
 x_lab <- "Year"
 min_limit <- plyr::round_any(min(daily_diff_bar[y_var]), 5, f = floor)
 max_limit <- plyr::round_any(max(daily_diff_bar[y_var]), 5, f = ceiling)
+
+# Set levels of daily_diff_bar to match alt_names and base_names order that
+# is set in workflow_inputs.R
+# Create vector of levels
+diff_levels <- apply(expand.grid(alt_names, base_names),
+                     1, paste, collapse = "-")
+# Set factor levels
+daily_diff_bar$Scenario <- factor(daily_diff_bar$Scenario,
+                                 levels = c(diff_levels))
 
 # Make bar plot for alt vs both baselines
 #a <- 1
