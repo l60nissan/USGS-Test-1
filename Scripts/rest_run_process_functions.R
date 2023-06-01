@@ -169,9 +169,17 @@ ProcessOutput <- function(
   start_year <- as.numeric(format(start_date, format = "%Y"))
   
   if (daily_output) {
-    end_year <- start_date + (time_length - 1)
+    if (grepl(dsd_string, base_file)) { # If DSD & daily output
+      # Get days since start date
+      days_ss <- nc$dim$t$vals
+      
+      # Get dates for all layers
+      band_years <- start_date + days_ss
+    } else { # If applesnail & daily output
+      end_year <- start_date + (time_length - 1)
     
-    band_years <- seq(start_date, end_year, 1)
+      band_years <- seq(start_date, end_year, 1)
+      }
     band_years <- paste0("X", band_years)
     #BAND_YEARS
   } else {
