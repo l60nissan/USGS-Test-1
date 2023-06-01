@@ -104,22 +104,18 @@ cum_fish_by_date$DATE <- as.Date(cum_fish_by_date$DATE)
 # Set breaks for dates that will be displayed on x-axis of plot
 # create vector of all years that have output
 fishyears <- unique(fish$YEAR)
-fishyears 
+fishyears
 
 # Create breaks for every other year
-yearbreaks <- seq(fishyears[1],fishyears[length(fishyears)], 2)
+yearbreaks <- seq(fishyears[1],fishyears[length(fishyears)], 5)
 yearbreaks
-ylength <- length(yearbreaks) #length of vector containing every other year
 
-# Add day-month values to years to format axis labels
-# Last year of axis labels should be 12-31-"last year of data".
-if (last(yearbreaks) == last(fishyears)) {
-  datebreaks <- paste0(yearbreaks[1:(ylength - 1)], "-01-01")
-  dbreaks <- as.Date(c(datebreaks, paste0(yearbreaks[ylength], "-12-31")))
-} else {
-  datebreaks <- paste0(yearbreaks[1:ylength], "-01-01")
-  dbreaks <- as.Date(c(datebreaks, paste0((yearbreaks[ylength] + 1), "-12-31")))
-  }
+# Add another 5 year interval so x axis will plot properly
+yearbreaks <- c(yearbreaks, (last(yearbreaks) + 5))
+yearbreaks
+
+# Make the break intervals dates
+dbreaks <- as.Date(paste0(yearbreaks, "-01-01"))
 dbreaks
 
 # Set palette
@@ -133,15 +129,9 @@ full_pal <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2",
               "#D55E00", "#CC79A7", "#000000")
 line_pal <- full_pal[1:ncolor]
 
-
-# If line overlap, this will change line width. - leaving as example but should
-# not be necessary for most processing
-# - Make column that marks linetype befcause PA22 and NA22f do not show up on
-# graph because values are very close to PA25 and NA25f
-#cum_fish_by_date$line_type <- 0
-#cum_fish_by_date[cum_fish_by_date$Scenario == "PA22", 4] <- 1
-#cum_fish_by_date[cum_fish_by_date$Scenario == "NA22f", 4] <- 1
-#cum_fish_by_date$line_type <- as.factor(cum_fish_by_date$line_type)
+# Set min and max dates for x axis
+min_date <- min(cum_fish_by_date$DATE)
+max_date <- max(cum_fish_by_date$DATE)
 
 #-----------------
 # Make plot
@@ -149,22 +139,22 @@ print(paste0("INFO [", Sys.time(), "] Making fish line graph"))
 cum_fish_plot <- ggplot(cum_fish_by_date) + 
   
   # Set the line geometry
-  geom_line(aes(x = DATE, y = totfish_cum, color = Scenario), 
-            linewidth = 1.5) +
-                # This can be added within aes() if linetype needs to be defined
-                # to visualize overlapping lines - not necessary for most runs
-                # colour = Scenario:line_type, linewidth = Scenario:line_type)) + 
-  
+  geom_line(aes(x = DATE, y = totfish_cum, color = Scenario,
+                linetype = Scenario), linewidth = 1) +
+
   # Set line colors
   scale_color_manual(name = "Scenario", values = line_pal,
                      labels = c(scenario_names)) +
+  scale_x_date(breaks = dbreaks,
+               limits = c(min_date, max_date),
+               labels = yearbreaks
+               ) +
   
   # Set x and y axis labels and title
-  ylab(label = "Average Daily Cumulative Density (fish/m2)") +
+  ylab(label = expression("Average Daily Cumulative Density (fish/m"^2*")")) +
   xlab(label = "Date") +
   ggtitle("Cumulative Small Fish Density") +
-  scale_x_date(breaks = dbreaks) +
-  
+
   # Set theme elements
   theme(axis.title.x = element_text(size = 15),
         axis.title.y = element_text(size = 15),
