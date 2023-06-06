@@ -15,6 +15,15 @@ library(ggsn)
 library(shadowtext)
 
 ## -----------------------------------------------------------------------------
+# Set map Extent
+# Marl prairie Map extent - Always the same extent for Marl Prairie
+# focuses on Cape Sable Seaside Sparrow Subpopulations in Everglades National Park 
+marl_map_extent <- c(xmin = 485489.89,
+                     xmax = 554055.08,
+                     ymin = 2791119.88,
+                     ymax = 2850143.30)
+
+## -----------------------------------------------------------------------------
 # Function to build marl prairie map 
 ## -----------------------------------------------------------------------------
 
