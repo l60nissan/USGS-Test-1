@@ -1,17 +1,17 @@
-#############################################
-# Function to process MArl Prairie Output
-#
-# Caitlin Hackett chackett@usgs.gov
-#############################################
+## -----------------------------------------------------------------------------
+# Function to process Marl Prairie Output
+## -----------------------------------------------------------------------------
 
+# Load packages
 library(tidyverse)
 library(sf)
 library(raster)
 
-MarlProcess <- function(base_file,
-                        alt_file,
-                        mp_file,
-                        subpop_file){
+MarlProcess <- function(base_file, # Baseline netcdf to process
+                        alt_file,  # Alternative netcdf to process
+                        mp_file,   # shapefile of marl prairie output
+                        subpop_file){ # shapefile that has Cape Sable
+                                      # seaside sparrow subpopulation areas
   
   ## Define Strings for Function ----
   rsm_string <- "RSM"
