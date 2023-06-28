@@ -2,99 +2,105 @@
 # Inputs for workflow
 # -Set by user
 # 1) Scenarios
-# 2) Paths to species input/ouput locations & TRUE/FALSE if those data are cropped
+# 2) Paths to species input/output locations & TRUE/FALSE if those data are cropped
 # 3) Path to area of interest & desired extent for output maps
-# 4) choose if output should belandscape or portrait (portrait is best for long
-#    AOIs (ex.LOSOM, COP,COP + EVER areas) and Landscape best for square or wide 
-#    AOIs (ex. WERP))
+# 4) choose if output should be landscape or portrait (portrait is best for long
+#    AOIs (e.g., LOSOM, COP,COP + EVER areas) and Landscape best for square or wide 
+#    AOIs (e.g., WERP))
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 # 1) Scenarios
-#   - Order of alternative and baseline names does not matter (ex. does not need
-#     to be in alphabetical order)
-#   - Alternative and basline names should match the format of the names in 
-#     in the file path (ex. Scenario AA must be named as "AA" not "aa")
+#   - Order of alternative and baseline scenario names. Scenario names should 
+#     be listed in the order the user wants the scenario names listed in the 
+#     figure legends. Items will be listed in legend in the same order as 
+#     `c(alt_names, base_names)`
+#   - Alternative and baseline names should match the format of the names in 
+#     in the file path (e.g., Scenario AA must be named as "AA" not "aa")
 # ------------------------------------------------------------------------------
 # Set Alternate scenario names
-alt_names <- c("AA", "BB", "CC", "DD", "EE1", "EE2")
+alt_names <- c("WALT1R")
 alt_names
 
 
 # Set Baseline scenario names
-base_names <- c("ECBr", "NA25")
+base_names <- c("WECBRR")
 base_names
 
 # ------------------------------------------------------------------------------
-# 2 ) Input path, output, path, and cropped info for each species
+# 2 ) Input path, output path, and cropped info for each species
+# Input and Output paths default to "Data" and "Output" folders within the
+# repository but the user may change these paths if necessary
+# It is advised to open model outputs to target variable to ensure the `cropped`
+# object is set correctly
 # ------------------------------------------------------------------------------
 
 ## ----------
 # Alligator
 
-gator_parent_path <- "../WERP/JEM_Alligator_Production_Probability_Model_Data/JEM_Alligator_Production_Probability_Model_Data/"
-gator_output_path <- "../data_release_develop/Alligator/"
+gator_parent_path <- "./Data/Alligator/"
+gator_output_path <- "./Output/Alligator/"
 gator_cropped <- FALSE
 
 ## ----------
 # EverWaders
 
-waders_parent_path <- "../LOSOM/Data/LOSOM_Round3_2021_12/Model Output/EverWaders/JEM_EverWaders_Data/JEM_EverWaders_Data/"
-waders_output_path <- "../data_release_develop/waders/"
+waders_parent_path <- "./Data/EverWaders/"
+waders_output_path <- "./Output/EverWaders/"
 waders_cropped <- FALSE
 
 ## ----------
 # Apple Snail
 
-apsn_parent_path <- NULL
-apsn_output_path <- "../data_release_develop/"
+apsn_parent_path <- "./Data/AppleSnail/"
+apsn_output_path <- "./Output/AppleSnail/"
 apsn_cropped <- FALSE
 
 ## ----------
 # Snail Kite
 
-snki_parent_path <- NULL
-snki_output_path <- "../data_release_develop/"
+snki_parent_path <- "./Data/SnailKite/"
+snki_output_path <- "./Output/SnailKite/"
 snki_cropped <- FALSE
 
 ## ----------
 # Days Since Dry
 
-dsd_parent_path <- NULL
-dsd_output_path <- "../data_release_develop/"
+dsd_parent_path <- "./Data/DaysSinceDry/"
+dsd_output_path <- "./Output/DaysSinceDry/"
 dsd_cropped <- FALSE
 
 ## ----------
 # Marl Prairie 
+# No option for cropped needed
 
-marl_parent_path <- "../LOSOM/Data/LOSOM_Round1_2021_05/Model Output/MarlPrairie/MarlPrairie_Data/MarlPrairie_Data/"
-marl_output_path <- "../data_release_develop/Marl_Prairie/"
-# Marl Prairie Shapefile
-# This can be any MP_scores.shp file from the target restoration run output
-mp_shp <- "../LOSOM/Data/LOSOM_Round1_2021_05/Model Output/MarlPrairie/MarlPrairie_Data/MarlPrairie_Data/depth_AA/MP_Scores.shp"
+marl_parent_path <- "./Data/MarlPrairie/"
+marl_output_path <- "./Output/MarlPrairie/"
 
 ## ----------
 # Small Fish 
+# No option for cropped needed
 
-# Path should point to "FISH_TIMESERIES_PSU.csv"
-fish_path <- "../LOSOM/Data/LOSOM_Round1_2021_05/Model Output/Fish/JEM_Small_Fish_Density_Model_Data_SA/JEM_Small_Fish_Density_Model_Data_SA/FISH_TIMESERIES_PSU.csv"
-fish_output_path <- "../data_release_develop/smallfish/"
+fish_parent_path <- "./Data/SmallFish/"
+fish_output_path <- "./Output/SmallFish/"
 
 ## ----------
 # Sparrow Helper
-sparrow_parent_path <- "../LOSOM/Data/LOSOM_Round1_2021_05/Model Output/CSSSHelper/JEM_Sparrow_Helper_Data/JEM_Sparrow_Helper_Data/"
-sparrow_output_path <- "../data_release_develop/CSSS/"
+# No option for cropped needed
+
+sparrow_parent_path <- "./Data/CSSSHelper/"
+sparrow_output_path <- "./Output/CSSSHelper/"
 
 # ------------------------------------------------------------------------------
 # 3) Area of interest and desired extent for maps
 # ------------------------------------------------------------------------------
 # Area of Interest (AOI)
-aoi_path <- "../../GIS_Library/WERP_AOI_2023_utm/WERP_AOI_2023_utm.shp"
-#aoi_path <- "../../GIS_Library/rest_run_boundary/rest_run_boundary.shp"
+aoi_path <- "./GIS/WERP_AOI_2023_utm/WERP_AOI_2023_utm.shp"
+
 # ------------------------------------------------------------------------------
 # 4) Set output as Landscape or portrait
-# portrait is best for long AOIs (ex.LOSOM, COP,COP + EVER areas)
-# Landscape best for square or wide AOIs (ex. WERP))
+# portrait is best for long AOIs (e.g., LOSOM, COP,COP + EVER areas)
+# Landscape best for square or wide AOIs (e.g., WERP))
 #     Landscape: landscape <- TRUE
 #     Portrait:  landscape <- FALSE
 # ------------------------------------------------------------------------------
