@@ -17,4 +17,3 @@ wost_path <- "./GIS_Library/WOST_colonies/WOST_colonies_JB.shp"
 
 # CSSS subpopulation - includes AX
 subpop_path <- "./GIS_Library/CSSS_subpopulations_wAX/CSSS_subpopulations_wAX.shp" 
-
