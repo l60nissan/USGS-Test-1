@@ -325,7 +325,7 @@ PerDiffPlot <- function(df, # dataframe to plot
     geom_bar(stat = "identity", position = "dodge",
              width = 0.7, colour = "black") + 
     labs(y = y_lab, x = x_lab, title = title,
-         fill = "Percent Change \nfrom Baseline:") +
+         fill = "Percent Change \nfrom Baseline") +
     scale_y_continuous(limits = c(min_limit, max_limit)) +
     theme(axis.title.x = element_text(size = 15),
           axis.title.y = element_text(size = 15),
@@ -359,7 +359,7 @@ PerDiffPlotAlt <- function(df, # dataframe to plot
              width = 0.7, colour = "black") + 
     scale_fill_manual(values = bar_pal) +
     labs(y = y_lab, x = x_lab, title = title,
-         fill = "Percent Change \nfrom Baseline:") +
+         fill = "Percent Change \nfrom Baseline") +
     scale_y_continuous(limits = c(min_limit, max_limit)) +
     theme(axis.title.x = element_text(size = 15),
           axis.title.y = element_text(size = 15),
