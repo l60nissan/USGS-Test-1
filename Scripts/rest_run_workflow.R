@@ -211,11 +211,11 @@ for (n in 1:seq_along(sp_string)) { # This is to accommodate multiple
   # - Calculate for every species in the sp_string within loop n
   # - if mask is applied, it masks the entire stack.
 
-  # Stack NetCDF percent difference calculations and barplots
+  # Stack NetCDF percent difference calculations and bar plots
   # Mask is applied if cropped = FALSE
   
   #-----------------
-  # Stack/mask baseline scenarios and calculate cell stats (landcape means)
+  # Stack/mask baseline scenarios and calculate cell stats (landscape means)
   base_list_masked <- list()
   for (b in 1:seq_along(base_list)) {
     b_name <- str_extract_all(base_list[b], all_scenario_names)[[1]]
@@ -310,7 +310,7 @@ for (n in 1:seq_along(sp_string)) { # This is to accommodate multiple
       
       #-----------------
       # Calculate percent change 
-      # Calculate percent change of landscale means
+      # Calculate percent change of landscape means
       # For daily output, calculate percent change of landscape means,
       # and then averages the daily percent change values for each year
       print(paste0("INFO [", Sys.time(), "] Calculating Percent Change :: ",
@@ -320,9 +320,9 @@ for (n in 1:seq_along(sp_string)) { # This is to accommodate multiple
                                   alt_vals, a_name, base_vals, b_name)
         
       #-----------------
-      # Add data to percent diff dataframe - 
+      # Add data to percent diff data frame - 
       # if percent diff was calculated during data processing,
-      # bind rows to one dataframe
+      # bind rows to one data frame
       print(paste0("INFO [", Sys.time(), "] Adding Percent Difference :: ALT_",
                    a_name, " minus BASE_", b_name))
       if (!is.null(pchange)) {
@@ -384,7 +384,7 @@ for (n in 1:seq_along(sp_string)) { # This is to accommodate multiple
     percent_diff$Scenarios <- factor(percent_diff$Scenarios,
                                      levels = c(diff_levels))
 
-    # Make Percent diffrence bar plot
+    # Make Percent difference bar plot
     # Define inputs for function PerDiffPlot()
     x_var <- year_str
     y_var <- perdiff_var_str
@@ -445,7 +445,7 @@ for (n in 1:seq_along(sp_string)) { # This is to accommodate multiple
       ggsave(diff_plot_filename, diff_plot_a,
              width = bar_width, height = bar_height, units = bar_units,
              dpi = bar_dpi, scale = bar_scale)
-    } # closes base barplots
+    } # closes base bar plots
   } # closes bar plots if percent diff is not null
 } # closes n
 
