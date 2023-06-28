@@ -31,10 +31,10 @@ all_files <- list.files(path = parent_path,
                         recursive = TRUE, full.names = TRUE)
 all_files
 
-# Read in Target data and combine to one dataframe
+# Read in Target data and combine to one data frame
 print(paste0("INFO [", Sys.time(), "] Reading Sparrow Helper Data"))
 hydro_percent <- data.frame()
-for (f in 1:length(all_files)) {
+for (f in 1:seq_along(all_files)) {
   
   # Extract scenario name from file
   name <- str_extract_all(all_files[f], all_scenario_names)[[1]]
@@ -45,7 +45,7 @@ for (f in 1:length(all_files)) {
   # Add column with scenario name
   hypd_per$Scenario <- name
   
-  # Bind rows together to generate one dataframe with all data
+  # Bind rows together to generate one data frame with all data
   hydro_percent <- bind_rows(hydro_percent, hypd_per)
 }
 
@@ -53,7 +53,7 @@ for (f in 1:length(all_files)) {
 hydro_percent <- pivot_longer(hydro_percent, cols = c(2:7))
 
 
-# rename and relevel subpopulation names
+# rename and re-level subpopulation names
 hydro_percent$Scenario <- factor(hydro_percent$Scenario,
                                  levels = c(alt_names, base_names))
 hydro_percent$name <- factor(hydro_percent$name,
@@ -64,10 +64,10 @@ pops <- levels(hydro_percent$name)
 bar_pal <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442",
              "#0072B2", "#D55E00", "#CC79A7", "#000000")
 
-# Generate barplot for each subpopulation
-for (p in 1:length(pops)) {
+# Generate bar plot for each subpopulation
+for (p in 1:seq_along(pops)) {
   print(paste0("INFO [", Sys.time(), "] Generating Plot for Subpop ", pops[p]))
-  plot_data <- hydro_percent[hydro_percent$name == pops[p],]
+  plot_data <- hydro_percent[hydro_percent$name == pops[p], ]
   
   scale <- 3
 
@@ -75,20 +75,20 @@ csss_plot <- ggplot(data = plot_data,
                     aes(x = as.factor(Date), y = value, fill = Scenario)) +
   geom_bar(stat = "identity", position = "dodge",
            width = 0.7, colour = "black") +
-  scale_fill_manual(values = bar_pal ) +
+  scale_fill_manual(values = bar_pal) +
   ylab("Proportion of Area Meeting Conditions") + xlab("Year") +
   ggtitle(paste0("Cape Sable Seaside Sparrow - Subpopulation ", pops[p])) +
-  scale_y_continuous(limits = c(0,1)) +
+  scale_y_continuous(limits = c(0, 1)) +
   geom_hline(yintercept = 0.4) +
-  theme(axis.title.x = element_text(size = scale*15),
-        axis.title.y = element_text(size = scale*15),
-        plot.title = element_text(size = scale*20),
-        axis.text.x = element_text(size = scale*12, angle = 70, hjust = 1),
-        axis.text.y = element_text(size = scale*12),
-        legend.text = element_text(size = scale*12),
-        legend.title = element_text(size = scale*15),
-        legend.key.width = unit(scale*4, "mm"),
-        plot.margin = margin(2,2,2,2, unit = "cm"))
+  theme(axis.title.x = element_text(size = scale * 15),
+        axis.title.y = element_text(size = scale * 15),
+        plot.title = element_text(size = scale * 20),
+        axis.text.x = element_text(size = scale * 12, angle = 70, hjust = 1),
+        axis.text.y = element_text(size = scale * 12),
+        legend.text = element_text(size = scale * 12),
+        legend.title = element_text(size = scale * 15),
+        legend.key.width = unit(scale * 4, "mm"),
+        plot.margin = margin(2, 2, 2, 2, unit = "cm"))
 
 filename <- paste0(output_path, "CSSS_hydroperiod_90_210_", pops[p], ".png")
 filename
