@@ -13,7 +13,7 @@ packages <- c("tidyverse",
               "raster",
               "ggpp",
               "shadowtext")
-not_installed <- packages[!(packages %in% installed.packages()[,"Package"])]
+not_installed <- packages[!(packages %in% installed.packages()[, "Package"])]
 not_installed
 if (length(not_installed)) {
   message("INFO [", Sys.time(), "] installing packages: ", not_installed)
