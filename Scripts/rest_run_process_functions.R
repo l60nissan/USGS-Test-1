@@ -17,7 +17,7 @@ source("./Scripts/process_definitions.R")
 SpScenarioFiles <- function(alt_names, # names of alternate scenarios
                             base_names, # names of base scenarios
                             folder_path, # path to folder with output
-                            species_string ){ # species string to process
+                            species_string) { # species string to process
                              
   # All Files
   all_files <- list.files(folder_path, full.names = TRUE, recursive = TRUE)
@@ -36,7 +36,9 @@ SpScenarioFiles <- function(alt_names, # names of alternate scenarios
   base_list
   
   # Alt and Base Names
-  if (length(base_names) == 1) {base_names <- paste0(base_names, "|")}
+  if (length(base_names) == 1) {
+    base_names <- paste0(base_names, "|")
+  }
   all_scenario_names <- paste0(base_names, alt_names, collapse = "|")
   all_scenario_names
   
@@ -46,22 +48,23 @@ SpScenarioFiles <- function(alt_names, # names of alternate scenarios
 }
 
 ## -----------------------------------------------------------------------------
-# Make rasters dataframe for plotting
-RasterToDf <- function(raster_name, scenario_name){
-  ras_df  <- as.data.frame(rasterToPoints(raster_name, xy = TRUE))
-  long_df <- pivot_longer(ras_df, cols = c(3:ncol(ras_df)))
+# Make rasters data frame for plotting
+RasterToDf <- function(raster_name, # Name of raster object to make a data frame
+                       scenario_name) { # Name of scenario being processed
+  ras_df  <- as.data.frame(raster::rasterToPoints(raster_name, xy = TRUE))
+  long_df <- tidyr::pivot_longer(ras_df, cols = c(3:ncol(ras_df)))
   long_df$Scenario <- scenario_name
   return(long_df)
 }
 
 ## -----------------------------------------------------------------------------
 # Process output for maps and acreage tables
-ProcessOutput <- function(
-    base_file,     # Baseline netcdf to process
-    alt_file,      # Alternate netcdf to process
-    aoi_file,      # Area of interest - Shapefile
-    base_alt_names ) { # All base and alternate names. format with "|" between
-                       # names, example ("BASE1|BASE2|ALT1|ALT2")
+ProcessOutput <- function(base_file, # Baseline netcdf to process
+                          alt_file,  # Alternate netcdf to process
+                          aoi_file,  # Area of interest - Shapefile
+                          base_alt_names) { # All base and alternate names.
+                                            # format with "|" between names
+                                            # example ("BASE1|BASE2|ALT1|ALT2")
 
   #----
   ## Set variables based on species 
@@ -159,7 +162,7 @@ ProcessOutput <- function(
   # ----
   # Get layer/Band names from Netcdf
   # ----
-  nc <- nc_open(base_file)
+  nc <- ncdf4::nc_open(base_file)
   
   # Get dates for bands
   time_att <- nc$dim$t$units
@@ -193,7 +196,7 @@ ProcessOutput <- function(
     #BAND_YEARS
   }
   
-  nc_close(nc) # Close netcdf
+  ncdf4::nc_close(nc) # Close netcdf
   
   # ----
   # Process for raw difference 
@@ -212,19 +215,19 @@ ProcessOutput <- function(
   alt_target <- subset(alt_stack, target_years)
   
   # Mask the subsets to AOI
-  aoi <- shapefile(aoi_file)
+  aoi <- raster::shapefile(aoi_file)
   
-  base_mask <- mask(base_target, aoi)
-  alt_mask <- mask(alt_target, aoi)
+  base_mask <- raster::mask(base_target, aoi)
+  alt_mask <- raster::mask(alt_target, aoi)
   
   # Do raster math to get difference
   alt_base <- alt_mask - base_mask
   names(alt_base) <- target_years # in case the raster math drops layer names
   
   #Extract alt and base name from files
-  base_name <- str_extract_all(base_file, base_alt_names)[[1]]
+  base_name <- stringr::str_extract_all(base_file, base_alt_names)[[1]]
   base_name
-  alt_name <- str_extract_all(alt_file, base_alt_names)[[1]]
+  alt_name <- stringr::str_extract_all(alt_file, base_alt_names)[[1]]
   alt_name
   diff_name <- paste0(alt_name, "-", base_name)
   diff_name
@@ -234,7 +237,7 @@ ProcessOutput <- function(
   # ----
   
   acreage_list <- list() 
-  for (n in 1:nlayers(alt_base)) {
+  for (n in 1:raster::nlayers(alt_base)) {
     diff_hist <- hist(alt_base[[n]], breaks = diff_cuts,
                       right = FALSE, plot = FALSE)
     
@@ -245,11 +248,6 @@ ProcessOutput <- function(
       diff_acres <- diff_hist$counts * 400 * 400 / 4046.86
     }
     
-    #if(grepl("MARL", base_file)){
-      # for marl prairie **marl prairie uses different mesh!
-     # diff_acres <- diff_hist$counts * 478.95 * 478.95 / 4046.86
-    #}
-    
     # Build data frame for export to csv
     diff_bins <- paste0("[", as.character(diff_cuts)[1:(length(diff_cuts) - 1)],
                         " - ", as.character(diff_cuts)[2:length(diff_cuts)], ")")
@@ -257,9 +255,9 @@ ProcessOutput <- function(
                           `Number of acres` = rev(diff_acres),
                           check.names = FALSE)
     acreage_list[[n]] <- acreage_diff_df
-    names(acreage_list)[[n]] <- paste0(diff_name,"_", names(alt_base)[n])
+    names(acreage_list)[[n]] <- paste0(diff_name, "_", names(alt_base)[n])
   }
-  acreage_df <- bind_rows(acreage_list, .id = "Scenario_year")
+  acreage_df <- dplyr::bind_rows(acreage_list, .id = "Scenario_year")
   
   # ----
   # Make data frames for plotting individual score and difference maps
@@ -271,7 +269,7 @@ ProcessOutput <- function(
   diff_df <- RasterToDf(raster_name = alt_base, scenario_name = diff_name)
   
   # Combine individual score dataframes for base and alt
-  ind_df <- bind_rows(base_df, alt_df)
+  ind_df <- dplyr::bind_rows(base_df, alt_df)
   
   #Remove NA cells
   ind_df <- filter(ind_df, !is.na(value) | !is.nan(value))
@@ -321,11 +319,11 @@ PerDiffPlot <- function(df, # dataframe to plot
                         y_lab, # string of y label
                         x_lab, # string of x label
                         min_limit, # value of minimum value for y scale
-                        max_limit){ # values of maximum value for y scale
+                        max_limit) { # values of maximum value for y scale
   diff_plot <- ggplot(data = df, aes(x = !!sym(x_var), y = !!sym(y_var), 
                                     fill = !!sym(fill_var))) + 
     geom_bar(stat = "identity", position = "dodge",
-             width = 0.7,colour = "black") + 
+             width = 0.7, colour = "black") + 
     labs(y = y_lab, x = x_lab, title = title,
          fill = "Percent Change \nfrom Baseline:") +
     scale_y_continuous(limits = c(min_limit, max_limit)) +
@@ -353,13 +351,13 @@ PerDiffPlotAlt <- function(df, # dataframe to plot
                           y_lab, # string of y label
                           x_lab, # string of x label
                           min_limit, # value of minimum value for y scale
-                          max_limit){ # values of maximum value for y scale
+                          max_limit) { # values of maximum value for y scale
   bar_pal <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00")
   diff_plot <- ggplot(data = df, aes(x = !!sym(x_var), y = !!sym(y_var),
                                      fill = !!sym(fill_var))) + 
     geom_bar(stat = "identity", position = "dodge",
              width = 0.7, colour = "black") + 
-    scale_fill_manual(values = bar_pal ) +
+    scale_fill_manual(values = bar_pal) +
     labs(y = y_lab, x = x_lab, title = title,
          fill = "Percent Change \nfrom Baseline:") +
     scale_y_continuous(limits = c(min_limit, max_limit)) +
@@ -387,7 +385,7 @@ DiffChangeCalc <- function(
   alt_vals,       # landscape means for alternate scenario
   alt_scen,       # name of alternate scenario
   base_vals,      # landscape means for baseline scenario
-  base_scen){     # name of baseline scenario
+  base_scen) {     # name of baseline scenario
   
   #Get diff name
   diff_name <- paste0(alt_scen, "-", base_scen)
@@ -398,7 +396,7 @@ DiffChangeCalc <- function(
   if (grepl(paste0(gator_string, "|", waders_string), species_string)) {
     
     #Calculate percent diffrence of the landscape mean
-    per_diff <- as.data.frame(((alt_vals - base_vals)/base_vals)*100)
+    per_diff <- as.data.frame(((alt_vals - base_vals) / base_vals) * 100)
       
     # Make data frame for bar chart
     rownames(per_diff) <- sub("X", "", rownames(per_diff))
@@ -413,7 +411,7 @@ DiffChangeCalc <- function(
     # Calculate daily percent change across the landscape between alt and baseline
     
     #percent difference of the daily landscape meand
-    per_diff <- as.data.frame(((alt_vals - base_vals)/base_vals)*100)
+    per_diff <- as.data.frame(((alt_vals - base_vals) / base_vals) * 100)
 
     # calculate average of daily percent change for each year
     #Get indices for years
@@ -425,8 +423,8 @@ DiffChangeCalc <- function(
     
     #Mean across year
     per_diff_mean <- per_diff %>%
-      group_by(Year) %>%
-      summarise("Percent_Difference" = mean(Percent_Difference))
+      dplyr::group_by(Year) %>%
+      dplyr::summarise("Percent_Difference" = mean(Percent_Difference))
     
     per_diff_mean$Scenarios <- diff_name
   } 
@@ -450,14 +448,14 @@ DiffChangeCalc <- function(
 StackNcOutput <- function(nc_file, # full path to NetCDF file to stack/mask
                   masked, # TRUE/FALSE, is the NetCDf already masked?
                   aoi = NULL, # shapefile path of mask - NULL if already masked
-                  all_scenario_names){ # character string of scenario
+                  all_scenario_names) { # character string of scenario
                                        # names separated by '|' 
   
   #Extract NAME FROM FILE
-  scenario_name <- str_extract_all(nc_file, all_scenario_names)[[1]]
+  scenario_name <- stringr::str_extract_all(nc_file, all_scenario_names)[[1]]
   
   # Load shapefile
-  aoi_mask <- shapefile(aoi)
+  aoi_mask <- raster::shapefile(aoi)
   
   ###
   # Set read in varname
@@ -493,7 +491,7 @@ StackNcOutput <- function(nc_file, # full path to NetCDF file to stack/mask
   # ----
   # Get layer/Band names from Netcdf
   # ----
-  nc <- nc_open(nc_file)
+  nc <- ncdf4::nc_open(nc_file)
   
   # Get dates for bands
   time_att <- nc$dim$t$units
@@ -517,7 +515,7 @@ StackNcOutput <- function(nc_file, # full path to NetCDF file to stack/mask
     band_years <- paste0("X", band_years)
   }
   
-  nc_close(nc) # Clsoe netcdf
+  ncdf4::nc_close(nc) # Clsoe netcdf
   
   # ----
   # Process for raw difference 
@@ -542,7 +540,7 @@ StackNcOutput <- function(nc_file, # full path to NetCDF file to stack/mask
     }
 
     # Apply Mask
-    nc_masked <- mask(nc_stack, aoi_mask)
+    nc_masked <- raster::mask(nc_stack, aoi_mask)
   
   } else {
     
