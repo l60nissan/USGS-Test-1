@@ -1,9 +1,15 @@
 ## -----------------------------------------------------------------------------
 # Functions used to process netcdf output from restoration runs
-#
-# Caitlin Hackett chakett@usgs.gov
 ## -----------------------------------------------------------------------------
 
+## -----------------------------------------------------------------------------
+# Source scripts that create objects used by functions
+
+# Holds definitions of species strings in file paths
+source("./Scripts/species_string_definitions.R")
+
+# Holds definitions of process criteria (breaks, labels, title, etc.)
+source("./Scripts/process_definitions.R")
 
 ## -----------------------------------------------------------------------------
 # Pull file names for base and alternate scenarios for target species
@@ -57,14 +63,9 @@ ProcessOutput <- function(
     base_alt_names ) { # All base and alternate names. format with "|" between
                        # names, example ("BASE1|BASE2|ALT1|ALT2")
 
-  # ----
-  # Define Strings for each species for Function
-  # ----
-  source("./Scripts/species_string_definitions.R")
-  source("./Scripts/process_definitions.R")
-  
   #----
   ## Set variables based on species 
+  ## Species strings are sourced at the top of script
   #----
   
   # If Species is Alligator
@@ -378,7 +379,7 @@ PerDiffPlotAlt <- function(df, # dataframe to plot
 
 ## -----------------------------------------------------------------------------
 # Calculate Percent change
-# cell stats alredy calculated to landscape means
+# cell stats already calculated to landscape means
 
 DiffChangeCalc <- function(
   species_string, # species string -- match sp_string set in workflow 
@@ -387,8 +388,6 @@ DiffChangeCalc <- function(
   alt_scen,       # name of alternate scenario
   base_vals,      # landscape means for baseline scenario
   base_scen){     # name of baseline scenario
-  
-  source("./scripts/species_string_definitions.R")
   
   #Get diff name
   diff_name <- paste0(alt_scen, "-", base_scen)
@@ -459,11 +458,6 @@ StackNcOutput <- function(nc_file, # full path to NetCDF file to stack/mask
   
   # Load shapefile
   aoi_mask <- shapefile(aoi)
-  
-  # ----
-  # Define Strings for each species for Function
-  # ----
-  source("./Scripts/species_string_definitions.R")
   
   ###
   # Set read in varname
