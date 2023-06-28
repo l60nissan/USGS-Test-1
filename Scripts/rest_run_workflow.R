@@ -95,7 +95,7 @@ if (sp_string == waders_string) {
 # Loop through target species
 process_list_all <- list() # list to store all output
 #n <- 1
-for (n in 1:length(sp_string)) { # This is to accommodate multiple 
+for (n in 1:seq_along(sp_string)) { # This is to accommodate multiple 
                                  # species output in the everwaders path
 
   ## Extract species name
@@ -123,11 +123,9 @@ for (n in 1:length(sp_string)) { # This is to accommodate multiple
   percent_diff <- data.frame() 
   # data frame to hold acreage data
   acreage_diff_df <- data.frame() 
-    #b <- 1
-    #i <- 1
-    
+
   # Process baseline file b
-  for (b in 1:length(base_list)) {  
+  for (b in 1:seq_along(base_list)) {  
       
     # CGet baseline scenario name
     b_name <- str_extract_all(base_list[b], all_scenario_names)[[1]]
@@ -136,7 +134,7 @@ for (n in 1:length(sp_string)) { # This is to accommodate multiple
     names(process_list)[[b]] <- b_name
       
     # process each alternate file i with baseline b
-    for (i in 1:length(alt_list)) {
+    for (i in 1:seq_along(alt_list)) {
       
       # Get alternate scenario name
       a_name <- str_extract_all(alt_list[i], all_scenario_names)[[1]]
@@ -219,7 +217,7 @@ for (n in 1:length(sp_string)) { # This is to accommodate multiple
   #-----------------
   # Stack/mask baseline scenarios and calculate cell stats (landcape means)
   base_list_masked <- list()
-  for (b in 1:length(base_list)) {
+  for (b in 1:seq_along(base_list)) {
     b_name <- str_extract_all(base_list[b], all_scenario_names)[[1]]
       
     print(paste0("INFO [", Sys.time(), "] Stacking Base :: ", b_name))
@@ -245,7 +243,7 @@ for (n in 1:length(sp_string)) { # This is to accommodate multiple
   #-----------------
   # stack/mask alternate scenarios and calculate cell stats (landscape means)
   alt_list_masked <- list()
-  for (i in 1:length(alt_list)) {
+  for (i in 1:seq_along(alt_list)) {
     a_name <- str_extract_all(alt_list[i], all_scenario_names)[[1]]
         
     print(paste0("INFO [", Sys.time(), "] Stacking Alt :: ", a_name))
@@ -285,8 +283,7 @@ for (n in 1:length(sp_string)) { # This is to accommodate multiple
   # Process baseline file b
   percent_diff <- data.frame() # list to hold processed data
 
-  #index <- 0
-  for (b in 1:length(base_list_masked)) {  
+  for (b in 1:seq_along(base_list_masked)) {  
     
     # Get baseline name
     b_name <- base_list_masked[[b]]$Scenario
@@ -295,7 +292,7 @@ for (n in 1:length(sp_string)) { # This is to accommodate multiple
     base_vals <- base_list_masked[[b]]$daily_mean
 
     # process alternate file i
-    for (i in 1:length(alt_list_masked)) {
+    for (i in 1:seq_along(alt_list_masked)) {
         
       # Get alternate name
       a_name <- alt_list_masked[[i]]$Scenario
@@ -400,11 +397,11 @@ for (n in 1:length(sp_string)) { # This is to accommodate multiple
                                  f = ceiling) + min_max_adjust
   
     # make bar plots: 1 plot for each alternate shown against all baselines
-    for (a in 1:length(alt_names)) {
+    for (a in 1:seq_along(alt_names)) {
       print(paste0("INFO [", Sys.time(), "] Making Differnce Bar Plot :: ",
                    alt_names[a]))
     
-      per_diff_alt <- percent_diff[grep(alt_names[a], percent_diff$Scenarios),]
+      per_diff_alt <- percent_diff[grep(alt_names[a], percent_diff$Scenarios), ]
       diff_plot <- PerDiffPlot(
         df = per_diff_alt,
         x_var = x_var,
@@ -417,7 +414,7 @@ for (n in 1:length(sp_string)) { # This is to accommodate multiple
         max_limit = max_limit
       )
       diff_plot_filename <- paste0(out_path, bar_out_str,
-                                   gsub(" ", sep_str, map_title),sep_str,
+                                   gsub(" ", sep_str, map_title), sep_str,
                                    alt_names[a], png_str)
       ggsave(diff_plot_filename, diff_plot,
              width = bar_width, height = bar_height, units = bar_units,
@@ -425,11 +422,11 @@ for (n in 1:length(sp_string)) { # This is to accommodate multiple
     } # closes alt bar plots
   
     # Make bar plots: 1 bar plot for each baseline shown against all alternates
-    for (l in 1:length(base_names)) {
+    for (l in 1:seq_along(base_names)) {
       print(paste0("INFO [", Sys.time(), "] Making Differnce Bar Plot :: ",
                    base_names[l]))
     
-      per_diff_base <- percent_diff[grep(base_names[l], percent_diff$Scenarios),]
+      per_diff_base <- percent_diff[grep(base_names[l], percent_diff$Scenarios), ]
       diff_plot_a <- PerDiffPlotAlt(
         df = per_diff_base,
         x_var = x_var,
@@ -443,7 +440,7 @@ for (n in 1:length(sp_string)) { # This is to accommodate multiple
       )
     
       diff_plot_filename <- paste0(output_path, bar_out_str,
-                                   gsub(" ", sep_str, title),sep_str,
+                                   gsub(" ", sep_str, title), sep_str,
                                    base_names[l], png_str)
       ggsave(diff_plot_filename, diff_plot_a,
              width = bar_width, height = bar_height, units = bar_units,
@@ -456,7 +453,8 @@ for (n in 1:length(sp_string)) { # This is to accommodate multiple
   if (grepl(waders_string, files$all_files[1])) {
   save_string <- waders_string
   } else {
-  save_string <- sp_string}
+  save_string <- sp_string
+  }
 
 r_data_file <- paste0(out_path, save_string, rdata_str)
 print(paste0("INFO [", Sys.time(), "] Saving RData to: ", r_data_file))
