@@ -1,8 +1,7 @@
 ## -----------------------------------------------------------------------------
 # Function to generate FISH maps for restoration runs
-#
-# Caitlin Hackett chackett@usgs.gov
 ## -----------------------------------------------------------------------------
+
 #Load Packages
 library(tidyverse)
 library(cowplot)
@@ -37,18 +36,18 @@ North2GetArrow <- function(symbol = 1, scale) {
 # Function to build map 
 ## -----------------------------------------------------------------------------
 FishMap <- function(
-    df_ind,       # Dataframe of individual score output with coordinate column names "x", and "y", 
-    ind_fill,     # column name of individual score discrete values to be plotted (ex. "labs")
-    df_dif,       # Dataframe of difference output with coordinate column names "x", and "y"
-    dif_fill,     # column name of discrete values to be plotted (ex. "labs")
+    df_ind,       # Data frame of individual score output with coordinate column names "x", and "y", 
+    ind_fill,     # column name of individual score discrete values to be plotted (e.g., "labs")
+    df_dif,       # Data frame of difference output with coordinate column names "x", and "y"
+    dif_fill,     # column name of discrete values to be plotted (e.g., "labs")
     scenario_col, # column name of scenarios to be plotted
     year_col,     # column name of years to be plotted
     aoi_path,     # File path to shapefile of Area of interest for map
     mpr_path,     # File path to shapefile of Main Park Road
     wcas_path,    # File path to shapefile of water conservation areas boundaries
     fl_path,      # File path to shapefile of Florida boundary
-    landscape,      # TRUE/FALSE should output be landscape?
-    map_title,    # Title to be printed at top of map, (ex. "Alligator HSI")
+    landscape,    # TRUE/FALSE should output be landscape?
+    map_title,    # Title to be printed at top of map, (e.g., "Alligator HSI")
     output_file_name) { # Name of Output File
   
   #-----------------
@@ -63,34 +62,34 @@ FishMap <- function(
   # Legend Titles
   score_legend_name <- "Mean Total\nFish Density"
   diff_legend_name <- levels(df_dif$Scenario)[3]
-  diff_legend_name <- paste0("Percent Change","\n", diff_legend_name)
-  #diff_legend_name <- paste0("Percent Change")
-  
-  
+  diff_legend_name <- paste0("Percent Change", "\n", diff_legend_name)
+
   #-----------------
   # Read Shapefiles
   
   # read shapefiles, checks for valid geometry,
   # and makes geometry valid if not valid 
-  # crop shapefiles to map extenct
+  # crop shapefiles to map extent
   # create file used to generate scale bar
   
-    # Florida boundary
+  # Florida boundary
   fl_shp <- st_read(dsn = fl_path) %>%
     st_transform(crs = 26917)
   fl_st_valid <- st_is_valid(fl_shp)
   if (all(fl_st_valid, TRUE)) {
     fl_shp <- fl_shp
-    } else {
-    fl_shp <- st_make_valid(fl_shp)}  
+  } else {
+    fl_shp <- st_make_valid(fl_shp)
+    }  
   
   # WCAS boundaries
   wcas_shp <- st_read(dsn = wcas_path)
   wcas_st_valid <- st_is_valid(wcas_shp)
   if (all(wcas_st_valid, TRUE)) {
     wcas_shp <- wcas_shp
-    } else {
-    wcas_shp <- st_make_valid(wcas_shp)}  
+  } else {
+    wcas_shp <- st_make_valid(wcas_shp)
+    }  
   
   # Main Park Road 
   mpr_shp <- st_read(dsn = mpr_path) %>%
@@ -99,7 +98,8 @@ FishMap <- function(
   if (all(mpr_st_valid, TRUE)) {
     mpr_shp <- mpr_shp
   } else {
-    mpr_shp <- st_make_valid(mpr_shp)}  
+    mpr_shp <- st_make_valid(mpr_shp)
+    }  
   
   # Load AOI mask shapefile
   aoi_shp <- st_read(dsn = aoi_path)
@@ -107,7 +107,8 @@ FishMap <- function(
   if (all(aoi_st_valid, TRUE)) {
     aoi_shp <- aoi_shp
   } else {
-    aoi_shp <- st_make_valid(aoi_shp)}  
+    aoi_shp <- st_make_valid(aoi_shp)
+    }  
   
   # Set map extent from AOI file
   aoi_extent <- extent(aoi_shp)
@@ -124,7 +125,7 @@ FishMap <- function(
   
   # Set scale to create scalebar
   df_scale <- df_ind
-  coordinates(df_scale) <- ~ EASTING+ NORTHING
+  sp::coordinates(df_scale) <- ~ EASTING + NORTHING
   df_scale <- st_as_sf(df_scale)
   df_scale <- df_scale %>% st_set_crs(st_crs(wcas_shp))
   
@@ -134,10 +135,8 @@ FishMap <- function(
   
   #-----------------
   # Set Theme and Scale Factor
-
-    #theme_set(theme_bw())
-  scale_factor = 1.5
-  legend_scale_factor = 1.3
+  scale_factor <- 1.5
+  legend_scale_factor <- 1.3
 
   #-----------------
   # Create Main Map Plot
@@ -169,17 +168,16 @@ FishMap <- function(
 
     # Plot shapefiles for Main Park Road, WCAS, and area of interest
     geom_sf(data = mpr_crop, colour = "black",
-            lwd = scale_factor*0.4, show.legend = F, lty = "dashed") +
+            lwd = scale_factor * 0.4, show.legend = FALSE, lty = "dashed") +
     geom_sf(data = wca_crop, colour = "black", alpha = 0,
-            lwd = scale_factor*0.3, show.legend = FALSE) +
+            lwd = scale_factor * 0.3, show.legend = FALSE) +
     geom_sf(data = aoi_crop, colour = "Brown", alpha = 0,
-            lwd = scale_factor*1, show.legend = FALSE) +
+            lwd = scale_factor * 1, show.legend = FALSE) +
 
     # Add scalebar
-    ggsn::scalebar(data = df_scale, transform = F, dist = 20, dist_unit = "km",
-                   st.dist =  0.015, st.size = scale_factor*2.3,
+    ggsn::scalebar(data = df_scale, transform = FALSE, dist = 20, dist_unit = "km",
+                   st.dist =  0.015, st.size = scale_factor * 2.3,
                    st.bottom = TRUE, height = 0.014, border.size = 1,
-                   #location = "bottomright",
                    anchor = c(x = as.numeric(aoi_extent[2] - 4000),
                               y = as.numeric(aoi_extent[3] + 3000)),
                    family = "sans",
@@ -188,7 +186,7 @@ FishMap <- function(
     
     # Can use this to set crs or crop the map output if needed,
     # Expand = FALSE does not add extra buffer around plotted extent
-    coord_sf(expand = F) + 
+    coord_sf(expand = FALSE) + 
     
     # Set which graticule displayed on x and y axis
     scale_x_continuous(breaks = c(-80.5, -81, -81.5)) +
@@ -200,10 +198,12 @@ FishMap <- function(
     theme(
       
       # Format legend elements
-      legend.key.height = unit(legend_scale_factor*8, "mm"),
+      legend.key.height = unit(legend_scale_factor * 8, "mm"),
       legend.title.align = 0.0,
-      legend.text = element_text(family = "sans", size = legend_scale_factor*16),
-      legend.title = element_text(family = "sans", size = legend_scale_factor*19),
+      legend.text = element_text(family = "sans",
+                                 size = legend_scale_factor * 16),
+      legend.title = element_text(family = "sans",
+                                  size = legend_scale_factor * 19),
       
       # Format panels
       panel.grid.major = element_blank(), # remove grid lines
@@ -212,14 +212,15 @@ FishMap <- function(
       
       # Format x and y axis
       # rotate and position y axis labels
-      axis.text.y = element_text(angle = 90, hjust = 0.5, vjust = 0.0, size = 16), 
+      axis.text.y = element_text(angle = 90, hjust = 0.5,
+                                 vjust = 0.0, size = 16), 
       axis.text.x = element_text(size = 16), # format x axis text
       
       # Format strip background
       strip.background = element_rect(colour = "Black"),
       
       # Format size of text in strip headings on the facets
-      strip.text = element_text(size = legend_scale_factor*18), 
+      strip.text = element_text(size = legend_scale_factor * 18), 
       
       # Format axis titles
       axis.title = element_blank(), # Remove axis titles
@@ -251,10 +252,11 @@ FishMap <- function(
   arrow_grob <- cowplot::as_grob(arrow)
   
   # Create tibble to plot North arrow on map using coordinates
-  arrow_coord <- tibble(x = as.numeric(aoi_extent[1] + 4000),
+  arrow_coord <- tibble::tibble(x = as.numeric(aoi_extent[1] + 4000),
                         y = as.numeric(aoi_extent[3] + 3000),
                         grob = list(arrow_grob),
-                        !!scenario_col := factor(scale_y, levels = levels(df_ind[[scenario_col]])),
+                        !!scenario_col := factor(scale_y,
+                                                 levels = levels(df_ind[[scenario_col]])),
                         !!year_col := scale_x)
 
   # Plot arrow on map
