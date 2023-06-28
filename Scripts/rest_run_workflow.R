@@ -1,8 +1,6 @@
 ## -----------------------------------------------------------------------------
 # Workflow for Netcdf output for restoration runs
 # Use for Alligator, Everwaders, Snail kite, and Applesnail
-#
-# Caitlin Hackett chackett@usgs.gov
 ## -----------------------------------------------------------------------------
 print(paste0("INFO [", Sys.time(), "] Running Workflow"))
 
@@ -14,7 +12,7 @@ library(raster)
 library(sf)
 library(cowplot)
 
-# Source dependancy scripts
+# Source dependency scripts
 print(paste0("INFO [", Sys.time(), "] Sourcing Dependency Scripts"))
 # Functions to process data nd make bar plots
 print(paste0("INFO [", Sys.time(), "] Loading Process Functions"))
@@ -97,7 +95,7 @@ if (sp_string == waders_string) {
 # Loop through target species
 process_list_all <- list() # list to store all output
 #n <- 1
-for (n in 1:length(sp_string)) { # This is to accomodate multiple 
+for (n in 1:length(sp_string)) { # This is to accommodate multiple 
                                  # species output in the everwaders path
 
   ## Extract species name
