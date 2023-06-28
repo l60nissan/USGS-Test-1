@@ -1,8 +1,7 @@
 ## -----------------------------------------------------------------------------
-# Workflow for Restoration Run Marl Praire Output
-#
-# Caitlin Hackett chackett@usgs.gov
+# Workflow for Restoration Run Marl Prairie Output
 ## -----------------------------------------------------------------------------
+
 print(paste0("INFO [", Sys.time(), "] Running Workflow"))
 
 # Load packages
@@ -10,7 +9,7 @@ library(tidyverse)
 library(sf)
 library(raster)
 
-# Source dependancy scripts
+# Source dependency scripts
 print(paste0("INFO [", Sys.time(), "] Sourcing Dependency Scripts"))
 
 # Functions to process data nd make bar plots
