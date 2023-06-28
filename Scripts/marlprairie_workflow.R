@@ -38,7 +38,6 @@ base_names <- paste0(base_names, collapse = "|")
 base_names
 
 # Alt and Base Names
-#if(length(base_names) == 1){base_names <- paste0(base_names, "|")}
 base_names_join <- paste0(base_names, "|")
 all_scenario_names <- paste0(base_names_join, alt_names, collapse = "|")
 all_scenario_names
@@ -65,13 +64,13 @@ mp_shp
 ## Process data for all baseline and alternate combinations
 marl_process_list <- list()
 acreage_diff_df <- data.frame()
-  for (b in 1:length(base_list)) {
+  for (b in 1:seq_along(base_list)) {
     
     b_name <- str_extract_all(base_list[b], all_scenario_names)[[1]]
     marl_process_list[[b]] <- list()
     names(marl_process_list)[[b]] <- b_name
     
-    for (a in 1:length(alt_list)) {
+    for (a in 1:seq_along(alt_list)) {
       a_name <- str_extract_all(alt_list[a], all_scenario_names)[[1]]
       print(paste0("Processing :: ALT_", a_name, " minus BASE_", b_name))
       marl_process <- MarlProcess(base_file = base_list[b],
@@ -90,11 +89,11 @@ acreage_diff_df <- data.frame()
       print(paste0("Making Map :: ALT_", a_name, " minus BASE_", b_name))
       
       
-      ind_fill <- 'labs'
-      dif_fill <- 'labs'
+      ind_fill <- "labs"
+      dif_fill <- "labs"
       map_title <- marl_process$Map_title
       out_path <- output_path
-      out_file <- paste0(out_path,"Marl_HSI_", marl_process$diff_name, ".tiff")
+      out_file <- paste0(out_path, "Marl_HSI_", marl_process$diff_name, ".tiff")
     
       MarlMap(df_ind = marl_process$ind_df,
              ind_fill = ind_fill,
@@ -112,7 +111,7 @@ acreage_diff_df <- data.frame()
 
 # Save acreage Table
 write.csv(acreage_diff_df,
-          file = paste0(output_path,"Acreage_", marl_process$sp_string, ".csv"),
+          file = paste0(output_path, "Acreage_", marl_process$sp_string, ".csv"),
           row.names = FALSE)
 
 # Save Marl RDATA of processed files
