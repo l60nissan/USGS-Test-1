@@ -271,7 +271,7 @@ ProcessOutput <- function(base_file, # Baseline netcdf to process
   # Combine individual score dataframes for base and alt
   ind_df <- dplyr::bind_rows(base_df, alt_df)
   
-  #Remove NA cells
+  # Remove NA cells
   ind_df <- filter(ind_df, !is.na(value) | !is.nan(value))
   diff_df <- filter(diff_df, !is.na(value) | !is.nan(value))
   
@@ -298,7 +298,7 @@ ProcessOutput <- function(base_file, # Baseline netcdf to process
   diff_df$Scenario <- factor(diff_df$Scenario,
                             levels = c(base_name, alt_name, diff_name))
   
-  #Name the Target Years to display on figure facet labels
+  # Name the Target Years to display on figure facet labels
   name.labs <- target_years_labels
   names(name.labs) <- target_years
   
@@ -311,7 +311,7 @@ ProcessOutput <- function(base_file, # Baseline netcdf to process
 
 ## -----------------------------------------------------------------------------
 # Make percent difference bar plot alternate shown against all baselines
-PerDiffPlot <- function(df, # dataframe to plot
+PerDiffPlot <- function(df, # data frame to plot
                         x_var, # string of x variable
                         y_var, # string of y variable
                         fill_var, # string of fill variable
@@ -343,7 +343,7 @@ PerDiffPlot <- function(df, # dataframe to plot
 
 ## -----------------------------------------------------------------------------
 # Make percent difference bar plot each baseline shown against all alternates
-PerDiffPlotAlt <- function(df, # dataframe to plot
+PerDiffPlotAlt <- function(df, # data frame to plot
                           x_var, # string of x variable
                           y_var, # string of y variable
                           fill_var, # string of fill variable
@@ -385,7 +385,7 @@ DiffChangeCalc <- function(
   alt_vals,       # landscape means for alternate scenario
   alt_scen,       # name of alternate scenario
   base_vals,      # landscape means for baseline scenario
-  base_scen) {     # name of baseline scenario
+  base_scen) {    # name of baseline scenario
   
   #Get diff name
   diff_name <- paste0(alt_scen, "-", base_scen)
@@ -410,18 +410,18 @@ DiffChangeCalc <- function(
     
     # Calculate daily percent change across the landscape between alt and baseline
     
-    #percent difference of the daily landscape meand
+    # Percent difference of the daily landscape means
     per_diff <- as.data.frame(((alt_vals - base_vals) / base_vals) * 100)
 
     # calculate average of daily percent change for each year
-    #Get indices for years
+    # Get indices for years
     indicies <- format(as.Date(names(nc_stack),
                                format = "X%Y.%m.%d"), format = "%Y")
     indicies <- indicies
     names(per_diff) <- "Percent_Difference"
     per_diff$Year <- indicies
     
-    #Mean across year
+    # Mean across year
     per_diff_mean <- per_diff %>%
       dplyr::group_by(Year) %>%
       dplyr::summarise("Percent_Difference" = mean(Percent_Difference))
@@ -443,7 +443,7 @@ DiffChangeCalc <- function(
 # Mask NetCDF and return a list with:
 # nc_masked: input NetCDF masked to defined "aoi"
 # Scenario: Scenario name for input/masked NetCDF
-# Varible: NetCDF variable for input/masked NetCDF
+# Variable: NetCDF variable for input/masked NetCDF
 
 StackNcOutput <- function(nc_file, # full path to NetCDF file to stack/mask
                   masked, # TRUE/FALSE, is the NetCDf already masked?
@@ -515,7 +515,7 @@ StackNcOutput <- function(nc_file, # full path to NetCDF file to stack/mask
     band_years <- paste0("X", band_years)
   }
   
-  ncdf4::nc_close(nc) # Clsoe netcdf
+  ncdf4::nc_close(nc) # Close netcdf
   
   # ----
   # Process for raw difference 
