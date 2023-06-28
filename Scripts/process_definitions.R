@@ -30,7 +30,7 @@ gator_title <- "Alligator Habitat Suitability Index"
 ## Snail Kite
 ## -----------------------------------------------------------------------------
 snki_varname <- "SNKI_HSI"
-snki_years <- paste0("X", c("1989.04.20" , "1995.04.20"))
+snki_years <- paste0("X", c("1989.04.20", "1995.04.20"))
 snki_year_labels <- c("Dry Year (April 20, 1989)", "Wet Year (April 20, 1995)")
 
 snki_ind_cuts <- seq(from = 0.0, to = 1, by = 0.10)
@@ -68,7 +68,7 @@ dsd_title <- "Days Since Drydown"
 ## Apple Snail
 ## -----------------------------------------------------------------------------
 apsn_varname <- "snailPopulationAdults"
-apsn_years <- paste0("X", c("1989.04.20" , "1995.04.20"))
+apsn_years <- paste0("X", c("1989.04.20", "1995.04.20"))
 apsn_year_labels <- c("Dry Year (April 20, 1989)", "Wet Year (April 20, 1995)")
 
 apsn_ind_cuts <- c(-Inf, 1, 15001, 30001, 45001, 60001, 75001, 90001,
