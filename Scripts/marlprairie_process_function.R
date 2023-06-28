@@ -10,7 +10,7 @@ library(raster)
 MarlProcess <- function(base_file, # Baseline netcdf to process
                         alt_file,  # Alternative netcdf to process
                         mp_file,   # shapefile of marl prairie output
-                        subpop_file){ # shapefile that has Cape Sable
+                        subpop_file) { # shapefile that has Cape Sable
                                       # seaside sparrow subpopulation areas
   
   ## Define Strings for Function ----
@@ -23,9 +23,9 @@ MarlProcess <- function(base_file, # Baseline netcdf to process
   source("./Scripts/process_definitions.R")
   
   # Get alt, base, and difference names
-  base_name <- str_extract_all(base_file, all_scenario_names)[[1]]
+  base_name <- stringr::str_extract_all(base_file, all_scenario_names)[[1]]
   base_name
-  alt_name <- str_extract_all(alt_file, all_scenario_names)[[1]]
+  alt_name <- stringr::str_extract_all(alt_file, all_scenario_names)[[1]]
   alt_name
   diff_name <- paste0(alt_name, "-", base_name)
   diff_name
@@ -40,12 +40,12 @@ MarlProcess <- function(base_file, # Baseline netcdf to process
   names(alt_csv) <- c(rsm_string, alt_string)
   
   # Calculate differences and make data frame of differences for plotting
-  alt_base <- full_join(base_csv, alt_csv, by = rsm_string)
+  alt_base <- dplyr::full_join(base_csv, alt_csv, by = rsm_string)
   alt_base$RSM <- as.numeric(alt_base$RSM)
   alt_base[diff_name] <- alt_base$ALT - alt_base$BASE
   names(alt_base)[names(alt_base) == alt_string] <- paste0(alt_name)
   names(alt_base)[names(alt_base) == base_string] <- paste0(base_name)
-  alt_base_long <- pivot_longer(alt_base, cols = c(2:4),
+  alt_base_long <- tidyr::pivot_longer(alt_base, cols = c(2:4),
                                 names_to = "Scenario",
                                 values_to = hsi_string)
   
@@ -59,8 +59,7 @@ MarlProcess <- function(base_file, # Baseline netcdf to process
   
   # Merge shapefile and diff_data to save out if needed
   mp_diff <- merge(mp, alt_base, by = rsm_string)
-  #st_write(mp_diff, "./Output/SHAPEFILE.shp")
-  
+
   # Merge shapefile and long data for plotting -
   # pivot_longer does not work on sf object so must pivot prior to merging
   mp_diff_plot <- merge(mp, alt_base_long)
