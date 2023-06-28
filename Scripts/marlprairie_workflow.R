@@ -56,6 +56,11 @@ alt_list
 base_list <- grep(base_names, value = TRUE, all_files)
 base_list
 
+# Shapefile of MP scores
+mp_shp_lst <- list.files(parent_path, pattern = "\\MP_Scores.shp",
+                     full.names = TRUE, recursive = TRUE)
+mp_shp <- mp_shp_lst[1]
+mp_shp
 
 ## Process data for all baseline and alternate combinations
 marl_process_list <- list()
