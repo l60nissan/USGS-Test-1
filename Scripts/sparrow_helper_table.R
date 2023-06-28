@@ -1,6 +1,6 @@
-## ------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 ## Generate Tables for Sparrow Helper
-## ------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 print(paste0("INFO [", Sys.time(), "] Generating Sparrow Helper Table"))
       
 # Load packages
@@ -12,14 +12,14 @@ message("INFO [", Sys.time(), "] USER INPUTS SET TO: \n*parent path: ", parent_p
         "\n*alternative scenarios: ", paste(alt_names, collapse = " "),
         "\n*basline scenarios: ", paste(base_names, collapse = " "))
 
-## ------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 # Calculations for table
 # 
 # Table: Difference in the number of days for which the daily mean depths
 # are within the target depth range (-50.0 to -25.0 cm) from 1965 through 2005,
 # where the difference is the number of days in the tentatively selected plan
 # minus the number of days in the baseline
-## ------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 
 # Vector of all scenario names - scenario names set in workflow_inputs.R
 scenario_names <- c(alt_names, base_names)
@@ -40,7 +40,7 @@ all_files
 
 #Load all files and add scenario name
 all_runs <- data.frame()
-for (s in 1:length(all_files)) {
+for (s in 1:seq_along(all_files)) {
   
   # extract alternative or baseline scenario from each file
   name <- str_extract_all(all_files[s], all_scenario_names)[[1]]
@@ -57,7 +57,7 @@ for (s in 1:length(all_files)) {
   }
 
 # Make long: letters represent subpopulations
-runs.long <- pivot_longer(all_runs, c("A", "B","C","D", "E","F"))
+runs.long <- pivot_longer(all_runs, c("A", "B", "C", "D", "E", "F"))
 
 # Group and sum each subpopulation for each group
 runs.summary <- runs.long %>%
@@ -66,18 +66,18 @@ runs.summary <- runs.long %>%
 
 #Calculate difference
 num_day_diff <- data.frame()
-for (b in 1:length(base_names)) {
+for (b in 1:seq_along(base_names)) {
   
   # Pull baseline name
   b_name <- base_names[b]
   
-  for (a in 1:length(alt_names)) {
+  for (a in 1:seq_along(alt_names)) {
     
     # Pull alternative line
     a_name <- alt_names[a]
     
     # Extract summary for target alternative (a) and baseline (b)
-    ab_df <- runs.summary[runs.summary$Scenario == a_name | runs.summary$Scenario == b_name,]
+    ab_df <- runs.summary[runs.summary$Scenario == a_name | runs.summary$Scenario == b_name, ]
     
     # Pivot data to wide format
     ab_df <- pivot_wider(ab_df, id_cols = "name",
@@ -106,7 +106,7 @@ table_data_name <- "SparrowHelper_table.csv"
 output_filename <- paste0(output_path, table_data_name)
 output_filename
 print(paste0("INFO [", Sys.time(), "] Saving Data to ", output_filename))
-write.csv(num_day_diff, file = output_filename, row.names = F)
+write.csv(num_day_diff, file = output_filename, row.names = FALSE)
 
 
 
