@@ -1,18 +1,16 @@
 # ------------------------------------------------------------------------------
 # This script uses the output from the JEM Small Fish Density model (SA)
 # and performs the following:
-# 1.) removes PSUs not within the AOI mask
-# 2.) Calculates cumulative fish density, and generates line plot
-# 3.) calculate daily percent differnce for every PSU
-# 4.) Summarize dily percent differnce to:
+# 1.) remove PSUs not within the AOI mask
+# 2.) Calculate cumulative fish density, and generates line plot
+# 3.) calculate daily percent difference for every PSU
+# 4.) Summarize daily percent difference to:
 #    A) YEAR - for Bar plot
 #    B) YEAR & PSU for map
-# 5.) Generate percent differnce bar plot
-#     (using means of daily percent differnce)
+# 5.) Generate percent difference bar plot
+#     (using means of daily percent difference)
 # 6.) Generate maps (using means of daily percent difference
 #     for difference map, and mean TOTFISH for individual score maps)
-#
-# Caitlin Hackett chackett@usgs.gov
 # ------------------------------------------------------------------------------
 print(paste0("INFO [", Sys.time(), "] Running Workflow"))
 
@@ -20,8 +18,6 @@ print(paste0("INFO [", Sys.time(), "] Running Workflow"))
 library(tidyverse)
 library(sf)
 library(raster)
-# raster might cause issues with select() in dplyr so
-# be sure to usee dplyr::select() if using the function
 
 # Source dependency scripts
 print(paste0("INFO [", Sys.time(), "] Sourcing Dependency Scripts"))
@@ -57,11 +53,11 @@ psu_coords_all <- psu_coords_all %>% st_set_crs(st_crs(aoi))
 
 # Subset PSU locations to those within the AOI
 print(paste0("INFO [", Sys.time(), "] Subsetting PSUs to AOI"))
-psu_coords_aoi <- psu_coords_all[aoi,]
+psu_coords_aoi <- psu_coords_all[aoi, ]
 
 # filter fish to only psus within the AOI
 psu_aoi_names <- psu_coords_aoi$PSU # names of PSUS within AOI
-fish <- fish_all[fish_all$PSU %in% psu_aoi_names,] 
+fish <- fish_all[fish_all$PSU %in% psu_aoi_names, ] 
 head(fish)
 
 # Add column for year so annual mean can be calcualted for each PSU
@@ -107,7 +103,7 @@ fishyears <- unique(fish$YEAR)
 fishyears
 
 # Create breaks for every other year
-yearbreaks <- seq(fishyears[1],fishyears[length(fishyears)], 5)
+yearbreaks <- seq(fishyears[1], fishyears[length(fishyears)], 5)
 yearbreaks
 
 # Add another 5 year interval so x axis will plot properly
@@ -180,18 +176,18 @@ write.table(cum_fish_by_date,
 ## -----------------------------------------------------------------------------
 
 # Subset to "TOTFISH" columns to calculate daily percent differnces
-fish_daily <- dplyr::select(fish , c(DATE, YEAR, PSU,
+fish_daily <- dplyr::select(fish, c(DATE, YEAR, PSU,
                                      grep("TOTFISH$", names(fish))))
 
 # Calculate daily percent difference for each PSU (all years)
 # - takes a few minutes to process
-print(paste0("INFO [", Sys.time(), "] Calculating daily percent difference fore ach PSU (all years)"))
+print(paste0("INFO [", Sys.time(), "] Calculating daily percent difference fore each PSU (all years)"))
 print("This may take several minutes")
 per_diff_daily <- data.frame()
 
-for (b in 1:length(base_names)) {
+for (b in 1:seq_along(base_names)) {
   base_col <- grep(base_names[b], names(fish_daily), value = TRUE)
-  for (a in 1:length(alt_names)) {
+  for (a in 1:seq_along(alt_names)) {
     alt_col <- grep(alt_names[a], names(fish_daily), value = TRUE)
     
     b_name <- str_extract_all(base_col, base_names[b])[[1]]
@@ -200,10 +196,10 @@ for (b in 1:length(base_names)) {
     
     print(paste0("Processing Daily Percent Difference :: ", diff_name))
     
-    alt_base <- fish_daily[,c(alt_col, base_col)]
-    per_diff <- ((alt_base[alt_col] - alt_base[base_col])/alt_base[base_col])*100
+    alt_base <- fish_daily[, c(alt_col, base_col)]
+    per_diff <- ((alt_base[alt_col] - alt_base[base_col]) / alt_base[base_col]) * 100
     names(per_diff) <- "percent_diff"
-    per_diff <- cbind(fish_daily[,c("DATE", "YEAR", "PSU")], per_diff)
+    per_diff <- cbind(fish_daily[, c("DATE", "YEAR", "PSU")], per_diff)
     per_diff$Scenario <- diff_name
     per_diff_daily <- rbind(per_diff_daily, per_diff)
   }
@@ -241,12 +237,11 @@ daily_diff_map <- per_diff_daily %>%
 ## -----------------------------------------------------------------------------
 print(paste0("INFO [", Sys.time(), "] Making Barplots"))
 
-# Make Percent diffrence bar plot
+# Make Percent difference bar plot
 x_var <- "YEAR"
 y_var <- "mean_perdiff"
 fill_var <- "Scenario"
 title <- "Total Fish Density"
-#y_lab <- paste0("Percent Change in ", title, "\nfrom baseline to ", map_dfs$alt_name)
 x_lab <- "Year"
 min_limit <- plyr::round_any(min(daily_diff_bar[y_var]), 5, f = floor)
 max_limit <- plyr::round_any(max(daily_diff_bar[y_var]), 5, f = ceiling)
@@ -261,10 +256,9 @@ daily_diff_bar$Scenario <- factor(daily_diff_bar$Scenario,
                                  levels = c(diff_levels))
 
 # Make bar plot for alt vs both baselines
-#a <- 1
-for (a in 1:length(alt_names)) {
+for (a in 1:seq_along(alt_names)) {
   print(paste0("Making Differnce Bar Plot :: ", alt_names[a]))
-  per_diff_alt <- daily_diff_bar[grep(alt_names[a], daily_diff_bar$Scenario),]
+  per_diff_alt <- daily_diff_bar[grep(alt_names[a], daily_diff_bar$Scenario), ]
   diff_plot <- PerDiffPlot(
     df = per_diff_alt,
     x_var = x_var,
@@ -277,16 +271,15 @@ for (a in 1:length(alt_names)) {
     max_limit = max_limit
   )
   diff_plot_filename <- paste0(output_path, "/PercentDiff_BarPlot_",
-                               gsub(" ", "_", title),"_", alt_names[a], ".pdf")
+                               gsub(" ", "_", title), "_", alt_names[a], ".pdf")
   ggsave(diff_plot_filename, diff_plot, width = 11,
          height = 8.5, units = "in", dpi = 300)
 }
 
 # Make bar plot for all alts against each baseline
-#a <- 1
-for (b in 1:length(base_names)) {
+for (b in 1:seq_along(base_names)) {
   print(paste0("Making Differnce Bar Plot :: ", base_names[b]))
-  per_diff_alt <- daily_diff_bar[grep(base_names[b], daily_diff_bar$Scenario),]
+  per_diff_alt <- daily_diff_bar[grep(base_names[b], daily_diff_bar$Scenario), ]
   diff_plot_alt <- PerDiffPlotAlts(
     df = per_diff_alt,
     x_var = x_var,
@@ -374,9 +367,9 @@ name.labs
 # Make Maps
 map_data_list <- list()
 index <- 0
-for (b in 1:length(base_names)) {
+for (b in 1:seq_along(base_names)) {
   base_scenario <- base_names[b] # get base name
-  for (a in 1:length(alt_names)) {
+  for (a in 1:seq_along(alt_names)) {
     alt_scenario <- alt_names[a] # get alt name
     
     diff_scenario <- paste0(alt_scenario, "-", base_scenario) # make diff name
