@@ -1,8 +1,7 @@
 ## -----------------------------------------------------------------------------
 # Function to generate maps for netcdf outputs for restoration runs
-#
-# Caitlin Hackett chackett@usgs.gov
 ## -----------------------------------------------------------------------------
+
 #Load Packages
 library(tidyverse)
 library(cowplot)
@@ -35,9 +34,9 @@ North2GetArrow <- function(symbol = 1, scale) {
 # Function to build map 
 ## -----------------------------------------------------------------------------
 RestorationRunMap <- function(
-    df_ind,         # Dataframe of individual score output with coordinate column names "x", and "y", 
+    df_ind,         # Data frame of individual score output with coordinate column names "x", and "y", 
     ind_fill,       # column name of individual score discrete values to be plotted (LOSOM is "labs")
-    df_dif,         # Dataframe of difference output with coordinate column names "x", and "y"
+    df_dif,         # Data frame of difference output with coordinate column names "x", and "y"
     dif_fill,       # column name of discrete values to be plotted (LOSOM is "labs")
     scenario_col,   # column name of scenarios to be plotted
     year_col,       # column name of years to be plotted
@@ -46,7 +45,7 @@ RestorationRunMap <- function(
     wcas_path,      # File path to shapefile of water conservation areas boundaries
     fl_path,        # File path to shapefile of Florida boundary
     landscape,      # TRUE/FALSE should output be landscape?
-    map_title,      # Title to be printed at top of map, (ex. "Alligator HSI")
+    map_title,      # Title to be printed at top of map, (e.g., "Alligator HSI")
     output_file_name) { # Name of Output File
   
   #-----------------
@@ -74,32 +73,34 @@ RestorationRunMap <- function(
     score_legend_name <- "Score"
   }
   diff_legend_name <- levels(df_dif$Scenario)[3]
-  diff_legend_name <- paste0("Difference","\n", diff_legend_name)
+  diff_legend_name <- paste0("Difference", "\n", diff_legend_name)
   
   #-----------------
   # Read Shapefiles
   
   # read shapefiles, checks for valid geometry,
   # and makes geometry valid if not valid 
-  # crop shapefiles to map extenct
+  # crop shapefiles to map extent
   # create file used to generate scale bar
   
-    # Florida boundary
+  # Florida boundary
   fl.shp <- st_read(dsn = fl_path) %>%
     st_transform(crs = 26917)
   fl_st_valid <- st_is_valid(fl.shp)
   if (all(fl_st_valid, TRUE)) {
     fl.shp <- fl.shp
-    } else {
-    fl.shp <- st_make_valid(fl.shp)}  
+  } else {
+    fl.shp <- st_make_valid(fl.shp)
+    }  
   
   # WCAS boundaries
   wcas.shp <- st_read(dsn = wcas_path)
   wcas_st_valid <- st_is_valid(wcas.shp)
   if (all(wcas_st_valid, TRUE)) {
     wcas.shp <- wcas.shp
-    } else {
-    wcas.shp <- st_make_valid(wcas.shp)}  
+  } else {
+    wcas.shp <- st_make_valid(wcas.shp)
+    }  
   
   # Main Park Road 
   mpr.shp <- st_read(dsn = mpr_path) %>%
@@ -108,7 +109,8 @@ RestorationRunMap <- function(
   if (all(mpr_st_valid, TRUE)) {
     mpr.shp <- mpr.shp
   } else {
-    mpr.shp <- st_make_valid(mpr.shp)}  
+    mpr.shp <- st_make_valid(mpr.shp)
+    }  
   
   # Load AOI mask shapefile
   aoi.shp <- st_read(dsn = aoi_path)
@@ -116,7 +118,8 @@ RestorationRunMap <- function(
   if (all(aoi_st_valid, TRUE)) {
     aoi.shp <- aoi.shp
   } else {
-    aoi.shp <- st_make_valid(aoi.shp)}  
+    aoi.shp <- st_make_valid(aoi.shp)
+    }  
   
   # Set map extent from AOI file
   aoi_extent <- extent(aoi.shp)
@@ -134,7 +137,7 @@ RestorationRunMap <- function(
   
   # Set scale to create scalebar
   df_scale <- df_ind
-  coordinates(df_scale) <- ~ x+ y
+  sp::coordinates(df_scale) <- ~ x + y
   df_scale <- st_as_sf(df_scale)
   df_scale <- df_scale %>% st_set_crs(st_crs(wcas.shp))
   
@@ -144,10 +147,8 @@ RestorationRunMap <- function(
 
   #-----------------
   # Set Theme and Scale Factor
-  
-  #theme_set(theme_bw())
-  scale_factor = 1.5
-  legend_scale_factor = 1.3
+  scale_factor <- 1.5
+  legend_scale_factor <- 1.3
 
   #-----------------
   # Create Legend
@@ -158,38 +159,38 @@ RestorationRunMap <- function(
   # Individual score legend
   ind_legend <- get_legend(
   ggplot() +
-    geom_raster(data = df_ind , aes(x = x, y = y, fill = !!sym(ind_fill)),
+    geom_raster(data = df_ind, aes(x = x, y = y, fill = !!sym(ind_fill)),
                 na.rm = TRUE, show.legend = TRUE) +
     scale_fill_manual(values = rev(score_pal), 
                       name = score_legend_name, drop = FALSE) +
     guides(fill = guide_legend(ncol = 1, reverse = TRUE)) +
     theme(
-      legend.key.height = unit(legend_scale_factor*8, "mm"),
-      legend.key.width = unit(legend_scale_factor*8, "mm"),
+      legend.key.height = unit(legend_scale_factor * 8, "mm"),
+      legend.key.width = unit(legend_scale_factor * 8, "mm"),
       legend.key = element_rect(colour = "black",
-                                linewidth = legend_scale_factor*0.8),
+                                linewidth = legend_scale_factor * 0.8),
       legend.title.align = 0.0,
-      legend.margin = margin(0,0,0,0, unit = "mm"),
-      text = element_text(family = "sans", size = legend_scale_factor*19),
+      legend.margin = margin(0, 0, 0, 0, unit = "mm"),
+      text = element_text(family = "sans", size = legend_scale_factor * 19),
     ))
 
   # Difference legend
   dif_legend <- get_legend(
   ggplot() +
-    geom_raster(data = df_dif , aes(x = x, y = y, fill = !!sym(dif_fill)),
+    geom_raster(data = df_dif, aes(x = x, y = y, fill = !!sym(dif_fill)),
                 na.rm = TRUE, show.legend = TRUE) +
     scale_fill_manual(values = diff_pal,
                       name = diff_legend_name, drop = FALSE) +
     guides(fill = guide_legend(ncol = 1, reverse = TRUE)) +
     theme(
-      legend.key.height = unit(legend_scale_factor*8, "mm"),
-      legend.key.width = unit(legend_scale_factor*8, "mm"),
+      legend.key.height = unit(legend_scale_factor * 8, "mm"),
+      legend.key.width = unit(legend_scale_factor * 8, "mm"),
       legend.key = element_rect(colour = "black",
-                                linewidth = legend_scale_factor*0.8),
+                                linewidth = legend_scale_factor * 0.8),
       legend.title.align = 0.0,
-      legend.margin = margin(15,0,0,0, unit = "mm"),
+      legend.margin = margin(15, 0, 0, 0, unit = "mm"),
       
-      text = element_text(family = "sans", size = legend_scale_factor*19),
+      text = element_text(family = "sans", size = legend_scale_factor * 19),
     ))
 
   # Join legend together
@@ -202,40 +203,39 @@ RestorationRunMap <- function(
   map_plot <- ggplot() +
     
     # Plot Individual score 
-    geom_raster(data = df_ind , aes(x = x, y = y, fill = !!sym(ind_fill)),
-                na.rm = T, show.legend = FALSE) +
+    geom_raster(data = df_ind, aes(x = x, y = y, fill = !!sym(ind_fill)),
+                na.rm = TRUE, show.legend = FALSE) +
     scale_fill_manual(values = rev(score_pal),
                       name = score_legend_name, drop = FALSE) +
     guides(fill = guide_legend(ncol = 1, reverse = TRUE)) +
   
     # Allows for new scale fill
-    # this is how the individual score and differnce maps can be on one figure
+    # this is how the individual score and difference maps can be on one figure
     new_scale_fill() + 
   
     #Plot Difference 
-    geom_raster(data = df_dif , aes(x = x, y = y, fill = !!sym(dif_fill)),
+    geom_raster(data = df_dif, aes(x = x, y = y, fill = !!sym(dif_fill)),
                 na.rm = TRUE, show.legend = FALSE) +
     scale_fill_manual(values = diff_pal,
                       name = diff_legend_name, drop = FALSE) +
     guides(fill = guide_legend(ncol = 1, reverse = TRUE)) +
   
     # Plot facets
-    facet_grid(as.formula(paste(scenario_col,"~", year_col)),
+    facet_grid(as.formula(paste(scenario_col, "~", year_col)),
                labeller = labeller(name = name.labs)) +
     
     # Plot shapefiles for Main Park Road, WCAS, and area of interest
     geom_sf(data = mpr.crop, colour = "black",
-            lwd = scale_factor*0.4, show.legend = F, lty = "dashed") +
+            lwd = scale_factor * 0.4, show.legend = FALSE, lty = "dashed") +
     geom_sf(data = wca.crop, colour = "black", alpha = 0,
-            lwd = scale_factor*0.3, show.legend = FALSE) +
+            lwd = scale_factor * 0.3, show.legend = FALSE) +
     geom_sf(data = aoi.crop, colour = "SADDLEBROWN", alpha = 0,
-            lwd = scale_factor*1, show.legend = FALSE) +
+            lwd = scale_factor * 1, show.legend = FALSE) +
     
     # Add scalebar
-    ggsn::scalebar(data = df_scale, transform = F, dist = 20, dist_unit = "km",
-                   st.dist =  0.015, st.size = scale_factor*2.3,
+    ggsn::scalebar(data = df_scale, transform = FALSE, dist = 20, dist_unit = "km",
+                   st.dist =  0.015, st.size = scale_factor * 2.3,
                    st.bottom = TRUE, height = 0.014, border.size = 1,
-                   #location = "bottomright",
                    anchor = c(x = as.numeric(aoi_extent[2] - 4000),
                               y = as.numeric(aoi_extent[3] + 3000)),
                    family = "sans",
@@ -244,7 +244,7 @@ RestorationRunMap <- function(
 
     # Can use this to set crs or crop the map output if needed
     # Expand = FALSE does not add extra buffer around plotted extent
-    coord_sf(expand = F) +
+    coord_sf(expand = FALSE) +
     
     # Set which graticule displayed on x and y axis
     scale_x_continuous(breaks = c(-80.5, -81, -81.5)) +
@@ -268,7 +268,7 @@ RestorationRunMap <- function(
       strip.background = element_rect(colour = "Black"),
      
       #set size of text in strip headings on the facets
-      strip.text = element_text(size = legend_scale_factor*18), 
+      strip.text = element_text(size = legend_scale_factor * 18), 
       
       # Remove axis title
       axis.title = element_blank(),
@@ -306,7 +306,8 @@ RestorationRunMap <- function(
     if (all(wost_st_valid, TRUE)) {
       wost_shp <- wost_shp
     } else {
-      wost_shp <- st_make_valid(wost_shp)}
+      wost_shp <- st_make_valid(wost_shp)
+      }
 
     # crop wost colonies
     wost.crop  <- st_crop(wost_shp, aoi.shp)
@@ -314,7 +315,7 @@ RestorationRunMap <- function(
     map_plot <- map_plot +
       geom_sf(data = wost.crop, color = "black", lwd = 4) +
       geom_sf(data = wost.crop, colour = "orange", lwd = 2) +
-      coord_sf(expand = F)
+      coord_sf(expand = FALSE)
   }
   
   ## FORMAT FINAL PLOT##
