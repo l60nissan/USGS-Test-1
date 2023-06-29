@@ -39,7 +39,7 @@ message("INFO [", Sys.time(), "] USER INPUTS SET TO: \n*parent path: ", parent_p
         "\n*basline scenarios: ", paste(base_names, collapse = " "))
 
 #-----------------
-# Define strings to avoid hard coding thorughout script
+# Define strings to avoid hard coding throughout script
 collapse_str <- "|"
 sep_str <- "_"
 labs_str <- "labs"
@@ -94,7 +94,7 @@ if (sp_string == waders_string) {
 # Loop through species, process output, output acreage csv and map
 # Loop through target species
 process_list_all <- list() # list to store all output
-#n <- 1
+
 for (n in 1:seq_along(sp_string)) { # This is to accommodate multiple 
                                  # species output in the everwaders path
 
@@ -114,12 +114,12 @@ for (n in 1:seq_along(sp_string)) { # This is to accommodate multiple
   base_list <- files$base_list
 
   #-----------------
-  # Loop to process data and make maps, acreage table and barplot 
+  # Loop to process data and make maps, acreage table and bar plot 
   
-  # Process each baselinee and alt combination
+  # Process each baseline and alt combination
   # list to hold processed data
   process_list <- list() 
-  # data frame to hold percent difference data for barplot
+  # data frame to hold percent difference data for bar plot
   percent_diff <- data.frame() 
   # data frame to hold acreage data
   acreage_diff_df <- data.frame() 
@@ -127,7 +127,7 @@ for (n in 1:seq_along(sp_string)) { # This is to accommodate multiple
   # Process baseline file b
   for (b in 1:seq_along(base_list)) {  
       
-    # CGet baseline scenario name
+    # Get baseline scenario name
     b_name <- str_extract_all(base_list[b], all_scenario_names)[[1]]
     # Create empty list for output for each baseline
     process_list[[b]] <- list()
@@ -198,7 +198,7 @@ for (n in 1:seq_along(sp_string)) { # This is to accommodate multiple
                        output_file_name = out_file)
 
       #-----------------
-      # Add data to Acreage dataframe
+      # Add data to Acreage data frame
       
       print(paste0("INFO [", Sys.time(), "] Adding Acreage :: ALT_",
                    a_name, " minus BASE_", b_name))
@@ -209,7 +209,7 @@ for (n in 1:seq_along(sp_string)) { # This is to accommodate multiple
   #-----------------
   # Process Diff calculations for alternate scenarios and baseline scenarios
   # - Calculate for every species in the sp_string within loop n
-  # - if mask is applied, it masks the entire stack.
+  # - if mask is applied, it masks the entire stack
 
   # Stack NetCDF percent difference calculations and bar plots
   # Mask is applied if cropped = FALSE
@@ -261,7 +261,7 @@ for (n in 1:seq_along(sp_string)) { # This is to accommodate multiple
     daily_mean_vals <- cellStats(masked$nc_masked, stat = mean, na.rm = TRUE)
     masked$daily_mean <- daily_mean_vals
       
-    # add masked cell stats to list
+    # Add masked cell stats to list
     alt_list_masked[[i]] <- masked
     names(alt_list_masked)[[i]] <- masked$Scenario 
   } # closes i 
@@ -365,8 +365,8 @@ for (n in 1:seq_along(sp_string)) { # This is to accommodate multiple
   #-----------------
   # Export percent difference data, and make bar plots
 
-  # Export dataframe with all percent differences
-  # If percent diffrence data frame exists, create a bar plot
+  # Export data frame with all percent differences
+  # If percent difference data frame exists, create a bar plot
   print(paste0("INFO [", Sys.time(), "] Export Percent Difference Data CSV"))
   if (!is.null(percent_diff)) {
     diff_output_filename <- paste0(out_path, perdiff_name_str,
