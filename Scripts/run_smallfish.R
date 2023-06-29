@@ -11,7 +11,9 @@ print(paste0("INFO [", Sys.time(), "] Loading Workflow inputs"))
 source("./Scripts/workflow_inputs.R") # workflow inputs
 
 # Set inputs for workflow
-parent_path <- fish_path # parent path
+parent_path <- fish_parent_path # parent path
+parent_path <- list.files(parent_path, pattern = "\\FISH_TIMESERIES_PSU.csv",
+                          full.names = TRUE, recursive = TRUE)
 output_path <- fish_output_path # output path
 
 # source/run workflow
