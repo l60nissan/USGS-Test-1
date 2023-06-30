@@ -1,6 +1,15 @@
 ## -----------------------------------------------------------------------------
 # Run Marl Prairie workflow
+
+# Run routine to summarize Marl Prairie Indicator output
+# Script outputs are: maps, CSVs, and RData of processed output
 ## -----------------------------------------------------------------------------
+# Expected warnings:
+# - "Warning message: attribute variables are assumed to be spatially
+#   constant throughout all geometries"
+# - "st_centroid assumes attributes are constant over geometries of x"
+## -----------------------------------------------------------------------------
+
 print(paste0("INFO [", Sys.time(), "] Marl Prairie :: START"))
 
 # Install any necessary packages that are not yet installed
