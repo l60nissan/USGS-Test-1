@@ -45,3 +45,15 @@ restoration_runs is a library of R scripts used to summarize output of JEM model
 * `marlprairie_map_function.R` Functions to generate maps for Marl Prairie model output
 * `marlprairie_workflow.R` Workflow that sources dependency functions, pulls in model output, and generates maps and acreage calculations
 * `run_marlprairie.R` Run full workflow to process Marl Prairie 
+
+## Steps to Process Species Model Output
+* Download repository - this download will include processing scripts as well as empty directory folders necessary to run the workflow
+* Place model output in the associated species sub folder within the `Data` folder
+* Run the `run` file for the target species model. For example, run `run_alligator.R` to process alligator model output
+* Find processed model output in the associated species sub folder within the `Output` folder
+
+## Joint Ecosystem Modeling (JEM) Species Models Incuded in Repository
+* Alligator Production Suitability Index Model (APSI): https://www.jem.gov/Modeling/Alligator
+* EverSnail (apple snail): https://www.jem.gov/Modeling/EverSnail
+
+
