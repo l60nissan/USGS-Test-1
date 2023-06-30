@@ -34,7 +34,7 @@ all_files
 # Read in Target data and combine to one data frame
 print(paste0("INFO [", Sys.time(), "] Reading Sparrow Helper Data"))
 hydro_percent <- data.frame()
-for (f in 1:seq_along(all_files)) {
+for (f in seq_along(all_files)) {
   
   # Extract scenario name from file
   name <- str_extract_all(all_files[f], all_scenario_names)[[1]]
@@ -65,7 +65,7 @@ bar_pal <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442",
              "#0072B2", "#D55E00", "#CC79A7", "#000000")
 
 # Generate bar plot for each subpopulation
-for (p in 1:seq_along(pops)) {
+for (p in seq_along(pops)) {
   print(paste0("INFO [", Sys.time(), "] Generating Plot for Subpop ", pops[p]))
   plot_data <- hydro_percent[hydro_percent$name == pops[p], ]
   
