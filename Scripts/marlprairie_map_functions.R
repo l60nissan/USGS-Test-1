@@ -174,7 +174,7 @@ MarlMap <- function(
     panel.grid.major = element_blank(), # remove grid lines
     panel.grid.minor = element_blank(), # remove grid lines,
     
-    panel.border = element_rect(fill = NA, color = "black", size = 1),
+    panel.border = element_rect(fill = NA, color = "black", linewidth = 1),
     
     # rotate and position y axis labels
     axis.text.y = element_text(angle = 90, hjust = 0.5,
@@ -195,7 +195,7 @@ MarlMap <- function(
     # Format legend format and text
     legend.key.height = unit(5, "mm"),
     legend.key.width = unit(5, "mm"),
-    legend.key = element_rect(colour = "black", size = 0.5),
+    legend.key = element_rect(colour = "black", linewidth = 0.5),
     legend.title.align = 0.0,
     legend.margin = margin(0,0,0,0, unit = "mm"),
     text = element_text(family = "sans", size = 16)) 
@@ -219,11 +219,11 @@ MarlMap <- function(
     
     # Plot shapefiles for Main Park Road, WCAS, and area of interest
     geom_sf(data = mpr.crop, colour = "black",
-            linewidth = scale_factor*0.5, show.legend = F, lty = "dashed") +
+            linewidth = scale_factor * 0.5, show.legend = F, lty = "dashed") +
     geom_sf(data = wca.crop, colour = "black", alpha = 0, 
-            linewidth = scale_factor*0.5, show.legend = FALSE) +
+            linewidth = scale_factor * 0.5, show.legend = FALSE) +
     geom_sf(data = spop.crop, colour = "Red", alpha = 0,
-            linewidth = scale_factor*0.4, show.legend = FALSE) +
+            linewidth = scale_factor * 0.4, show.legend = FALSE) +
     geom_sf_text(data = filter(spop.crop, SubPopulat != "A" & SubPopulat != "AX"),
                  aes(label = SubPopulat),
                  color = "black", size = 5, fontface = "bold") +
@@ -282,7 +282,7 @@ MarlMap <- function(
       # Format legend format and text
       legend.key.height = unit(5, "mm"),
       legend.key.width = unit(5, "mm"),
-      legend.key = element_rect(colour = "black", size = 0.8),
+      legend.key = element_rect(colour = "black", linewidth = 0.8),
       legend.title.align = 0.0,
       legend.margin = margin(0,0,0,0, unit = "mm"),
       text = element_text(family = "sans", size = 16)) 
