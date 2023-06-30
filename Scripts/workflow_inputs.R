@@ -19,12 +19,12 @@
 #     in the file path (e.g., Scenario AA must be named as "AA" not "aa")
 # ------------------------------------------------------------------------------
 # Set Alternate scenario names
-alt_names <- c("WALT1R")
+alt_names <- c("AA")
 alt_names
 
 
 # Set Baseline scenario names
-base_names <- c("WECBRR")
+base_names <- c("ECBr")
 base_names
 
 # ------------------------------------------------------------------------------
@@ -52,8 +52,8 @@ waders_cropped <- FALSE
 ## ----------
 # Apple Snail
 
-apsn_parent_path <- "./Data/AppleSnail/"
-apsn_output_path <- "./Output/AppleSnail/"
+apsn_parent_path <- "./Data/Apple_Snail/"
+apsn_output_path <- "./Output/Apple_Snail/"
 apsn_cropped <- FALSE
 
 ## ----------
@@ -61,7 +61,7 @@ apsn_cropped <- FALSE
 
 snki_parent_path <- "./Data/SnailKite/"
 snki_output_path <- "./Output/SnailKite/"
-snki_cropped <- FALSE
+snki_cropped <- TRUE
 
 ## ----------
 # Days Since Dry
@@ -95,7 +95,7 @@ sparrow_output_path <- "./Output/CSSSHelper/"
 # 3) Area of interest and desired extent for maps
 # ------------------------------------------------------------------------------
 # Area of Interest (AOI)
-aoi_path <- "./GIS/WERP_AOI_2023_utm/WERP_AOI_2023_utm.shp"
+aoi_path <- "./GIS/COP_AOI_mask/COP_AOI_mask.shp"
 
 # ------------------------------------------------------------------------------
 # 4) Set output as Landscape or portrait
@@ -104,4 +104,4 @@ aoi_path <- "./GIS/WERP_AOI_2023_utm/WERP_AOI_2023_utm.shp"
 #     Landscape: landscape <- TRUE
 #     Portrait:  landscape <- FALSE
 # ------------------------------------------------------------------------------
-landscape <- TRUE
+landscape <- FALSE
