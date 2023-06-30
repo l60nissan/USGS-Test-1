@@ -1,9 +1,8 @@
 ## -----------------------------------------------------------------------------
 # Run Apple Snail workflow
 #
-# Summarize output of Apple Snail model for use by restoration managers and planners
-# in restoration planning
-# outputs are: bar plots, maps, CSVs, and RData of processed output
+# Run routine to summarize EverSnail (Apple Snail Model) output
+# Script outputs are: bar plots, maps, CSVs, and RData of processed output
 ## -----------------------------------------------------------------------------
 # Expected warnings:
 # - When working with NetCDFs in R, some warnings will be triggered
