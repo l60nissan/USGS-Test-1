@@ -125,11 +125,14 @@ RestorationRunMap <- function(
   aoi_extent <- extent(aoi.shp)
   aoi_extent <- c(aoi_extent@xmin - 1000,
                   aoi_extent@xmax + 1000,
-                  aoi_extent@ymin - 1000,
+                  aoi_extent@ymin - 4000,
                   aoi_extent@ymax + 1000)
   map_extent <- aoi_extent
   
   # Crop to map extent
+  # Warning expected with st_crop() and can be ignored:
+  # "Warning message: attribute variables are assumed to be spatially
+  # constant throughout all geometries"
   fl.crop  <- st_crop(fl.shp, map_extent)
   wca.crop <- st_crop(wcas.shp, map_extent)
   mpr.crop <- st_crop(mpr.shp, map_extent)
@@ -236,8 +239,8 @@ RestorationRunMap <- function(
     ggsn::scalebar(data = df_scale, transform = FALSE, dist = 20, dist_unit = "km",
                    st.dist =  0.015, st.size = scale_factor * 2.3,
                    st.bottom = TRUE, height = 0.014, border.size = 1,
-                   anchor = c(x = as.numeric(aoi_extent[2] - 4000),
-                              y = as.numeric(aoi_extent[3] + 3000)),
+                   anchor = c(x = as.numeric(aoi_extent[2] - 5000),
+                              y = as.numeric(aoi_extent[3] + 4000)),
                    family = "sans",
                    facet.var = c(scenario_col, year_col),
                    facet.lev = c(scale_y, scale_x)) +
@@ -313,8 +316,8 @@ RestorationRunMap <- function(
     wost.crop  <- st_crop(wost_shp, aoi.shp)
 
     map_plot <- map_plot +
-      geom_sf(data = wost.crop, color = "black", lwd = 4) +
-      geom_sf(data = wost.crop, colour = "orange", lwd = 2) +
+      geom_sf(data = wost.crop, color = "black", size = 4) +
+      geom_sf(data = wost.crop, colour = "orange", size = 2) +
       coord_sf(expand = FALSE)
   }
   
@@ -324,7 +327,7 @@ RestorationRunMap <- function(
   # If landscape = TRUE
   if (landscape) {
     
-    if (grepl("Apple Snail", map_title)) {
+    if (grepl("Apple Snail|Snail Kite", map_title)) {
 
       # This is the one sent to Allison
       combined_plot <- cowplot::plot_grid(map_plot, NULL, full_legend,
@@ -342,15 +345,33 @@ RestorationRunMap <- function(
     ggsave(output_file_name, combined_plot, height = 8.5, width = 11,
          units = "in", dpi = 300, scale = 2)
   
-    } else { # If portrait (landscape = FALSE)
-    
+    } 
+  
+  # If portrait (landscape = FALSE)
+    if (!landscape) {
+      
+      if (grepl("Apple Snail", map_title)) {
+        
+        # This is the one sent to Allison
+        combined_plot <- cowplot::plot_grid(map_plot, NULL, full_legend,
+                                            rel_widths = c(1.5, -0.25, .4), ncol = 3)
+      }
+      
+      else if (grepl("Snail Kite", map_title)) {
+        
+        # This is the one sent to Allison
+        combined_plot <- cowplot::plot_grid(map_plot, NULL, full_legend,
+                                            rel_widths = c(1.5, -0.3, .4), ncol = 3)
+      } else {
+
       # combine plot and legend: the NULL plot allows control of the distance
       # between the plot and legend by setting rel_widths()
-      combined_plot <- plot_grid(map_plot, NULL, full_legend,
-                                 rel_widths = c(4, 0, 1), ncol = 3)
+      combined_plot <- plot_grid(map_plot, NULL, full_legend, NULL,
+                                 rel_widths = c(1, 0, 0.25, 0.005), ncol = 4)
+      }
       
       # Save as full page portrait PDF 
       ggsave(output_file_name, combined_plot, height = 11, width = 8.5,
-             units = "in", dpi = 300, scale = 2)
+             units = "in", dpi = 300, scale = 2.1)
+    }
   }
-}
