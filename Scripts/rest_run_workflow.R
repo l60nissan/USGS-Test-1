@@ -95,7 +95,7 @@ if (sp_string == waders_string) {
 # Loop through target species
 process_list_all <- list() # list to store all output
 
-for (n in 1:seq_along(sp_string)) { # This is to accommodate multiple 
+for (n in seq_along(sp_string)) { # This is to accommodate multiple 
                                  # species output in the everwaders path
 
   ## Extract species name
@@ -125,7 +125,7 @@ for (n in 1:seq_along(sp_string)) { # This is to accommodate multiple
   acreage_diff_df <- data.frame() 
 
   # Process baseline file b
-  for (b in 1:seq_along(base_list)) {  
+  for (b in seq_along(base_list)) {  
       
     # Get baseline scenario name
     b_name <- str_extract_all(base_list[b], all_scenario_names)[[1]]
@@ -134,7 +134,7 @@ for (n in 1:seq_along(sp_string)) { # This is to accommodate multiple
     names(process_list)[[b]] <- b_name
       
     # process each alternate file i with baseline b
-    for (i in 1:seq_along(alt_list)) {
+    for (i in seq_along(alt_list)) {
       
       # Get alternate scenario name
       a_name <- str_extract_all(alt_list[i], all_scenario_names)[[1]]
@@ -217,7 +217,7 @@ for (n in 1:seq_along(sp_string)) { # This is to accommodate multiple
   #-----------------
   # Stack/mask baseline scenarios and calculate cell stats (landscape means)
   base_list_masked <- list()
-  for (b in 1:seq_along(base_list)) {
+  for (b in seq_along(base_list)) {
     b_name <- str_extract_all(base_list[b], all_scenario_names)[[1]]
       
     print(paste0("INFO [", Sys.time(), "] Stacking Base :: ", b_name))
@@ -243,7 +243,7 @@ for (n in 1:seq_along(sp_string)) { # This is to accommodate multiple
   #-----------------
   # stack/mask alternate scenarios and calculate cell stats (landscape means)
   alt_list_masked <- list()
-  for (i in 1:seq_along(alt_list)) {
+  for (i in seq_along(alt_list)) {
     a_name <- str_extract_all(alt_list[i], all_scenario_names)[[1]]
         
     print(paste0("INFO [", Sys.time(), "] Stacking Alt :: ", a_name))
@@ -283,7 +283,7 @@ for (n in 1:seq_along(sp_string)) { # This is to accommodate multiple
   # Process baseline file b
   percent_diff <- data.frame() # list to hold processed data
 
-  for (b in 1:seq_along(base_list_masked)) {  
+  for (b in seq_along(base_list_masked)) {  
     
     # Get baseline name
     b_name <- base_list_masked[[b]]$Scenario
@@ -292,7 +292,7 @@ for (n in 1:seq_along(sp_string)) { # This is to accommodate multiple
     base_vals <- base_list_masked[[b]]$daily_mean
 
     # process alternate file i
-    for (i in 1:seq_along(alt_list_masked)) {
+    for (i in seq_along(alt_list_masked)) {
         
       # Get alternate name
       a_name <- alt_list_masked[[i]]$Scenario
@@ -397,7 +397,7 @@ for (n in 1:seq_along(sp_string)) { # This is to accommodate multiple
                                  f = ceiling) + min_max_adjust
   
     # make bar plots: 1 plot for each alternate shown against all baselines
-    for (a in 1:seq_along(alt_names)) {
+    for (a in seq_along(alt_names)) {
       print(paste0("INFO [", Sys.time(), "] Making Differnce Bar Plot :: ",
                    alt_names[a]))
     
@@ -422,7 +422,7 @@ for (n in 1:seq_along(sp_string)) { # This is to accommodate multiple
     } # closes alt bar plots
   
     # Make bar plots: 1 bar plot for each baseline shown against all alternates
-    for (l in 1:seq_along(base_names)) {
+    for (l in seq_along(base_names)) {
       print(paste0("INFO [", Sys.time(), "] Making Differnce Bar Plot :: ",
                    base_names[l]))
     
