@@ -1,16 +1,8 @@
 ## -----------------------------------------------------------------------------
 # Run Alligator workflow
 # 
-# Summarize output of Alligator model for use by restoration managers and planners
-# in restoration planning
-# outputs are: bar plots, maps, CSVs, and RData of processed output
-## -----------------------------------------------------------------------------
-# Expected warnings:
-# - When working with NetCDFs in R, some warnings will be triggered
-# regarding the CRS but these can be ignored. 
-#
-# - "Warning message: attribute variables are assumed to be spatially
-#   constant throughout all geometries"
+# Run routine to summarize Alligator Production Suitability Index Model output
+# Script outputs are: bar plots, maps, CSVs, and RData of processed output
 ## -----------------------------------------------------------------------------
 print(paste0("INFO [", Sys.time(), "] Alligator :: START"))
 
