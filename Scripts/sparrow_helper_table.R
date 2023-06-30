@@ -40,7 +40,7 @@ all_files
 
 #Load all files and add scenario name
 all_runs <- data.frame()
-for (s in 1:seq_along(all_files)) {
+for (s in seq_along(all_files)) {
   
   # extract alternative or baseline scenario from each file
   name <- str_extract_all(all_files[s], all_scenario_names)[[1]]
@@ -66,12 +66,12 @@ runs.summary <- runs.long %>%
 
 #Calculate difference
 num_day_diff <- data.frame()
-for (b in 1:seq_along(base_names)) {
+for (b in seq_along(base_names)) {
   
   # Pull baseline name
   b_name <- base_names[b]
   
-  for (a in 1:seq_along(alt_names)) {
+  for (a in seq_along(alt_names)) {
     
     # Pull alternative line
     a_name <- alt_names[a]
