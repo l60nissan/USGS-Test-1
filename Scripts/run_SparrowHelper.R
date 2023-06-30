@@ -1,5 +1,10 @@
 ## -----------------------------------------------------------------------------
 # Run Sparrow Helper workflow
+
+# Run routine to summarize Cape Sable Seaside Sparrow (CSSS) Helper output
+# Script outputs are: bar plots and CSVs
+## -----------------------------------------------------------------------------
+# No expected warnings
 ## -----------------------------------------------------------------------------
 print(paste0("INFO [", Sys.time(), "] Sparrow Helper :: START"))
 
