@@ -1,7 +1,7 @@
 ## -----------------------------------------------------------------------------
 # Run KiteNest workflow
 #
-# Run routine to summarize KiteNest output
+# Run routine to summarize KiteNest (Snail Kite Habitat Suitability Model) output
 # Script outputs are: bar plots, maps, CSVs, and RData of processed output
 ## -----------------------------------------------------------------------------
 # -- NOTES -- 
