@@ -1,6 +1,18 @@
 ## -----------------------------------------------------------------------------
 # Run Apple Snail workflow
+#
+# Summarize output of Apple Snail model for use by restoration managers and planners
+# in restoration planning
+# outputs are: bar plots, maps, CSVs, and RData of processed output
 ## -----------------------------------------------------------------------------
+# Expected warnings:
+# - When working with NetCDFs in R, some warnings will be triggered
+# regarding the CRS but these can be ignored. 
+#
+# - "Warning message: attribute variables are assumed to be spatially
+#   constant throughout all geometries"
+## -----------------------------------------------------------------------------
+
 print(paste0("INFO [", Sys.time(), "] Apple Snail :: START"))
 
 # Install any necessary packages that are not yet installed
