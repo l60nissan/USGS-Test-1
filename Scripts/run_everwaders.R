@@ -2,7 +2,7 @@
 # Run EverWaders workflow
 #
 # Run routine to summarize EverWaders (wading bird model) output
-# outputs are: bar plots, maps, CSVs, and RData of processed output
+# Script outputs are: bar plots, maps, CSVs, and RData of processed output
 ## -----------------------------------------------------------------------------
 # Expected warnings:
 # - When working with NetCDFs in R, some warnings will be triggered
