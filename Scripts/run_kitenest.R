@@ -1,14 +1,12 @@
 ## -----------------------------------------------------------------------------
 # Run KiteNest workflow
 #
-# Summarize output of KiteNest output for use by restoration managers and planners
-# in restoration planning
-# outputs are: bar plots, maps, CSVs, and RData of processed output
+# Run routine to summarize KiteNest output
+# Script outputs are: bar plots, maps, CSVs, and RData of processed output
 ## -----------------------------------------------------------------------------
-# -----
+# -- NOTES -- 
 # Runtime: Dependent on the total number of scenarios (Alternative + baseline)
 #          being processed. ~ 1 hour per scenario
-# ----- 
 # Expected warnings:
 # - When working with NetCDFs in R, some warnings will be triggered
 # regarding the CRS but these can be ignored. 
