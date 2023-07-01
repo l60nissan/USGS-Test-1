@@ -33,7 +33,7 @@ source("./Scripts/process_definitions.R")
 
 # Defined file paths for shapefiles
 print(paste0("INFO [", Sys.time(), "] Sourcing shapefile input paths"))
-source("./Scripts/input_paths.R")
+source("./Scripts/shapefile_paths.R")
 
 ## -----------------------------------------------------------------------------
 ## 1. SUBSET FISH PSU TO AOI
