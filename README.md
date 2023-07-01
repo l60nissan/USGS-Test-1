@@ -17,7 +17,8 @@ restoration_runs is a library of R scripts used to summarize output of JEM model
 * `workflow_inputs.R` Inputs set by the user to process model outputs for specific restoration run
 * `species_string_definitions.R` Definitions of species string used in file paths - this might be a string in a parent folder and not the specific NetCDF file. For example, the alligator model output is saved to the folder named JEM_Alligator_Production_Probability_Model_Data and the output NetCDF is named Output.nc
 * `shapefile_paths.R` Paths to shapefiles that are needed to process and map model output
-* `process_definitions.R` Definition of process criteria for model outputs including: target years, breaks and labels for mapped data, titles for maps and figures, variable name in NetCDF. These default to the definitions used for LOSOM, but can be updated by the user if necessary for other restoration runs. 
+* `process_definitions.R` Definition of process criteria for model outputs including: target years, breaks and labels for mapped data, titles for maps and figures, variable name in NetCDF. These default to the definitions used for LOSOM, but can be updated by the user if necessary for other restoration runs.
+* `session_info.R` contains sessionInfo() from R session used to generate workflow
 
 ### Sparrow Helper
 * `sparrow_helper_table.R` Process Sparrow Helper model output and generate table. Write table to csv
@@ -55,5 +56,3 @@ restoration_runs is a library of R scripts used to summarize output of JEM model
 ## Joint Ecosystem Modeling (JEM) Species Models Incuded in Repository
 * Alligator Production Suitability Index Model (APSI): https://www.jem.gov/Modeling/Alligator
 * EverSnail (apple snail): https://www.jem.gov/Modeling/EverSnail
-
-
