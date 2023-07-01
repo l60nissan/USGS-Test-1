@@ -19,7 +19,7 @@ source("./Scripts/marlprairie_process_function.R")
 source("./Scripts/marlprairie_map_functions.R")
 
 # Defined file paths for shapefiles
-source("./Scripts/input_paths.R")
+source("./Scripts/shapefile_paths.R")
 
 # Defined species strings - for consistency across coordinated scripts
 source("./Scripts/species_string_definitions.R")
