@@ -24,7 +24,7 @@ source("./Scripts/rest_run_map_functions.R")
 
 # Defined file paths for shapefiles
 print(paste0("INFO [", Sys.time(), "] Loading Shapefile Input Paths"))
-source("./Scripts/input_paths.R")
+source("./Scripts/shapefile_paths.R")
 
 # Defined species strings - for consistency across coordinated scripts
 print(paste0("INFO [", Sys.time(), "] Loading Species String Definitions"))
