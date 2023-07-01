@@ -16,7 +16,7 @@ restoration_runs is a library of R scripts used to summarize output of JEM model
 * `workflow_packages.R` Checks to see if the necessary packages are install and installs any missing packages
 * `workflow_inputs.R` Inputs set by the user to process model outputs for specific restoration run
 * `species_string_definitions.R` Definitions of species string used in file paths - this might be a string in a parent folder and not the specific NetCDF file. For example, the alligator model output is saved to the folder named JEM_Alligator_Production_Probability_Model_Data and the output NetCDF is named Output.nc
-* `input_paths.R` Paths to shapefiles that are needed to process and map model output
+* `shapefile_paths.R` Paths to shapefiles that are needed to process and map model output
 * `process_definitions.R` Definition of process criteria for model outputs including: target years, breaks and labels for mapped data, titles for maps and figures, variable name in NetCDF. These default to the definitions used for LOSOM, but can be updated by the user if necessary for other restoration runs. 
 
 ### Sparrow Helper
