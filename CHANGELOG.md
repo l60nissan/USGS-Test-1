@@ -8,7 +8,7 @@
 * Rename files to remove words that are capitalized
 * Clean scripts to match style guidelines 
 * Add print/INFO statements to scripts
-* Update scripts to work with newer R packqage versions
+* Update scripts to work with newer R package versions
 * Add file the contains sessionInfo() to document R and package versions
 * remove unused scripts
 
