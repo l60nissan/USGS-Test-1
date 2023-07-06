@@ -52,3 +52,10 @@ restoration_runs is a library of R scripts used to summarize output of JEM model
 * Place model output in the associated species sub folder within the `Data` folder
 * Execute the `run` file for the target species model. For example, run `run_alligator.R` to process alligator model output
 * Find processed model output in the associated species sub folder within the `Output` folder
+
+## Disclaimer
+
+## License
+
+## Contact
+Caitlin Hackett (chackett@usgs.gov)
