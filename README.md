@@ -10,7 +10,13 @@ restoration_runs is a library of R scripts used to summarize/post-process output
 
 "workflow" scripts source the above scripts to create all outputs
 
-## Script Descriptions
+## Suggested Citatation
+To cite this repository, please use:
+
+## Contact
+Caitlin Hackett (chackett@usgs.gov)
+
+## Descriptions of R scripts:
 
 ### Universal
 * `workflow_packages.R` Checks to see if the necessary packages are install and installs any missing packages
@@ -57,8 +63,7 @@ The following steps describe steps to post-process JEM model output. For instruc
 4. Find processed model output in the associated species sub folder within the `Output` folder
 
 ## Disclaimer
+See [DISCLAIMER.md](https://code.usgs.gov/warc/jem/models/restoration_runs/-/blob/main/DISCLAIMER.md) in this repository
 
 ## License
-
-## Contact
-Caitlin Hackett (chackett@usgs.gov)
+CC0 1.0. See [LICENSE.md](https://code.usgs.gov/warc/jem/models/restoration_runs/-/blob/main/LICENSE.md) for more details.
