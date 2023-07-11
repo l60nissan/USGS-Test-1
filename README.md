@@ -2,7 +2,7 @@
 
 ## Overview
 
-restoration_runs is a library of R scripts used to summarize output of JEM models used in restoration planning for projects such as LOSOM and WERP. The scripts create figures and maps for each model.
+restoration_runs is a library of R scripts used to summarize/post-process output of JEM models used in restoration planning for projects such as LOSOM and WERP. The scripts create figures and maps for each model.
 
 "process_functions" scripts contain functions that summarize all the data, write it out, and create bar graphs
 
@@ -48,10 +48,13 @@ restoration_runs is a library of R scripts used to summarize output of JEM model
 * `run_marlprairie.R` Run full workflow to process Marl Prairie 
 
 ## Steps to Process Species Model Output
-* Download repository - this download will include processing scripts as well as empty directory folders necessary to run the workflow
-* Place model output in the associated species sub folder within the `Data` folder
-* Execute the `run` file for the target species model. For example, run `run_alligator.R` to process alligator model output
-* Find processed model output in the associated species sub folder within the `Output` folder
+The following steps describe steps to post-process JEM model output. For instructions on how to run individual JEM models please see: https://jem.gov/Modeling
+
+1. Download repository - this download will include processing scripts, GIS files, and empty directory folders necessary to run the workflow
+2. Change working directory to this `restoration_runs` directory. This will ensure all file file paths are relative to this repository.
+2. Place output from each JEM species model in the associated species sub folder within the `Data` folder
+3. Execute the `run` file for the target species model. For example, execute `run_alligator.R` to process alligator model output
+4. Find processed model output in the associated species sub folder within the `Output` folder
 
 ## Disclaimer
 
