@@ -2,13 +2,15 @@
 
 ## Overview
 
-restoration_runs is a library of R scripts used to summarize/post-process output of JEM models used in restoration planning for projects such as Lake Okeechobee System Operating Manual (LOSOM) and Western Everglades Restoration Project (WERP). The scripts summarize model output and create figures and maps for each model.
+restoration_runs is a library of R-language scripts used to summarize/post-process output of Joint Ecosystem Modeling (JEM; https://jem.gov/) models used in restoration planning for projects such as the Lake Okeechobee System Operating Manual (LOSOM) and the Western Everglades Restoration Project (WERP). The scripts summarize model output and create figures and maps for each model.
 
-"process_functions" scripts contain functions that summarize all the data, write it out, and create bar graphs
+**process_functions** scripts contain functions that summarize all the data, write it out, and create bar graphs
 
-"maps_functions" scripts contain functions that create maps from the summarized data
+**maps_functions** scripts contain functions that create maps from the summarized data
 
-"workflow" scripts source the above scripts to create all outputs
+**workflow** scripts source the above scripts to create all outputs
+
+**run** scripts source scripts to run fullworkflow to process model output for each species model
 
 **This repository can post-process model output from the following JEM models:**
 
@@ -28,6 +30,10 @@ Note: this repository does not process WADEM wading bird output.
 [*KiteNest (Everglades snail kite)*](https://jem.gov/Modeling/KiteNest) 
 
 [*EverWaders (wading birds)*](https://jem.gov/Modeling/EverWaders) 
+
+### A note about "provisional" and "approved" USGS GitLab repositories
+
+The official USGS-approved GitLab release is available on the [XXX tag](url goes here). Because it is USGS-approved, it cannot be modified or edited, even to fix typos or bugs. Therefore, all bug fixes, edits, and additional development takes place on the [master branch](https://code.usgs.gov/warc/jem/models/restoration_runs), which is a provisional release. For the most up-to-date version, please navigate to the `master` branch if you haven't already.
 
 ## Descriptions of R scripts:
 
@@ -132,6 +138,7 @@ Found: https://gis.myfwc.com/Data/KMZ_files/Management%20-%20Wildlife%20Mgt%20Ar
 
 ## Suggested Citatation
 To cite this repository, please use:
+Hackett, C., Haider, S., D'Acunto, L., Benscoter, A., Romanañach, S., 2023, Joint Ecosystem Modeling (JEM) Restoration Runs R Library, U.S. Geological Survey software release, 
 
 ## Contact
 Caitlin Hackett (chackett@usgs.gov)
