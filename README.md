@@ -138,7 +138,7 @@ Found: https://gis.myfwc.com/Data/KMZ_files/Management%20-%20Wildlife%20Mgt%20Ar
 
 ## Suggested Citatation
 To cite this repository, please use:\
-Hackett, C., Haider, S., D'Acunto, L., Benscoter, A., Romanañach, S., 2023, Joint Ecosystem Modeling (JEM) Restoration Runs R Library, U.S. Geological Survey software release, 
+Hackett, C., Haider, S., D'Acunto, L., Benscoter, A., Romañach, S., 2023, Joint Ecosystem Modeling (JEM) Restoration Runs R Library, U.S. Geological Survey software release, 
 
 ## Contact
 Caitlin Hackett (chackett@usgs.gov)
