@@ -12,9 +12,9 @@ restoration_runs is a library of R scripts used to summarize/post-process output
 
 **This repository can post-process model output from the following JEM models:**
 
-[*Alligator*](https://jem.gov/Modeling/Alligator) 
+[*Alligator Production Suitability Index Model (APSI) (American Alligator)*](https://jem.gov/Modeling/Alligator) 
 
-[*EverSnail (apple snail)*](https://jem.gov/Modeling/EverSnail) 
+[*EverSnail (native Florida apple snail)*](https://jem.gov/Modeling/EverSnail) 
 
 [*Cape Sable Seaside Sparrow (CSSS) Marl Prairie Indicator*](https://jem.gov/Modeling/MarlPrairie)
 
@@ -23,7 +23,7 @@ restoration_runs is a library of R scripts used to summarize/post-process output
 [*Days Since Dry* (extracted from WADEM)](https://jem.gov/Modeling/WADEM)
 Note: this repository does not process WADEM wading bird output.
 
-[*Small fish*](https://jem.gov/Modeling/SmallFishDensity) 
+[*Small Fish Density Model*](https://jem.gov/Modeling/SmallFishDensity) 
 
 [*KiteNest (Everglades snail kite)*](https://jem.gov/Modeling/KiteNest) 
 
@@ -82,9 +82,9 @@ Note: this repository does not process WADEM wading bird output.
 * `run_marlprairie.R` Run full workflow to process Marl Prairie 
 
 ## Steps to Process Species Model Output
-The following steps describe steps to post-process JEM model output. For instructions on how to run individual JEM models please see: https://jem.gov/Modeling
+The following steps describe steps to post-process JEM model output. For instructions to run individual JEM models please follow the links provided for each model in the repository "Overview".
 
-1. Download repository - this download will include processing scripts, GIS files, and empty directory folders necessary to run the workflow
+1. Download repository - this download will include processing scripts, GIS files, and empty directory of folders necessary to run the workflow
 
 2. Change R working directory to this `restoration_runs` directory. This will ensure all file paths are relative to this repository.
 
@@ -97,10 +97,10 @@ The following steps describe steps to post-process JEM model output. For instruc
 
 5. Open `workflow_inputs.R` and set/review the following inputs:
      - define `alt_names` (line 22) and `base_names` (line 27) as described in script (line 13-19)
-     - set AOI shapefile path in the `GIS` directory (line 98). This will only need to updated for projects other than COP or LOSOM
+     - set AOI shapefile path (line 98). This will only need to updated for projects other than COP or LOSOM. For other projects, this should point to the file downloaded in step 3.
      - set if mapped output should be landscape or portrait (line 107) as described in script (line 101-105) 
 
-6. Execute the `run` script for the target species model. For example, run `run_alligator.R` to process alligator model output
+6. Execute the `run` script for the target species model. For example, run `run_alligator.R` to process alligator model output. There is no specified species model order that must be followed when running each `run` file. 
 
 7. Find processed model output in the associated species sub folder within the `Output` folder
 
