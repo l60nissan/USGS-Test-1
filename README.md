@@ -4,13 +4,13 @@
 
 restoration_runs is a library of R-language scripts used to summarize/post-process output of Joint Ecosystem Modeling (JEM; https://jem.gov/) models used in restoration planning for projects such as the Lake Okeechobee System Operating Manual (LOSOM) and the Western Everglades Restoration Project (WERP). The scripts summarize model output and create figures and maps for each model.
 
-**process_functions** scripts contain functions that summarize all the data, write it out, and create bar graphs
+*process_functions* scripts contain functions that summarize all the data, write it out, and create bar graphs
 
-**maps_functions** scripts contain functions that create maps from the summarized data
+*maps_functions* scripts contain functions that create maps from the summarized data
 
-**workflow** scripts source the above scripts to create all outputs
+*workflow* scripts source the above scripts to create all outputs
 
-**run** scripts source scripts to run fullworkflow to process model output for each species model
+*run* scripts source scripts to run fullworkflow to process model output for each species model
 
 **This repository can post-process model output from the following JEM models:**
 
