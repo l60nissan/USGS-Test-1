@@ -399,7 +399,6 @@ for (b in 1:seq_along(base_names)) {
              aoi_path = aoi_path,
              mpr_path = mpr_path,
              wcas_path = wcas_path,
-             fl_path = fl_path,
              landscape = landscape,
              map_title = "Mean Total Fish Density",
              df_ind = ind_plot,
