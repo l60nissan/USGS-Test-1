@@ -124,7 +124,7 @@ Found: https://public-nps.opendata.arcgis.com/datasets/nps-boundary-1
 Wildlife_Management_Areas_Florida-shp.zip: Boundaries for Florida wildlife management areas\
 Found: https://gis.myfwc.com/Data/KMZ_files/Management%20-%20Wildlife%20Mgt%20Areas%20-%20Generalized%20-%20FL.kmz
 
-**/GIS/WOST_colonies**: Shapefile containing Wood stork nesting colonies. Sourced from:         
+**/GIS/wood_stork_colonies_2009_2018**: Shapefile containing Wood stork nesting colonies. Sourced from:         
   Found: https://ecos.fws.gov/ServCat/Reference/Profile/124368 \
   United States Fish and Wildlife Service, South Florida Field Office, Vero Beach, FL. 2018. Wood Stork Colonies 2009-2018
 
