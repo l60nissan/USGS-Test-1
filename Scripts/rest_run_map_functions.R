@@ -300,8 +300,10 @@ RestorationRunMap <- function(
       wost_shp <- st_make_valid(wost_shp)
       }
 
-    # crop wost colonies
+    # crop wost colonies and remove points outside of AOI
     wost.crop  <- st_crop(wost_shp, aoi.shp)
+    wost.crop <- wost.crop %>%
+      st_intersection(aoi.shp)
 
     map_plot <- map_plot +
       geom_sf(data = wost.crop, color = "black", size = 4) +
