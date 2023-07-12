@@ -10,7 +10,7 @@ restoration_runs is a library of R-language scripts used to summarize/post-proce
 
 *workflow* scripts source the above scripts to create all outputs
 
-*run* scripts source scripts to run fullworkflow to process model output for each species model
+*run* scripts source scripts to run full workflow to process model output for each species model
 
 **This repository can post-process model output from the following JEM models:**
 
@@ -37,7 +37,7 @@ The official USGS-approved GitLab release is available on the [XXX tag](url goes
 
 ## Descriptions of R scripts:
 
-### Universal - input paths, string defintions, package installation used in workflow for each species
+### Universal - scripts used in workflow for all models
 *Sourced:*
 * `workflow_packages.R` Checks to see if the necessary packages are install and installs any missing packages
 * `workflow_inputs.R` Inputs set by the user to process model outputs for specific restoration run
@@ -54,7 +54,7 @@ The official USGS-approved GitLab release is available on the [XXX tag](url goes
 * `sparrow_helper_plots.R` Process Sparrow Helper model output and generates bar plot
 
 *run:*
-* `run_SparrowHelper.R` Run full workflow to process Sparrow Helper model output
+* `run_sparrowhelper.R` Run full workflow to process Sparrow Helper model output
 
 ### Small Fish
 *sourced:*
