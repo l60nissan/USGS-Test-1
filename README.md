@@ -137,7 +137,7 @@ Found: https://gis.myfwc.com/Data/KMZ_files/Management%20-%20Wildlife%20Mgt%20Ar
 **/GIS/area_of_interest**: Shapefile containing an example restoration run area of interest (AOI). The AOI is specific to each restoration project. The AOI provided here was used for the Combined Operational Plan (COP) and Lake Okeechobee System Operating Manual (LOSOM) projects. For restoration projects other than COP or LOSOM, please see the associated ScienceBase data release to obtain the correct AOI. Sourced from: https://www.sciencebase.gov/catalog/item/621fa557d34ee0c6b38a854f 
 
 ## Suggested Citatation
-To cite this repository, please use:
+To cite this repository, please use:\
 Hackett, C., Haider, S., D'Acunto, L., Benscoter, A., Romanañach, S., 2023, Joint Ecosystem Modeling (JEM) Restoration Runs R Library, U.S. Geological Survey software release, 
 
 ## Contact
