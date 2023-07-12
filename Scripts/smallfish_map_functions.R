@@ -45,7 +45,6 @@ FishMap <- function(
     aoi_path,     # File path to shapefile of Area of interest for map
     mpr_path,     # File path to shapefile of Main Park Road
     wcas_path,    # File path to shapefile of water conservation areas boundaries
-    fl_path,      # File path to shapefile of Florida boundary
     landscape,    # TRUE/FALSE should output be landscape?
     map_title,    # Title to be printed at top of map, (e.g., "Alligator HSI")
     output_file_name) { # Name of Output File
@@ -71,16 +70,6 @@ FishMap <- function(
   # and makes geometry valid if not valid 
   # crop shapefiles to map extent
   # create file used to generate scale bar
-  
-  # Florida boundary
-  fl_shp <- st_read(dsn = fl_path) %>%
-    st_transform(crs = 26917)
-  fl_st_valid <- st_is_valid(fl_shp)
-  if (all(fl_st_valid, TRUE)) {
-    fl_shp <- fl_shp
-  } else {
-    fl_shp <- st_make_valid(fl_shp)
-    }  
   
   # WCAS boundaries
   wcas_shp <- st_read(dsn = wcas_path)
