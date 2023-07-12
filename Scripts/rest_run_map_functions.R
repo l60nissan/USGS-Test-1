@@ -43,7 +43,6 @@ RestorationRunMap <- function(
     aoi_path,       # File path to shapefile of Area of interest for map
     mpr_path,       # File path to shapefile of Main Park Road
     wcas_path,      # File path to shapefile of water conservation areas boundaries
-    fl_path,        # File path to shapefile of Florida boundary
     landscape,      # TRUE/FALSE should output be landscape?
     map_title,      # Title to be printed at top of map, (e.g., "Alligator HSI")
     output_file_name) { # Name of Output File
@@ -82,16 +81,6 @@ RestorationRunMap <- function(
   # and makes geometry valid if not valid 
   # crop shapefiles to map extent
   # create file used to generate scale bar
-  
-  # Florida boundary
-  fl.shp <- st_read(dsn = fl_path) %>%
-    st_transform(crs = 26917)
-  fl_st_valid <- st_is_valid(fl.shp)
-  if (all(fl_st_valid, TRUE)) {
-    fl.shp <- fl.shp
-  } else {
-    fl.shp <- st_make_valid(fl.shp)
-    }  
   
   # WCAS boundaries
   wcas.shp <- st_read(dsn = wcas_path)
@@ -133,7 +122,6 @@ RestorationRunMap <- function(
   # Warning expected with st_crop() and can be ignored:
   # "Warning message: attribute variables are assumed to be spatially
   # constant throughout all geometries"
-  fl.crop  <- st_crop(fl.shp, map_extent)
   wca.crop <- st_crop(wcas.shp, map_extent)
   mpr.crop <- st_crop(mpr.shp, map_extent)
   aoi.crop <- st_crop(aoi.shp, map_extent)
