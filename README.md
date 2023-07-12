@@ -70,7 +70,7 @@ The following steps describe steps to post-process JEM model output. For instruc
 
 7. Find processed model output in the associated species sub folder within the `Output` folder
 
-## Data Sources:
+## GIS Sources:
 **/GIS/EVERareas**: Shapefile containing Everglades management area boundaries used to generate maps. Sourced from:\
 FWSBoundaries.zip - Boundaries for USFWS refuges and other properties\
 Found: https://ecos.fws.gov/ServCat/Reference/Profile/128178 
