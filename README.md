@@ -10,12 +10,6 @@ restoration_runs is a library of R scripts used to summarize/post-process output
 
 "workflow" scripts source the above scripts to create all outputs
 
-## Suggested Citatation
-To cite this repository, please use:
-
-## Contact
-Caitlin Hackett (chackett@usgs.gov)
-
 ## Descriptions of R scripts:
 
 ### Universal
@@ -57,16 +51,16 @@ Caitlin Hackett (chackett@usgs.gov)
 The following steps describe steps to post-process JEM model output. For instructions on how to run individual JEM models please see: https://jem.gov/Modeling
 
 1. Download repository - this download will include processing scripts, GIS files, and empty directory folders necessary to run the workflow
-2. Change working directory to this `restoration_runs` directory. This will ensure all file file paths are relative to this repository.
+2. Change R working directory to this `restoration_runs` directory. This will ensure all file file paths are relative to this repository.
 3. If processing COP or LOSOM model output skip to step 4. For restoration projects other than COP or LOSOM:
-  * navigate to the associated [ScienceBase] (https://www.sciencebase.gov/catalog/) release
-  * download the appropriate area of interest (AOI) shapefile
-  * place AOI shapefile in the `GIS` directory
+| * navigate to the associated [ScienceBase] (https://www.sciencebase.gov/catalog/) release
+| * download the appropriate area of interest (AOI) shapefile
+| * place AOI shapefile in the `GIS` directory
 4. Place output from each JEM species model in the associated species sub folder within the `Data` folder
 5. Open `workflow_inputs.R` and set/review the following inputs:
-  * define `alt_names` (line 22) and `base_names` (line 27) as described in script (line 13-19)
-  * set AOI shapefile path in the `GIS` directory (line 98). This will only need to updated for projects other than COP or LOSOM
-  * set if mapped output should be landscape or portrait (line 107) as described in script (line 101-105) 
+| * define `alt_names` (line 22) and `base_names` (line 27) as described in script (line 13-19)
+| * set AOI shapefile path in the `GIS` directory (line 98). This will only need to updated for projects other than COP or LOSOM
+| * set if mapped output should be landscape or portrait (line 107) as described in script (line 101-105) 
 6. Execute the `run` script for the target species model. For example, run `run_alligator.R` to process alligator model output
 7. Find processed model output in the associated species sub folder within the `Output` folder
 
@@ -95,6 +89,12 @@ The following steps describe steps to post-process JEM model output. For instruc
   Found: https://gis-fdot.opendata.arcgis.com/datasets/5c629bc81b104fca8d937343cdcefe29_0/explore 
   
 **/GIS/area_of_interest**: Shapefile containing an example restoration run area of interest (AOI). The AOI is specific to each restoration project. The AOI provided here was used for the Combined Operational Plan (COP) and Lake Okeechobee System Operating Manual (LOSOM) projects. For restoration projects other than COP or LOSOM, please see the associated ScienceBase data release to obtain the correct AOI. Sourced from: https://www.sciencebase.gov/catalog/item/621fa557d34ee0c6b38a854f 
+
+## Suggested Citatation
+To cite this repository, please use:
+
+## Contact
+Caitlin Hackett (chackett@usgs.gov)
 
 ## Disclaimer
 See [DISCLAIMER.md](https://code.usgs.gov/warc/jem/models/restoration_runs/-/blob/main/DISCLAIMER.md) in this repository
