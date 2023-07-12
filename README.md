@@ -10,7 +10,7 @@ restoration_runs is a library of R scripts used to summarize/post-process output
 
 "workflow" scripts source the above scripts to create all outputs
 
-This repository can post-process model output from the following species models:
+**This repository can post-process model output from the following species models:**
 
 *Alligator* 
 
@@ -50,7 +50,7 @@ Sourced:
 ### Sparrow Helper
 sourced:
 * `sparrow_helper_table.R` Process Sparrow Helper model output and generate table. Write table to csv
-* `sparrow_helper_plots.R` Process Sparrow Helper model output and generates bar plot
+* `sparrow_helper_plots.R` Process Sparrow Helper model output and generates bar plot\
 run:
 * `run_SparrowHelper.R` Run full workflow to process Sparrow Helper model output
 
@@ -58,7 +58,7 @@ run:
 sourced:
 * `smallfish_map_functions.R` Functions to generate Small Fish maps
 * `smallfish_barplot_functions.R` Functions to generate Small Fish bar plot
-* `smallfill_workflow.R` Workflow that sources dependency functions, pulls in model output that needs processing, and generates processed model outputs
+* `smallfill_workflow.R` Workflow that sources dependency functions, pulls in model output that needs processing, and generates processed model outputs\
 run:
 * `run_smallfish.R` Run full workflow to process Small Fish model output
 
@@ -66,7 +66,7 @@ run:
 sourced:
 * `rest_run_process_functions.R` Functions to process restoration run output that is in NetCDF format. Does not work to process WADEM.
 * `rest_run_map_functions.R` Functions to generate maps for model output that is in NetCDF format
-* `rest_run_workflow.R` Workflow that sources dependency functions, pulls in model output that needs processing and generates maps, bar plots, and acreage calculations
+* `rest_run_workflow.R` Workflow that sources dependency functions, pulls in model output that needs processing and generates maps, bar plots, and acreage calculations\
 run:
 * `run_kitenest.R` Run full workflow to process KiteNest
 * `run_everwaders.R` Run full workflow to process EverWaders
@@ -78,7 +78,7 @@ run:
 sourced:
 * `marlprairie_process_function.R` Functions to process Marl Prairie model outputs
 * `marlprairie_map_function.R` Functions to generate maps for Marl Prairie model output
-* `marlprairie_workflow.R` Workflow that sources dependency functions, pulls in model output, and generates maps and acreage calculations
+* `marlprairie_workflow.R` Workflow that sources dependency functions, pulls in model output, and generates maps and acreage calculations\
 run:
 * `run_marlprairie.R` Run full workflow to process Marl Prairie 
 
