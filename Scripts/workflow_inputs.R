@@ -93,9 +93,10 @@ sparrow_output_path <- "./Output/CSSSHelper/"
 
 # ------------------------------------------------------------------------------
 # 3) Area of interest and desired extent for maps
+# Default provided in repository is the Combined Operational Plan (COP) AOI
 # ------------------------------------------------------------------------------
 # Area of Interest (AOI)
-aoi_path <- "./GIS/COP_AOI_mask/COP_AOI_mask.shp"
+aoi_path <- "./GIS/area_of_interest/area_of_interest.shp"
 
 # ------------------------------------------------------------------------------
 # 4) Set output as Landscape or portrait
