@@ -192,7 +192,6 @@ for (n in seq_along(sp_string)) { # This is to accommodate multiple
                        aoi_path = aoi_path,
                        mpr_path = mpr_path,
                        wcas_path = wcas_path,
-                       fl_path = fl_path,
                        landscape = landscape,
                        map_title = map_title,
                        output_file_name = out_file)
