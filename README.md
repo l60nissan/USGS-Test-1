@@ -108,7 +108,7 @@ The following steps describe steps to post-process JEM model output. For instruc
 
 6. Execute the `run` script for the target species model. For example, run `run_alligator.R` to process alligator model output. There is no specified species model order that must be followed when running each `run` file. 
 
-7. Find processed model output in the associated species sub folder within the `Output` folder
+7. Find processed model output in the associated species sub folder within the `Output` folder. 
 
 ## GIS Sources:
 **/GIS/EVERareas**: Shapefile containing Everglades management area boundaries used to generate maps. Sourced from:\
