@@ -71,9 +71,9 @@ The following steps describe steps to post-process JEM model output. For instruc
 ## Data Sources:
 **/GIS/EVERareas**: Shapefile containing Everglades management area boundaries used to generate maps. Sourced from:\
 FWSBoundaries.zip - Boundaries for USFWS refuges and other properties\
-Found: https://ecos.fws.gov/ServCat/Reference/Profile/128178\
+Found: https://ecos.fws.gov/ServCat/Reference/Profile/128178 \
 
-Indian_Reservations.zip - Boundaries for American Indian Reservations/Federally Recognized Tribal Entities\ 
+Indian_Reservations.zip - Boundaries for American Indian Reservations/Federally Recognized Tribal Entities 
 Found: https://www.sciencebase.gov/catalog/item/4f4e4a2ee4b07f02db61576c
 
 NPS_-_Land_Resources_Division_Boundary_and_Tract_Data_Service-shp.zip - Boundaries for National Park Service lands\
@@ -82,7 +82,7 @@ Found: https://public-nps.opendata.arcgis.com/datasets/nps-boundary-1
 Wildlife_Management_Areas_Florida-shp.zip: Boundaries for Florida wildlife management areas\
 Found: https://gis.myfwc.com/Data/KMZ_files/Management%20-%20Wildlife%20Mgt%20Areas%20-%20Generalized%20-%20FL.kmz
 
-**/GIS/WOST_colonies**: Shapefile containing Wood stork nesting colonies. Sourced from:\         
+**/GIS/WOST_colonies**: Shapefile containing Wood stork nesting colonies. Sourced from:         
   Found: https://ecos.fws.gov/ServCat/Reference/Profile/124368\
   United States Fish and Wildlife Service, South Florida Field Office, Vero Beach, FL. 2018. Wood Stork Colonies 2009-2018
 
