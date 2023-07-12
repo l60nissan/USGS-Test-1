@@ -70,7 +70,7 @@ The following steps describe steps to post-process JEM model output. For instruc
 
 ## Data Sources:
 **/GIS/EVERareas**: Shapefile containing Everglades management area boundaries used to generate maps. Sourced from:\
-  \begin{itemize}
+\begin{itemize}
   
   \item[] FWSBoundaries.zip - Boundaries for USFWS refuges and other properties\
   \item[] Found: https://ecos.fws.gov/ServCat/Reference/Profile/128178\
@@ -83,7 +83,8 @@ The following steps describe steps to post-process JEM model output. For instruc
 
   \item[] Wildlife_Management_Areas_Florida-shp.zip: Boundaries for Florida wildlife management areas\
   \item[] Found: https://gis.myfwc.com/Data/KMZ_files/Management%20-%20Wildlife%20Mgt%20Areas%20-%20Generalized%20-%20FL.kmz
-  
+\end{itemize}
+
 **/GIS/WOST_colonies**: Shapefile containing Wood stork nesting colonies. Sourced from:\         
   Found: https://ecos.fws.gov/ServCat/Reference/Profile/124368\
   United States Fish and Wildlife Service, South Florida Field Office, Vero Beach, FL. 2018. Wood Stork Colonies 2009-2018
