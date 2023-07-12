@@ -10,31 +10,24 @@ restoration_runs is a library of R scripts used to summarize/post-process output
 
 "workflow" scripts source the above scripts to create all outputs
 
-**This repository can post-process model output from the following species models:**
+**This repository can post-process model output from the following JEM models:**
 
-*Alligator* 
+[*Alligator*](https://jem.gov/Modeling/Alligator) 
 
-Shinde, D., L. Pearlstine, L.A. Brandt, F.J. Mazzotti, M.W. Parry, B. Jeffery, and A. LoGalbo, 2014. Alligator Production Suitability Index Model (GATOR--PSIM v. 2.0): Ecological and Design Documentation. South Florida Natural Resources Center, Everglades National Park, Homestead, Florida, USA. Ecological Model Report. SFNRC Technical Series 2014:1. <https://jem.gov/downloads/docs/Alligator_Model_Report_Feb18,2015.pdf>
+[*EverSnail (apple snail)*](https://jem.gov/Modeling/EverSnail) 
 
-*EverSnail (apple snail)* 
+[*Cape Sable Seaside Sparrow (CSSS) Marl Prairie Indicator*](https://jem.gov/Modeling/MarlPrairie)
 
-Darby, P.C., D.L. DeAngelis, S.S. Romañach, K. Suir, and J. Bridevaux, 2015. Modeling apple snail population dynamics on the Everglades landscape. Landscape Ecology 30(8): 1497--1510. DOI: 10.1007/s10980-015-0205-5 <https://doi.org/10.1007/s10980-015-0205-5>
+[*Cape Sable Seaside Sparrow (CSSS) Helper*](https://jem.gov/Modeling/SparrowHelper)
 
-*EverSparrow (Cape Sable seaside sparrow)* 
+[*Days Since Dry* (extracted from WADEM)](https://jem.gov/Modeling/WADEM)
+Note: this repository does not process WADEM wading bird output.
 
-Haider, S.M., Benscoter, A.M., Pearlstine, L., D'Acunto, L.E. and Romañach, S.S., 2021. Landscape-scale drivers of endangered Cape Sable Seaside Sparrow (Ammospiza maritima mirabilis) presence using an ensemble modeling approach. Ecological Modelling, <https://doi.org/10.1016/j.ecolmodel.2021.109774.>
+[*Small fish*](https://jem.gov/Modeling/SmallFishDensity) 
 
-*Small fish* 
+[*KiteNest (Everglades snail kite)*](https://jem.gov/Modeling/KiteNest) 
 
-Donalson, D., J. Trexler, D. DeAngelis, and A. Logalbo, 2010. Prey-based Freshwater Fish Density Performance Measure (Greater Everglades Aquatic Trophic Levels). DECOMP Performance Measure Documentation Sheet. United States Army Corps of Engineers, Jacksonville, Florida, USA.
-
-*KiteNest (Everglades snail kite)* 
-
-Benscoter AM, D'Acunto LE, Haider SM, Fletcher Jr RJ, Romañach SS. Nest‐site selection model for endangered Everglade snail kites to inform ecosystem restoration. Ecosphere. 2023 Jan;14(1):e4362. <https://doi.org/10.1002/ecs2.4362>
-
-*EverWaders (wading birds)* 
-
-D'Acunto LE, Pearlstine L, Romañach SS (2021) Joint species distribution models of Everglades wading birds to inform restoration planning. PLoS ONE 16(1): e0245973. <https://doi.org/10.1371/journal.pone.0245973>
+[*EverWaders (wading birds)*](https://jem.gov/Modeling/EverWaders) 
 
 ## Descriptions of R scripts:
 
