@@ -2,7 +2,7 @@
 
 ## Overview
 
-restoration_runs is a library of R scripts used to summarize/post-process output of JEM models used in restoration planning for projects such as LOSOM and WERP. The scripts create figures and maps for each model.
+restoration_runs is a library of R scripts used to summarize/post-process output of JEM models used in restoration planning for projects such as Lake Okeechobee System Operating Manual (LOSOM) and Western Everglades Restoration Project (WERP). The scripts summarize model output and create figures and maps for each model.
 
 "process_functions" scripts contain functions that summarize all the data, write it out, and create bar graphs
 
@@ -10,9 +10,36 @@ restoration_runs is a library of R scripts used to summarize/post-process output
 
 "workflow" scripts source the above scripts to create all outputs
 
+This repository can post-process model output from the following species models:
+
+*Alligator* 
+
+Shinde, D., L. Pearlstine, L.A. Brandt, F.J. Mazzotti, M.W. Parry, B. Jeffery, and A. LoGalbo, 2014. Alligator Production Suitability Index Model (GATOR--PSIM v. 2.0): Ecological and Design Documentation. South Florida Natural Resources Center, Everglades National Park, Homestead, Florida, USA. Ecological Model Report. SFNRC Technical Series 2014:1. <https://jem.gov/downloads/docs/Alligator_Model_Report_Feb18,2015.pdf>
+
+*EverSnail (apple snail)* 
+
+Darby, P.C., D.L. DeAngelis, S.S. Romañach, K. Suir, and J. Bridevaux, 2015. Modeling apple snail population dynamics on the Everglades landscape. Landscape Ecology 30(8): 1497--1510. DOI: 10.1007/s10980-015-0205-5 <https://doi.org/10.1007/s10980-015-0205-5>
+
+*EverSparrow (Cape Sable seaside sparrow)* 
+
+Haider, S.M., Benscoter, A.M., Pearlstine, L., D'Acunto, L.E. and Romañach, S.S., 2021. Landscape-scale drivers of endangered Cape Sable Seaside Sparrow (Ammospiza maritima mirabilis) presence using an ensemble modeling approach. Ecological Modelling, <https://doi.org/10.1016/j.ecolmodel.2021.109774.>
+
+*Small fish* 
+
+Donalson, D., J. Trexler, D. DeAngelis, and A. Logalbo, 2010. Prey-based Freshwater Fish Density Performance Measure (Greater Everglades Aquatic Trophic Levels). DECOMP Performance Measure Documentation Sheet. United States Army Corps of Engineers, Jacksonville, Florida, USA.
+
+*KiteNest (Everglades snail kite)* 
+
+Benscoter AM, D'Acunto LE, Haider SM, Fletcher Jr RJ, Romañach SS. Nest‐site selection model for endangered Everglade snail kites to inform ecosystem restoration. Ecosphere. 2023 Jan;14(1):e4362. <https://doi.org/10.1002/ecs2.4362>
+
+*EverWaders (wading birds)* 
+
+D'Acunto LE, Pearlstine L, Romañach SS (2021) Joint species distribution models of Everglades wading birds to inform restoration planning. PLoS ONE 16(1): e0245973. <https://doi.org/10.1371/journal.pone.0245973>
+
 ## Descriptions of R scripts:
 
-### Universal
+### Universal - input paths, string defintions, package installation used in workflow for each species
+Sourced:
 * `workflow_packages.R` Checks to see if the necessary packages are install and installs any missing packages
 * `workflow_inputs.R` Inputs set by the user to process model outputs for specific restoration run
 * `species_string_definitions.R` Definitions of species string used in file paths - this might be a string in a parent folder and not the specific NetCDF file. For example, the alligator model output is saved to the folder named JEM_Alligator_Production_Probability_Model_Data and the output NetCDF is named Output.nc
@@ -21,20 +48,26 @@ restoration_runs is a library of R scripts used to summarize/post-process output
 * `session_info.R` contains sessionInfo() from R session used to generate workflow
 
 ### Sparrow Helper
+sourced:
 * `sparrow_helper_table.R` Process Sparrow Helper model output and generate table. Write table to csv
 * `sparrow_helper_plots.R` Process Sparrow Helper model output and generates bar plot
+run:
 * `run_SparrowHelper.R` Run full workflow to process Sparrow Helper model output
 
 ### Small Fish
+sourced:
 * `smallfish_map_functions.R` Functions to generate Small Fish maps
 * `smallfish_barplot_functions.R` Functions to generate Small Fish bar plot
 * `smallfill_workflow.R` Workflow that sources dependency functions, pulls in model output that needs processing, and generates processed model outputs
+run:
 * `run_smallfish.R` Run full workflow to process Small Fish model output
 
 ### NetCDF model output: Alligator, EverSnail, EverWaders, KiteNest, Days Since Dry
+sourced:
 * `rest_run_process_functions.R` Functions to process restoration run output that is in NetCDF format. Does not work to process WADEM.
 * `rest_run_map_functions.R` Functions to generate maps for model output that is in NetCDF format
 * `rest_run_workflow.R` Workflow that sources dependency functions, pulls in model output that needs processing and generates maps, bar plots, and acreage calculations
+run:
 * `run_kitenest.R` Run full workflow to process KiteNest
 * `run_everwaders.R` Run full workflow to process EverWaders
 * `run_dayssincedry.R` Run full workflow to process DaysSinceDry
@@ -42,9 +75,11 @@ restoration_runs is a library of R scripts used to summarize/post-process output
 * `run_alligator.R` Run full workflow to process Alligator
 
 ### Marl Prairie
+sourced:
 * `marlprairie_process_function.R` Functions to process Marl Prairie model outputs
 * `marlprairie_map_function.R` Functions to generate maps for Marl Prairie model output
 * `marlprairie_workflow.R` Workflow that sources dependency functions, pulls in model output, and generates maps and acreage calculations
+run:
 * `run_marlprairie.R` Run full workflow to process Marl Prairie 
 
 ## Steps to Process Species Model Output
