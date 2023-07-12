@@ -7,13 +7,10 @@
 mpr_path <- "./GIS/ENP_main_road/ENP_main_road.shp" 
 
 #WCAs Boundary
-wcas_path <- "./GIS/EVERareas_UTM/EVERareas_UTM.shp" 
-
-# florida outline
-fl_path <- "./GIS/FL_outline_ESRI_2010/FL_outline_ESRI_2010.shp" 
+wcas_path <- "./GIS/EVERareas/EVERareas.shp" 
 
 # Wood stork colonies
-wost_path <- "./GIS/WOST_colonies/WOST_colonies_JB.shp"
+wost_path <- "./GIS/wood_stork_colonies_2009_2018/wood_stork_colonies_2009_2018.shp"
 
 # CSSS subpopulation - includes AX
-subpop_path <- "./GIS/CSSS_subpopulations_wAX/CSSS_subpopulations_wAX.shp" 
+subpop_path <- "./GIS/CSSS_subpopulations/CSSS_subpopulations.shp" 
