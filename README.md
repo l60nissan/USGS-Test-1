@@ -88,11 +88,11 @@ The official USGS-approved GitLab release is available on the [XXX tag](url goes
 * `run_marlprairie.R` Run full workflow to process Marl Prairie 
 
 ## Steps to Process Species Model Output
-The following steps describe steps to post-process JEM model output. For instructions to run individual JEM models please follow the links provided for each model in the repository "Overview".
+The following steps describe steps to post-process JEM model output using this repository. For instructions to run individual JEM models please follow the links provided for each model in the repository "Overview".
 
-1. Download repository - this download will include processing scripts, GIS files, and empty directory of folders necessary to run the workflow
+1. Download this `restoration_runs` repository - this download will include processing scripts, GIS files, and an empty directory of folders necessary to run the workflow
 
-2. Change R working directory to this `restoration_runs` directory. This will ensure all file paths are relative to this repository.
+2. Change R working directory to the downloaded `restoration_runs` directory. This will ensure all file paths are relative to this repository.
 
 3. If processing COP or LOSOM model output skip to step 4. For restoration projects other than COP or LOSOM:
      - navigate to the associated [ScienceBase](https://www.sciencebase.gov/catalog/) release
@@ -106,7 +106,7 @@ The following steps describe steps to post-process JEM model output. For instruc
      - set AOI shapefile path (line 98). This will only need to updated for projects other than COP or LOSOM. For other projects, this should point to the file downloaded in step 3.
      - set if mapped output should be landscape or portrait (line 107) as described in script (line 101-105) 
 
-6. Execute the `run` script for the target species model. For example, run `run_alligator.R` to process alligator model output. There is no specified species model order that must be followed when running each `run` file. 
+6. Execute the `run` script for the target species model. For example, run `run_alligator.R` to process alligator model output. Each `run` script runs independently of the others; therefore, there is no specified order to execute each `run` script. 
 
 7. Find processed model output in the associated species sub folder within the `Output` folder. 
 
