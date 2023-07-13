@@ -98,7 +98,7 @@ The following steps describe steps to post-process JEM model output using this r
 
 5. Open `workflow_inputs.R` and set/review the following inputs:
      - define `alt_names` and `base_names` as described in script
-     - set AOI shapefile path. This defaults to the AOI provided in the `GIS` folder, but a different AOI file can be used if desired.
+     - set area of interest (AOI) shapefile path. This defaults to the AOI provided in the `GIS` folder, but a different AOI file can be used if desired.
      - set if mapped output should be landscape or portrait as described in script
 
 6. Execute the `run` script for the target species model. For example, run `run_alligator.R` to process alligator model output. Each `run` script runs independently of the others; therefore, there is no specified order to execute each `run` script. 
