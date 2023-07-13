@@ -1,5 +1,8 @@
 ## -----------------------------------------------------------------------------
-# Definitions of species strings used in file names 
+# Definitions of species strings used in file paths. For species model data files
+# that do not contain a species string (e.g., output.nc), the species string  
+# defined here must match a string for the folder name containing the species data
+# (e.g., /Alligator/output.nc)
 ## -----------------------------------------------------------------------------
 
 # Alligator
