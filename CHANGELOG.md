@@ -1,5 +1,11 @@
 # restoration_runs
 
+## 1.1.0 2023-07-13
+* Update Information in README.md (Overview, process steps, links to models, etc.)
+* Add empty directories for "Data" and "Output"
+* Add GIS files
+* remove extent_options.R becuase it is not sourced by other scripts
+
 ## 1.0.0 2023-07-06
 * Pull out user input options (scenario names, file paths, process definitions, etc.) and source within necessary scripts to streamline workflow
 * Add option to generate landscape or portrait map outputs
