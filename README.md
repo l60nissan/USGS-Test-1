@@ -1,5 +1,4 @@
-# Joint Ecosystem Modeling (JEM) Restoration Runs R Library\
-restoration_runs
+# Joint Ecosystem Modeling (JEM) Restoration Runs R Library <br> restoration_runs
 
 ## Overview
 
