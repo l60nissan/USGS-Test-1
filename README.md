@@ -1,3 +1,4 @@
+# Joint Ecosystem Modeling (JEM) Restoration Runs R Library\
 # restoration_runs
 
 ## Overview
@@ -29,7 +30,7 @@ Note: this repository does not process WADEM wading bird output.
 
 [KiteNest (Everglades snail kite)](https://jem.gov/Modeling/KiteNest) 
 
-[*EverWaders (wading birds)*](https://jem.gov/Modeling/EverWaders) 
+[EverWaders (wading birds)](https://jem.gov/Modeling/EverWaders) 
 
 ### A note about "provisional" and "approved" USGS GitLab repositories
 
