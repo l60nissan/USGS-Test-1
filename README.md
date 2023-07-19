@@ -1,8 +1,8 @@
-# restoration_runs
+# Joint Ecosystem Modeling (JEM) Restoration Runs R Library <br> restoration_runs
 
 ## Overview
 
-restoration_runs is a library of R-language scripts used to summarize/post-process output of Joint Ecosystem Modeling (JEM; https://jem.gov/) models used in restoration planning for projects such as the Lake Okeechobee System Operating Manual (LOSOM) and the Western Everglades Restoration Project (WERP). The scripts summarize model output and create figures and maps for each model.
+restoration_runs is a library of R-language scripts used to summarize/post-process output of Joint Ecosystem Modeling (JEM; https://jem.gov/) models used in Everglades restoration planning for projects such as the Lake Okeechobee System Operating Manual (LOSOM) and the Western Everglades Restoration Project (WERP). The scripts summarize model output and create graphs and maps for each model.
 
 *process_functions* scripts contain functions that summarize all the data, write it out, and create bar graphs
 
@@ -10,26 +10,26 @@ restoration_runs is a library of R-language scripts used to summarize/post-proce
 
 *workflow* scripts source the above scripts to create all outputs
 
-*run* scripts source scripts to run full workflow to process model output for each species model
+*run* scripts source workflow to run full workflow to process model output for each species model
 
 **This repository can post-process model output from the following JEM models:**
 
-[*Alligator Production Suitability Index Model (APSI) (American Alligator)*](https://jem.gov/Modeling/Alligator) 
+[Alligator Production Suitability Index Model (APSI) (American Alligator)](https://jem.gov/Modeling/Alligator) 
 
-[*EverSnail (native Florida apple snail)*](https://jem.gov/Modeling/EverSnail) 
+[EverSnail (native Florida apple snail)](https://jem.gov/Modeling/EverSnail) 
 
-[*Cape Sable Seaside Sparrow (CSSS) Marl Prairie Indicator*](https://jem.gov/Modeling/MarlPrairie)
+[Cape Sable Seaside Sparrow (CSSS) Marl Prairie Indicator](https://jem.gov/Modeling/MarlPrairie)
 
-[*Cape Sable Seaside Sparrow (CSSS) Helper*](https://jem.gov/Modeling/SparrowHelper)
+[Cape Sable Seaside Sparrow (CSSS) Helper](https://jem.gov/Modeling/SparrowHelper)
 
-[*Days Since Dry* (extracted from WADEM)](https://jem.gov/Modeling/WADEM)
+[Days Since Dry (extracted from WADEM)](https://jem.gov/Modeling/WADEM)
 Note: this repository does not process WADEM wading bird output.
 
-[*Small Fish Density Model*](https://jem.gov/Modeling/SmallFishDensity) 
+[Small Fish Density Model](https://jem.gov/Modeling/SmallFishDensity) 
 
-[*KiteNest (Everglades snail kite)*](https://jem.gov/Modeling/KiteNest) 
+[KiteNest (Everglades snail kite)](https://jem.gov/Modeling/KiteNest) 
 
-[*EverWaders (wading birds)*](https://jem.gov/Modeling/EverWaders) 
+[EverWaders (wading birds)](https://jem.gov/Modeling/EverWaders) 
 
 ### A note about "provisional" and "approved" USGS GitLab repositories
 
@@ -38,18 +38,18 @@ The official USGS-approved GitLab release is available on the [XXX tag](url goes
 ## Descriptions of R scripts:
 
 ### Universal - scripts used in workflow for all models
-*Sourced:*
-* `workflow_packages.R` Checks to see if the necessary packages are install and installs any missing packages
+*Source:*
+* `workflow_packages.R` Checks to see if the necessary packages are installed and installs any missing packages
 * `workflow_inputs.R` Inputs set by the user to process model outputs for specific restoration run
 * `species_string_definitions.R` Definitions of species string used in file paths - this might be a string in a parent folder and not the specific NetCDF file. For example, the alligator model output is saved to the folder named JEM_Alligator_Production_Probability_Model_Data and the output NetCDF is named Output.nc
 * `shapefile_paths.R` Paths to shapefiles that are needed to process and map model output
 * `process_definitions.R` Definition of process criteria for model outputs including: target years, breaks and labels for mapped data, titles for maps and figures, variable name in NetCDF. These default to the definitions used for LOSOM, but can be updated by the user if necessary for other restoration runs.
 
 *SessionInfo()*
-* `session_info.R` contains sessionInfo() from R session used to generate workflow
+* `session_info.R` contains sessionInfo() from R session used to generate workflow. This can be used as a reference for R and package versions if the workflow does not create outputs in an anticipated format or if it generates unanticipated warning or error messages. 
 
 ### Sparrow Helper
-*sourced:*
+*source:*
 * `sparrow_helper_table.R` Process Sparrow Helper model output and generate table. Write table to csv
 * `sparrow_helper_plots.R` Process Sparrow Helper model output and generates bar plot
 
@@ -57,7 +57,7 @@ The official USGS-approved GitLab release is available on the [XXX tag](url goes
 * `run_sparrowhelper.R` Run full workflow to process Sparrow Helper model output
 
 ### Small Fish
-*sourced:*
+*source:*
 * `smallfish_map_functions.R` Functions to generate Small Fish maps
 * `smallfish_barplot_functions.R` Functions to generate Small Fish bar plot
 * `smallfill_workflow.R` Workflow that sources dependency functions, pulls in model output that needs processing, and generates processed model outputs
@@ -66,7 +66,7 @@ The official USGS-approved GitLab release is available on the [XXX tag](url goes
 * `run_smallfish.R` Run full workflow to process Small Fish model output
 
 ### NetCDF model output: Alligator, EverSnail, EverWaders, KiteNest, Days Since Dry
-*sourced:*
+*source:*
 * `rest_run_process_functions.R` Functions to process restoration run output that is in NetCDF format. Does not work to process WADEM.
 * `rest_run_map_functions.R` Functions to generate maps for model output that is in NetCDF format
 * `rest_run_workflow.R` Workflow that sources dependency functions, pulls in model output that needs processing and generates maps, bar plots, and acreage calculations
@@ -79,7 +79,7 @@ The official USGS-approved GitLab release is available on the [XXX tag](url goes
 * `run_alligator.R` Run full workflow to process Alligator
 
 ### Marl Prairie
-*sourced:*
+*source:*
 * `marlprairie_process_function.R` Functions to process Marl Prairie model outputs
 * `marlprairie_map_function.R` Functions to generate maps for Marl Prairie model output
 * `marlprairie_workflow.R` Workflow that sources dependency functions, pulls in model output, and generates maps and acreage calculations
