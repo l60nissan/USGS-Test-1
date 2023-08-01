@@ -13,6 +13,7 @@ library(sf)
 library(ggsn)
 #install.packages("shadowtext", dependencies=TRUE, repos='http://cran.rstudio.com/')
 library(shadowtext)
+library(viridis)
 
 ## -----------------------------------------------------------------------------
 # Set map Extent
