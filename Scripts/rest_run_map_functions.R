@@ -10,6 +10,7 @@ library(ggnewscale)
 library(sf)
 library(ggsn)
 library(ggpp)
+library(viridis)
 
 ## -----------------------------------------------------------------------------
 ## Function for map North arrow
