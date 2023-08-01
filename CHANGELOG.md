@@ -1,8 +1,10 @@
 # restoration_runs
 
 ## 1.1.2 2023-08-01
+* Reconcile changes from reviews
 * Add DOI link to README.md
-* Add viridis to workflow_packages.R
+* Add viridis to workflow_packages.R and map_functions scripts
+* minor comment edits
 
 ## 1.1.1 2023-07-19
 * Minor edits to README.md (update title, fix typos)
