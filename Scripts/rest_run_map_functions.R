@@ -320,7 +320,8 @@ RestorationRunMap <- function(
     
     if (grepl("Apple Snail|Snail Kite", map_title)) {
 
-      # This is the one sent to Allison
+      # Combine maps and legend - snail kite and apple snail need different
+      # spacing because only 2 years are shown in output
       combined_plot <- cowplot::plot_grid(map_plot, NULL, full_legend,
                            rel_widths = c(1, -.35, 0.5), ncol = 3)
 
@@ -343,14 +344,18 @@ RestorationRunMap <- function(
       
       if (grepl("Apple Snail", map_title)) {
         
-        # This is the one sent to Allison
+        # Combine maps and legend - apple snail needs different
+        # spacing because only 2 years are shown in output and legend labels
+        # are a different size than snail kite
         combined_plot <- cowplot::plot_grid(map_plot, NULL, full_legend,
                                             rel_widths = c(1.5, -0.25, .4), ncol = 3)
       }
       
       else if (grepl("Snail Kite", map_title)) {
         
-        # This is the one sent to Allison
+        # Combine maps and legend - snail kite needs different
+        # spacing because only 2 years are shown in output and legend labels
+        # are a different size than apple snail
         combined_plot <- cowplot::plot_grid(map_plot, NULL, full_legend,
                                             rel_widths = c(1.5, -0.3, .4), ncol = 3)
       } else {
