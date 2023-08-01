@@ -1,5 +1,9 @@
 # restoration_runs
 
+## 1.1.2 2023-0-01
+* Add DOI link to README.md
+* Add viridis to workflow_packages.R
+
 ## 1.1.1 2023-07-19
 * Minor edits to README.md (update title, fix typos)
 
