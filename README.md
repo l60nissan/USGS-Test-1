@@ -33,7 +33,7 @@ Note: this repository does not process WADEM wading bird output.
 
 ### A note about "provisional" and "approved" USGS GitLab repositories
 
-The official USGS-approved GitLab release is available on the [1.2.0 tag](https://code.usgs.gov/warc/jem/models/restoration_runs/-/tree/1.2.0?ref_type=tags). Because it is USGS-approved, it cannot be modified or edited, even to fix typos or bugs. Therefore, all bug fixes, edits, and additional development takes place on the [main branch](https://code.usgs.gov/warc/jem/models/restoration_runs), which is a provisional release. For the most up-to-date version, please navigate to the `main` branch if you haven't already.
+The official USGS-approved GitLab release is available on the [1.3.0 tag](https://code.usgs.gov/warc/jem/models/restoration_runs/-/tree/1.3.0?ref_type=tags). Because it is USGS-approved, it cannot be modified or edited, even to fix typos or bugs. Therefore, all bug fixes, edits, and additional development takes place on the [main branch](https://code.usgs.gov/warc/jem/models/restoration_runs), which is a provisional release. For the most up-to-date version, please navigate to the `main` branch if you haven't already.
 
 ## Descriptions of R scripts:
 
