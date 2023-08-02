@@ -1,0 +1,46 @@
+[
+  {
+    "name": "restoration_runs",
+    "organization": "U.S. Geological Survey",
+    "description": "Joint Ecosystem Modeling (JEM) Restoration Runs R Library",
+    "version": "1.2.0",
+    "status": "Production",
+
+    "permissions": {
+      "usageType": "openSource",
+      "licenses": [
+        {
+          "name": "Public Domain, CC0-1.0",
+          "URL": "https://code.usgs.gov/warc/jem/models/restoration_runs/-/blob/main/LICENSE.md"
+        }
+      ]
+    },
+
+    "homepageURL": "https://code.usgs.gov/warc/jem/models/restoration_runs",
+    "downloadURL": "https://code.usgs.gov/warc/jem/models/restoration_runs/-/archive/main/restoration_runs-main.zip",
+    "disclaimerURL": "https://code.usgs.gov/warc/jem/models/restoration_runs/-/blob/main/DISCLAIMER.md",
+    "repositoryURL": "https://code.usgs.gov/warc/jem/models/restoration_runs.git",
+    "vcs": "git",
+
+    "laborHours": 0,
+
+    "tags": [
+      "USGS",
+      "R",
+	  "netcdf"
+    ],
+
+    "languages": [
+      "R"
+    ],
+
+    "contact": {
+      "name": "Caitlin E. Hackett",
+      "email": "chackett@usgs.gov"
+    },
+
+    "date": {
+      "metadataLastUpdated": "2023-08-02"
+    }
+  }
+]
