@@ -1,5 +1,9 @@
 # restoration_runs
 
+## 1.2.0 2023-08-02
+* Add code.json
+* update README.md to reference planned release tag
+
 ## 1.1.2 2023-08-01
 * Reconcile changes from reviews
 * Add DOI link to README.md
