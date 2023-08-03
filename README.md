@@ -110,7 +110,7 @@ The following steps describe steps to post-process JEM model output using this r
 FWSBoundaries.zip - Boundaries for USFWS refuges and other properties\
 Found: https://ecos.fws.gov/ServCat/Reference/Profile/128178 
 
-Indian_Reservations.zip - Boundaries for American Indian Reservations/Federally Recognized Tribal Entities\ 
+Indian_Reservations.zip - Boundaries for American Indian Reservations/Federally Recognized Tribal Entities\
 Found: https://www.sciencebase.gov/catalog/item/4f4e4a2ee4b07f02db61576c
 
 NPS_-_Land_Resources_Division_Boundary_and_Tract_Data_Service-shp.zip - Boundaries for National Park Service lands\
