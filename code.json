@@ -3,7 +3,7 @@
     "name": "restoration_runs",
     "organization": "U.S. Geological Survey",
     "description": "Joint Ecosystem Modeling (JEM) Restoration Runs R Library",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "status": "Production",
 
     "permissions": {
@@ -40,7 +40,7 @@
     },
 
     "date": {
-      "metadataLastUpdated": "2023-08-02"
+      "metadataLastUpdated": "2023-08-03"
     }
   }
 ]
