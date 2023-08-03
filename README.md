@@ -88,7 +88,7 @@ The official USGS-approved GitLab release is available on the [1.3.0 tag](https:
 * `run_marlprairie.R` Run full workflow to process Marl Prairie 
 
 ## Steps to Process Species Model Output
-The following steps describe steps to post-process JEM model output using this repository. For instructions to run individual JEM models please follow the links provided for each model in the repository "Overview".
+The following steps describe steps to post-process JEM model output using this repository. For instructions to run individual JEM models please follow the links provided for each model listed above in the "Overview" section.
 
 1. Download this `restoration_runs` repository - this download will include processing scripts, GIS files, and an empty directory of folders necessary to run the workflow
 
@@ -110,7 +110,7 @@ The following steps describe steps to post-process JEM model output using this r
 FWSBoundaries.zip - Boundaries for USFWS refuges and other properties\
 Found: https://ecos.fws.gov/ServCat/Reference/Profile/128178 
 
-Indian_Reservations.zip - Boundaries for American Indian Reservations/Federally Recognized Tribal Entities 
+Indian_Reservations.zip - Boundaries for American Indian Reservations/Federally Recognized Tribal Entities\ 
 Found: https://www.sciencebase.gov/catalog/item/4f4e4a2ee4b07f02db61576c
 
 NPS_-_Land_Resources_Division_Boundary_and_Tract_Data_Service-shp.zip - Boundaries for National Park Service lands\
