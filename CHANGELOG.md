@@ -1,5 +1,10 @@
 # restoration_runs
 
+## 1.2.1 2023-08-03
+* Update code.json to reference planned release tag
+* Fix R Markdown style typos in README.md
+* Update process step description in README.md
+
 ## 1.2.0 2023-08-02
 * Add code.json
 * update README.md to reference planned release tag
