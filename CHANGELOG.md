@@ -1,5 +1,8 @@
 # restoration_runs
 
+## 1.3.0 2023-08-08
+* Update to "approved" verbiage in preparation for official release
+
 ## 1.2.1 2023-08-03
 * Update code.json to reference planned release tag
 * Fix R Markdown style typos in README.md
