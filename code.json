@@ -11,14 +11,14 @@
       "licenses": [
         {
           "name": "Public Domain, CC0-1.0",
-          "URL": "https://code.usgs.gov/warc/jem/models/restoration_runs/-/blob/main/LICENSE.md"
+          "URL": "https://code.usgs.gov/warc/jem/models/restoration_runs/-/raw/1.3.0/LICENSE.md"
         }
       ]
     },
 
     "homepageURL": "https://code.usgs.gov/warc/jem/models/restoration_runs",
-    "downloadURL": "https://code.usgs.gov/warc/jem/models/restoration_runs/-/archive/main/restoration_runs-main.zip",
-    "disclaimerURL": "https://code.usgs.gov/warc/jem/models/restoration_runs/-/blob/main/DISCLAIMER.md",
+    "downloadURL": "https://code.usgs.gov/warc/jem/models/restoration_runs/-/archive/1.3.0/restoration_runs-1.3.0.zip",
+    "disclaimerURL": "https://code.usgs.gov/warc/jem/models/restoration_runs/-/raw/1.3.0/DISCLAIMER.md",
     "repositoryURL": "https://code.usgs.gov/warc/jem/models/restoration_runs.git",
     "vcs": "git",
 
